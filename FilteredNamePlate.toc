@@ -1,0 +1,11 @@
+## Interface: 70200
+## Title: FilteredNamePlate
+## Title-zhTW: 过滤姓名板
+## Title-zhCN: 过滤姓名板
+## Author: Allan
+## Version: 7.0.3.20170613
+## Notes: （姓名板仅显示设置的名字列表）或者（仅设置的名字列表不显示）
+## DefaultState: Enabled
+## LoadOnDemand: 0
+## SavedVariables: Fnp_Enable, Fnp_NameList, Fnp_Reverse
+FilteredNamePlate.xml
