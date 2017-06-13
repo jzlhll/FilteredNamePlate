@@ -1,6 +1,220 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/..\FrameXML\UI.xsd">
 <Script file="FilteredNamePlate.lua"/>
-<Frame name="FilteredNamePlate_Frame">
+<Frame name="FilteredNamePlate_Frame" hidden="true" parent="UIParent" toplevel="true" movable="true" frameStrata="HIGH" enableMouse="true" enableKeyboard="true">
+	<Size>
+		<AbsDimension x="300" y="400" />
+	</Size>
+	<Anchors>
+		<Anchor point="CENTER" />
+	</Anchors>
+	<Backdrop bgFile="Interface\DialogFrame\UI-DialogBox-Background" edgeFile="Interface\DialogFrame\UI-DialogBox-Border" tile="true">
+		<BackgroundInsets>
+			<AbsInset left="11" right="12" top="12" bottom="11" />
+		</BackgroundInsets>
+		<TileSize>
+			<AbsValue val="32" />
+		</TileSize>
+		<EdgeSize>
+			<AbsValue val="32" />
+		</EdgeSize>
+	</Backdrop>
+	 
+	<Frames>
+		<Button name="$parent_CloseIcon" inherits="OptionsButtonTemplate" text="X">
+			<Size>
+				<AbsDimension x="40" y="40" />
+			</Size>
+			<Anchors>
+				<Anchor point="TOPRIGTH" relativeTo="$parent">
+				<Offset>
+					<AbsDimension x="250" y="-10" />
+				</Offset>
+				</Anchor>
+			</Anchors>
+			<Scripts>
+				<OnClick>
+					ChangeFrameVisibility()
+				</OnClick>
+			</Scripts>
+		</Button>
+		
+		<CheckButton name="$parent_EnableCheckButton" inherits="OptionsCheckButtonTemplate">
+			<Anchors>
+				<Anchor point="TOPLEFT" relativeTo="$parent">
+				<Offset>
+					<AbsDimension x="30" y="-30" />
+				</Offset>
+				</Anchor>
+			</Anchors>
+			<Scripts>
+				<OnLoad>
+				_G[self:GetName().."Text"]:SetText("启用(Enable)");
+				</OnLoad>
+				<OnClick>
+				EnableButtonChecked(self, self:GetChecked())
+				</OnClick>
+			</Scripts>
+		</CheckButton>
+
+		<CheckButton name="$parent_OnlyShowModeCheckBtn" inherits="OptionsCheckButtonTemplate">
+			<Anchors>
+				<Anchor point="TOPLEFT" relativeTo="$parent">
+				<Offset>
+					<AbsDimension x="30" y="-80" />
+				</Offset>
+				</Anchor>
+			</Anchors>
+			<Scripts>
+				<OnLoad>
+				_G[self:GetName().."Text"]:SetText("仅显模式(Only Show Mode)");
+				</OnLoad>
+				<OnClick>
+				ModeCheckButtonChecked("o", self:GetChecked())
+				</OnClick>
+			</Scripts>
+		</CheckButton>
+
+        <EditBox name="$parent_OnlyShowModeEditBox" letters="300" autoFocus="false" multiLine="true">
+                <Layers>
+                    <Layer level="BACKGROUND">
+                        <Texture>
+                            <Color r=".2" g=".2" b=".2" a="1"/>
+                        </Texture>
+                    </Layer>
+                </Layers>
+                <Size>
+                    <AbsDimension x="200" y="60" />
+                </Size>
+                <Anchors>
+                    <Anchor point="TOPLEFT" relativeTo="$parent_OnlyShowModeCheckBtn" relativePoint="BOTTOMLEFT">
+                        <Offset>
+                            <AbsDimension x="0" y="0" />
+                        </Offset>
+                    </Anchor>
+                </Anchors>
+                <Scripts>
+                    <OnEnterPressed>
+                        self:ClearFocus();
+						ModeEditBoxWriten("o", self:GetText())
+                    </OnEnterPressed>
+                    <OnEscapePressed>
+                        self:ClearFocus();
+						ModeEditBoxWriten("o", self:GetText())
+                    </OnEscapePressed>
+                </Scripts>
+                <FontString inherits="ChatFontNormal" />
+        </EditBox>
+
+		<CheckButton name="$parent_FilteredModeCheckBtn" inherits="OptionsCheckButtonTemplate">
+			<Anchors>
+				<Anchor point="CENTER" relativeTo="$parent_OnlyShowModeEditBox" relativePoint="BOTTOMLEFT">
+				<Offset>
+					<AbsDimension x="10" y="-30" />
+				</Offset>
+				</Anchor>
+			</Anchors>
+			<Scripts>
+				<OnLoad>
+				_G[self:GetName().."Text"]:SetText("过滤模式(Filtered Mode)");
+				</OnLoad>
+				<OnClick>
+				ModeCheckButtonChecked("f", self:GetChecked())
+				</OnClick>
+			</Scripts>
+		</CheckButton>
+
+		<EditBox name="$parent_FilteredModeEditBox" letters="300" autoFocus="false" multiLine="true">
+                <Layers>
+                    <Layer level="BACKGROUND">
+                        <Texture>
+                            <Color r=".2" g=".2" b=".2" a="1"/>
+                        </Texture>
+                    </Layer>
+                </Layers>
+                <Size>
+                    <AbsDimension x="200" y="60" />
+                </Size>
+                <Anchors>
+                    <Anchor point="TOPLEFT" relativeTo="$parent_FilteredModeCheckBtn" relativePoint="BOTTOMLEFT">
+                        <Offset>
+                            <AbsDimension x="0" y="0" />
+                        </Offset>
+                    </Anchor>
+                </Anchors>
+                <Scripts>
+                    <OnEnterPressed>
+                        self:ClearFocus();
+						ModeEditBoxWriten("f", self:GetText())
+                    </OnEnterPressed>
+                    <OnEscapePressed>
+                        self:ClearFocus();
+						ModeEditBoxWriten("f", self:GetText())
+                    </OnEscapePressed>
+                </Scripts>
+                <FontString inherits="ChatFontNormal" />
+        </EditBox>
+	</Frames>
+	<Layers>
+		<Layer>
+			<Texture name="$parent_Header" file="Interface\DialogFrame\UI-DialogBox-Header">
+				<Size>
+					<AbsDimension x="350" y="64" />
+				</Size>
+				<Anchors>
+					<Anchor point="TOP">
+						<Offset>
+							<AbsDimension x="0" y="12" />
+						</Offset>
+					</Anchor>
+				</Anchors>
+			</Texture>
+			<FontString name="$parent_Header_Text" inherits="GameFontNormal" text="过滤姓名版">
+				<Anchors>
+					<Anchor point="TOP" relativeTo="$parent_Header">
+						<Offset>
+							<AbsDimension x="0" y="-14" />
+						</Offset>
+					</Anchor>
+				</Anchors>
+			</FontString>
+			<FontString name="$parent_note" inherits="GameFontNormal" text="输入框用英文的分号';'追加多个名字">
+				<Anchors>
+					<Anchor point="BOTTOMLEFT" relativeTo="$parent">
+						<Offset>
+							<AbsDimension x="20" y="70" />
+						</Offset>
+					</Anchor>
+				</Anchors>
+			</FontString>
+			<FontString name="$parent_note2" inherits="GameFontNormal" text="using semicolon';' to split names">
+				<Anchors>
+					<Anchor point="BOTTOMLEFT" relativeTo="$parent">
+						<Offset>
+							<AbsDimension x="20" y="55" />
+						</Offset>
+					</Anchor>
+				</Anchors>
+			</FontString>
+			<FontString name="$parent_AuthorText" inherits="GameFontNormal" text="作者:Allan 版本:7.2.0.20170613">
+				<Anchors>
+					<Anchor point="BOTTOMLEFT" relativeTo="$parent">
+						<Offset>
+							<AbsDimension x="20" y="35" />
+						</Offset>
+					</Anchor>
+				</Anchors>
+			</FontString>
+			<FontString name="$parent_webText" inherits="GameFontNormal" text="www.nga.cc/sss/sss102/22">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parent_AuthorText" relativePoint="BOTTOMLEFT">
+						<Offset>
+							<AbsDimension x="0" y="0" />
+						</Offset>
+					</Anchor>
+				</Anchors>
+			</FontString>
+		</Layer>
+	</Layers>						
 	<Scripts>
 		<OnLoad>
 			FilteredNamePlate_OnLoad(self);
@@ -9,5 +223,7 @@
 			FilteredNamePlate_OnEvent(self,event,...);
 		</OnEvent>
 	</Scripts>
+
+ 
 </Frame>
 </Ui>

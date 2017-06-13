@@ -3,9 +3,9 @@
 ## Title-zhTW: 过滤姓名板
 ## Title-zhCN: 过滤姓名板
 ## Author: Allan
-## Version: 7.0.3.20170613
+## Version: 7.2.0.20170613
 ## Notes: （姓名板仅显示设置的名字列表）或者（仅设置的名字列表不显示）
 ## DefaultState: Enabled
 ## LoadOnDemand: 0
-## SavedVariables: Fnp_Enable, Fnp_NameList, Fnp_Reverse
+## SavedVariables: Fnp_Enable, Fnp_FNameList, Fnp_ONameList, Fnp_Mode
 FilteredNamePlate.xml
