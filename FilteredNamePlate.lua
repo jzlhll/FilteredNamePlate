@@ -1,35 +1,35 @@
 SLASH_FilteredNamePlate1 = "/fnp";
-DEBUG_LOG = true
+DEBUG_LOG = false
 local GetNamePlateForUnit = C_NamePlate.GetNamePlateForUnit
 --Fnp_Mode  仅显模式 true 过滤模式 false
 
 function printInfo()
 	print("-----------")
-	print("\124cFFFF00FF[过滤姓名板]\124r")
+	print("\124cFF63B8FF[过滤姓名板]\124r")
 
 	local isEnable = "不"
 	if Fnp_Enable == true then
 		isEnable = "是"
 	end
-	print("\124cFFFF00FF当前启用状态:\124r "..isEnable)	
+	print("\124cFF63B8FF当前启用状态:\124r "..isEnable)	
 
 	if Fnp_Mode ~= nil and Fnp_Mode == true then
-		print("\124cFFFF00FF当前设置模式:\124r 仅显模式")
+		print("\124cFF63B8FF当前设置模式:\124r 仅显模式")
 	else
-		print("\124cFFFF00FF当前设置模式:\124r 过滤模式")
+		print("\124cFF63B8FF当前设置模式:\124r 过滤模式")
 	end
 
 	if Fnp_FNameList ~= nil and table.getn(Fnp_FNameList) > 0 then
-		print("\124cFFFF00FF[设置的过滤列表]：\124r")
+		print("\124cFF63B8FF[设置的过滤列表]：\124r")
 		print(table.concat(Fnp_FNameList, ";"))
 	else
-		print("\124cFFFF00FF[设置的过滤列表]\124r :空")
+		print("\124cFF63B8FF[设置的过滤列表]\124r :空")
 	end
 	if Fnp_ONameList ~= nil and table.getn(Fnp_ONameList) > 0 then
-		print("\124cFFFF00FF[设置的仅显列表]：\124r")
+		print("\124cFF63B8FF[设置的仅显列表]：\124r")
 		print(table.concat(Fnp_ONameList, ";"))
 	else
-		print("\124cFFFF00FF[设置的仅显列表]\124r :空")
+		print("\124cFF63B8FF[设置的仅显列表]\124r :空")
 	end
 	print("-----------")
 end
@@ -52,11 +52,20 @@ function registerMyEvents(self)
 		Fnp_Enable = false
 	end
 	if Fnp_Mode == nil then
-		Fnp_Mode = false
+		Fnp_Mode = true
 	end
 
 	if AreaUnitList == nil then
 		AreaUnitList = {}
+	end
+	
+	if Fnp_ONameList == nil then
+		Fnp_ONameList = {}
+		table.insert(Fnp_ONameList, "邪能炸药")
+	end
+	
+	if Fnp_FNameList == nil then
+		Fnp_FNameList = {}
 	end
 
 	if IsCurrentAreaMatchedOnlyShow == nil then
@@ -85,6 +94,7 @@ end
 function ChangeFrameVisibility()
 	if FilteredNamePlate_Frame:IsVisible() then
 		FilteredNamePlate_Frame:Hide()
+		print("\124cFF63B8FF如果不生效,可以尝试,按显示和隐藏敌方血条快捷键, 快速让插件生效.\124r")
 	else
 		FilteredNamePlate_Frame:Show()
 		if Fnp_Enable == true then
@@ -99,30 +109,11 @@ function ChangeFrameVisibility()
 			FilteredNamePlate_Frame_FilteredModeCheckBtn:SetChecked(true);
 			FilteredNamePlate_Frame_OnlyShowModeCheckBtn:SetChecked(false);
 		end
-		local names = ""
-		local first = true
-		for key, var in ipairs(Fnp_ONameList) do
-			if first then 
-				names = var
-				first = false
-			else
-				names = names..";"..var
-			end
-		end
-		FilteredNamePlate_Frame_OnlyShowModeEditBox:SetText(names);
-		
-		names = ""
-		first = true
-		for key, var in ipairs(Fnp_FNameList) do
-			if first then 
-				names = var
-				first = false
-			else
-				names = names..";"..var
-			end
-		end
-		FilteredNamePlate_Frame_FilteredModeEditBox:SetText(names);
-		print("如果设置不生效, 可以尝试, 按显示和隐藏敌方血条的快捷键, 快速让插件生效.")
+
+		FilteredNamePlate_Frame_OnlyShowModeEditBox:SetText(table.concat(Fnp_ONameList, ";"));
+		FilteredNamePlate_Frame_FilteredModeEditBox:SetText(table.concat(Fnp_FNameList, ";"));
+		print("\124cFF63B8FF过滤模式：基本都显示, 只有过滤列表中的不显示\124r")
+		print("\124cFF63B8FF仅显模式：都不显示, 只有仅显列表的才显示。如果周围不存在仅显列表的敌对单位,则全部显示\124r")
 	end
 end
 
@@ -209,7 +200,7 @@ end
 function SlashCmdList.FilteredNamePlate(msg)
 	local lastTarget = GetBindingKey("TARGETNEARESTENEMY");
 	if msg == "" then
-		print("\124cFFFF00FF[过滤姓名板]\124r")
+		print("\124cFF63B8FF[过滤姓名板]\124r")
 		print("/fnp options 或者/fnp opt 打开菜单")
 	elseif msg == "options" or msg == "opt" then
 		ChangeFrameVisibility()

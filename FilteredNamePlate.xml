@@ -2,7 +2,7 @@
 <Script file="FilteredNamePlate.lua"/>
 <Frame name="FilteredNamePlate_Frame" hidden="true" parent="UIParent" toplevel="true" movable="true" frameStrata="HIGH" enableMouse="true" enableKeyboard="true">
 	<Size>
-		<AbsDimension x="320" y="420" />
+		<AbsDimension x="320" y="400" />
 	</Size>
 	<Anchors>
 		<Anchor point="CENTER" />
@@ -27,7 +27,7 @@
 			<Anchors>
 				<Anchor point="TOPRIGTH" relativeTo="$parent">
 				<Offset>
-					<AbsDimension x="250" y="-10" />
+					<AbsDimension x="270" y="-10" />
 				</Offset>
 				</Anchor>
 			</Anchors>
@@ -195,7 +195,7 @@
 					</Anchor>
 				</Anchors>
 			</FontString>
-			<FontString name="$parent_webText" inherits="GameFontNormal" text="www.nga.cc/sss/sss102/22">
+			<FontString name="$parent_webText" inherits="GameFontNormal" text="http://bbs.nga.cn/read.php?tid=11817959">
 				<Anchors>
 					<Anchor point="TOPLEFT" relativeTo="$parent_AuthorText" relativePoint="BOTTOMLEFT">
 						<Offset>
