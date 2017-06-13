@@ -19,23 +19,15 @@ function printInfo()
 		print("\124cFFFF00FF当前设置模式:\124r 过滤模式")
 	end
 
-	if Fnp_FNameList ~= nil then
+	if Fnp_FNameList ~= nil and table.getn(Fnp_FNameList) > 0 then
 		print("\124cFFFF00FF[设置的过滤列表]：\124r")
-		local i = 0
-		for key, var in ipairs(Fnp_FNameList) do
-			i = i + 1
-			print(""..i..", ["..var.."]")
-		end
+		print(table.concat(Fnp_FNameList, ";"))
 	else
 		print("\124cFFFF00FF[设置的过滤列表]\124r :空")
 	end
-	if Fnp_ONameList ~= nil then
+	if Fnp_ONameList ~= nil and table.getn(Fnp_ONameList) > 0 then
 		print("\124cFFFF00FF[设置的仅显列表]：\124r")
-		local i = 0
-		for key, var in ipairs(Fnp_ONameList) do
-			i = i + 1
-			print(""..i..", ["..var.."]")
-		end
+		print(table.concat(Fnp_ONameList, ";"))
 	else
 		print("\124cFFFF00FF[设置的仅显列表]\124r :空")
 	end
@@ -62,7 +54,15 @@ function registerMyEvents(self)
 	if Fnp_Mode == nil then
 		Fnp_Mode = false
 	end
-	
+
+	if AreaUnitList == nil then
+		AreaUnitList = {}
+	end
+
+	if IsCurrentAreaMatchedOnlyShow == nil then
+		IsCurrentAreaMatchedOnlyShow = false
+	end
+
 	if IS_REGISGER == false then
 		-- self:RegisterEvent("PLAYER_TARGET_CHANGED")
 		self:RegisterEvent("NAME_PLATE_UNIT_ADDED")
@@ -92,7 +92,6 @@ function ChangeFrameVisibility()
 		else
 			FilteredNamePlate_Frame_EnableCheckButton:SetChecked(false);
 		end
-
 		if Fnp_Mode ~= nil and Fnp_Mode == true then
 			FilteredNamePlate_Frame_FilteredModeCheckBtn:SetChecked(false);
 			FilteredNamePlate_Frame_OnlyShowModeCheckBtn:SetChecked(true);
@@ -123,7 +122,7 @@ function ChangeFrameVisibility()
 			end
 		end
 		FilteredNamePlate_Frame_FilteredModeEditBox:SetText(names);
-
+		print("如果设置不生效, 可以尝试, 按显示和隐藏敌方血条的快捷键, 快速让插件生效.")
 	end
 end
 
@@ -163,7 +162,36 @@ function EnableButtonChecked(self, checked)
 	else
 		Fnp_Enable = false;
 		unRegisterMyEvents(self)
+		AreaUnitList = {}
+		IsCurrentAreaMatchedOnlyShow = false
 	end
+	printInfo("a")
+end
+
+function ModeEditBoxWritenEsc()
+	local names = ""
+	local first = true
+	for key, var in ipairs(Fnp_ONameList) do
+		if first then 
+			names = var
+			first = false
+		else
+			names = names..";"..var
+		end
+	end
+	FilteredNamePlate_Frame_OnlyShowModeEditBox:SetText(names);
+
+	names = ""
+	first = true
+	for key, var in ipairs(Fnp_FNameList) do
+		if first then 
+			names = var
+			first = false
+		else
+			names = names..";"..var
+		end
+	end
+	FilteredNamePlate_Frame_FilteredModeEditBox:SetText(names);
 	printInfo("a")
 end
 
@@ -220,7 +248,8 @@ function isMatchOnlyShowNameList(tName)
 	return isMatch
 end
 
-function insertBuffValue(tab, value)
+---- 如果存在就不写入, 不存在才写入
+function insertATabValue(tab, value)
     local isExist = false;
     for pos, name in ipairs(tab) do
         if (name == value) then        
@@ -229,8 +258,8 @@ function insertBuffValue(tab, value)
     end
     if not isExist then table.insert(tab, value) end;
 end
-
-function removeMyTabUnits(tab, value)
+-----删除某个元素
+function removeATabValue(tab, value)
     for pos, name in ipairs(tab) do
         if (name == value) then        
             table.remove(tab, pos)         
@@ -238,34 +267,115 @@ function removeMyTabUnits(tab, value)
     end
 end
 
+function printAreaUnitListDebug(Added)
+	if Added then
+		printLog("add-->")
+	else
+		printLog("remove-->")
+	end
+    local i = 0
+    for key, var in ipairs(AreaUnitList) do
+        i = i + 1
+	    printLog(i..(", ")..var..(" name= ")..UnitName(var))
+    end
+end
+
+function actionUnitAddedOnlyShowMode(...)
+	local unitid = ...
+	local count = table.getn(Fnp_ONameList)
+	if count == 0 then
+		insertATabValue(AreaUnitList, unitid)
+		return
+	end
+	-- 1. 当前Add的单位名,是否match
+	local curMatch = isMatchOnlyShowNameList(UnitName(unitid))
+	if curMatch == true and IsCurrentAreaMatchedOnlyShow == true then
+		-- 新增单位是需要仅显的,而此时已经有仅显的了,于是我们什么也不用干
+	elseif curMatch == true and IsCurrentAreaMatchedOnlyShow == false then
+		--新增单位是需要仅显的,而此时没有已经仅显的, 于是我们就将之前的都Hide,当前这个不用处理
+		for key, var in ipairs(AreaUnitList) do
+			local plate = GetNamePlateForUnit(var);
+			plate:GetChildren():Hide()
+    	end
+		IsCurrentAreaMatchedOnlyShow = true
+	elseif curMatch == false and IsCurrentAreaMatchedOnlyShow == true then
+		--新增单位不需要仅显,但是目前处于仅显情况下, 那么,就将当前这个Hide
+		local plate = GetNamePlateForUnit(unitid);
+		plate:GetChildren():Hide()
+	end -- 新增单位不需要仅显, 此时也没有仅显, 就不管了. 
+	insertATabValue(AreaUnitList, unitid)
+	-- printAreaUnitListDebug(true)
+end
+
+function actionUnitAddedFilterMode(...)
+	local unitid = ...
+	insertATabValue(AreaUnitList, unitid)
+	-- printAreaUnitListDebug(true)
+	local name = UnitName(unitid)
+	local matched = isMatchFilteredNameList(name)
+	if matched == true then
+		local plate = GetNamePlateForUnit(unitid);
+		plate:GetChildren():Hide()
+	end
+end
+
+function actionUnitRemovedOnlyShowMode(...)
+	local unitid = ...
+	removeATabValue(AreaUnitList, unitid)
+	--printAreaUnitListDebug(false)
+	if IsCurrentAreaMatchedOnlyShow == false then
+		-- 当前处于没有仅显模式,表明所有血条都开着的
+		return
+	end
+	-- 已经在仅显情况下了
+		-- 1. 当前移除的单位名,是否match
+	local curMatch = isMatchOnlyShowNameList(UnitName(unitid))
+	if curMatch == true then
+		-- 移除单位是需要仅显的,而此时已经有仅显的了,于是我们判断剩余的是否还含有,如果还有就什么也不动.如果没有了,就恢复显示,退出current模式
+		local matched = false
+		for key, var in ipairs(AreaUnitList) do
+			matched = isMatchOnlyShowNameList(UnitName(var))
+			if matched == true then
+				return
+			end
+    	end
+		for key, var in ipairs(AreaUnitList) do
+			local plate = GetNamePlateForUnit(var);
+			plate:GetChildren():Show()
+    	end
+		IsCurrentAreaMatchedOnlyShow = false
+	end
+	--移除单位是不需要仅显的,而此时已经是仅显模式,说明杀了一个不是onlyShowList的怪. 所以不用处理 
+end
+
+function actionUnitRemovedFilterMode(...)
+	local unitid = ...
+	removeATabValue(AreaUnitList, unitid)
+	--printAreaUnitListDebug(false)
+end
+
 function FilteredNamePlate_OnEvent(self,event,...)
 	if event == "NAME_PLATE_UNIT_ADDED" then  -- Added
+		-- 关闭则直接return
+		if Fnp_Enable == false then
+			return
+		end
+		-- 如果OnlyShow列表为空return
+		if Fnp_Mode == true then
+			actionUnitAddedOnlyShowMode(...)
+		else
+			actionUnitAddedFilterMode(...)
+		end
+	elseif event == "NAME_PLATE_UNIT_REMOVED" then  -- Removed
+		-- 关闭则直接return
 		if Fnp_Enable == false then
 			return
 		end
 		if Fnp_Mode == true then
-			local count = table.getn(Fnp_ONameList)
-			if count == 0 then return end
-		end
-		local unitid = ...
-		local name = UnitName(unitid)
-		local matched = false
-		-- 仅显模式
-		if Fnp_Mode == true then
-			matched = isMatchOnlyShowNameList(name)
-			if matched == false then
-				local plate = GetNamePlateForUnit(unitid);
-				plate:GetChildren():Hide()
-			end
-		-- 过滤模式
+			actionUnitRemovedOnlyShowMode(...)
 		else
-			matched = isMatchFilteredNameList(name)
-			if matched == true then
-				local plate = GetNamePlateForUnit(unitid);
-				plate:GetChildren():Hide()
-			end
+			actionUnitRemovedFilterMode(...)
 		end
-	elseif event == "NAME_PLATE_UNIT_REMOVED" then  -- Removed
 	elseif event == "NAME_PLATE_CREATED" then  -- Created
 	elseif event == "PLAYER_ENTERING_WORLD" then
 		registerMyEvents(self)

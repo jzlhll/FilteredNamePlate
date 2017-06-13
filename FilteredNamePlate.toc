@@ -4,7 +4,7 @@
 ## Title-zhCN: 过滤姓名板
 ## Author: Allan
 ## Version: 7.2.0.20170613
-## Notes: （姓名板仅显示设置的名字列表）或者（仅设置的名字列表不显示）
+## Notes: （姓名板仅显示设置的仅显列表）或者（仅仅过滤设置的过滤列表）
 ## DefaultState: Enabled
 ## LoadOnDemand: 0
 ## SavedVariables: Fnp_Enable, Fnp_FNameList, Fnp_ONameList, Fnp_Mode
