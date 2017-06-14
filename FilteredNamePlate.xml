@@ -73,7 +73,7 @@
 				</OnClick>
 				<OnEnter>
 					GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
-					GameTooltip:SetText("如果你需要使用同时使用TidyPlate,请勾选该项.");
+					GameTooltip:SetText("原生,大脚,有爱和EUI不能勾选. 如果你使用了TidyPlate,请勾选该项.");
 				</OnEnter>
 				<OnLeave>
 					GameTooltip:Hide();

@@ -7,5 +7,5 @@
 ## Notes: （姓名板仅显示设置的仅显列表）或者（仅仅过滤设置的过滤列表）
 ## DefaultState: Enabled
 ## LoadOnDemand: 0
-## SavedVariables: Fnp_Enable, Fnp_FNameList, Fnp_ONameList, Fnp_Mode, Fnp_TidyEnabled
+## SavedVariables: Fnp_Enable, Fnp_FNameList, Fnp_ONameList, Fnp_Mode, Fnp_OtherNPFlag
 FilteredNamePlate.xml
