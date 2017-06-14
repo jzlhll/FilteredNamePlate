@@ -1,5 +1,5 @@
 SLASH_FilteredNamePlate1 = "/fnp"
-DEBUG_LOG = false
+DEBUG_LOG = true
 local GetNamePlateForUnit = C_NamePlate.GetNamePlateForUnit
 local GetNamePlates = C_NamePlate.GetNamePlates
 local UnitName, GetUnitName = UnitName, GetUnitName
@@ -282,6 +282,42 @@ function printAreaUnitListDebug(Added)
     end
 end
 
+function euiActionUnitAddedOnlyShowMode(...)
+	local unitid = ...
+	local name = ""
+	local matched = false
+	-- 1. 当前Add的单位名,是否match
+	local curName = UnitName(unitid)
+	local curMatch = isMatchOnlyShowNameList(curName)
+	if curMatch == true and IsCurrentAreaMatchedOnlyShow == true then
+		-- 新增单位是需要仅显的,而此时已经有仅显的了,于是我们什么也不用干
+	elseif curMatch == true and IsCurrentAreaMatchedOnlyShow == false then
+		--新增单位是需要仅显的,而此时没有已经仅显的, 于是我们就将之前的都Hide,当前这个不用处理
+		for _, frame in pairs(GetNamePlates()) do
+			local foundUnit = frame.namePlateUnitToken or (frame.UnitFrame and frame.UnitFrame.unit)
+			if foundUnit then
+				name = GetUnitName(foundUnit)
+				if name == curName then
+				else
+					frame.UnitFrame:Hide()
+				end
+			end
+		end
+		IsCurrentAreaMatchedOnlyShow = true
+	elseif curMatch == false and IsCurrentAreaMatchedOnlyShow == true then
+		--新增单位不需要仅显,但是目前处于仅显情况下, 那么,就将当前这个Hide
+		for _, frame in pairs(GetNamePlates()) do
+			local foundUnit = frame.namePlateUnitToken or (frame.UnitFrame and frame.UnitFrame.unit)
+			if foundUnit then
+				name = GetUnitName(foundUnit)
+				if name == curName then
+					frame.UnitFrame:Hide()
+				end
+			end
+		end
+	end -- 新增单位不需要仅显, 此时也没有仅显, 就不管了. 
+end
+
 function actionUnitAddedOnlyShowMode(...)
 	local unitid = ...
 	local count = table.getn(Fnp_ONameList)
@@ -309,6 +345,24 @@ function actionUnitAddedOnlyShowMode(...)
 	-- printAreaUnitListDebug(true)
 end
 
+function euiActionUnitAddedFilterMode(...)
+	local unitid = ...
+	-- printAreaUnitListDebug(true)
+	local name = UnitName(unitid)
+	local matched = isMatchFilteredNameList(name)
+	if matched == true then
+		for _, frame in pairs(GetNamePlates()) do
+			local foundUnit = frame.namePlateUnitToken or (frame.UnitFrame and frame.UnitFrame.unit)
+			if foundUnit then
+				name = GetUnitName(foundUnit)
+				if name == curName then
+					frame.UnitFrame:Hide()
+				end
+			end
+		end
+	end
+end
+
 function actionUnitAddedFilterMode(...)
 	local unitid = ...
 	insertATabValue(AreaUnitList, unitid)
@@ -321,8 +375,42 @@ function actionUnitAddedFilterMode(...)
 	end
 end
 
-function actionUnitRemovedOnlyShowMode(...)
+function euiActionUnitRemovedOnlyShowMode(...)
+	if IsCurrentAreaMatchedOnlyShow == false then
+		-- 当前处于没有仅显模式,表明所有血条都开着的
+		return
+	end
+	-- 已经在仅显情况下了
+		-- 1. 当前移除的单位名,是否match
 	local unitid = ...
+	local curMatch = isMatchOnlyShowNameList(UnitName(unitid))
+	if curMatch == true then
+		-- 移除单位是需要仅显的,而此时已经仅显即IsCurrentAreaMatchedOnlyShow为true,
+		--于是我们判断剩余的是否还含有,如果还有就什么也不动.如果没有了,就恢复显示,IsCurrentAreaMatchedOnlyShow改成false
+		local matched = false
+		local name = ""
+		for _, frame in pairs(GetNamePlates()) do
+			local foundUnit = frame.namePlateUnitToken or (frame.UnitFrame and frame.UnitFrame.unit)
+			if foundUnit then
+				name = GetUnitName(foundUnit)
+				matched = isMatchOnlyShowNameList(name)
+				if matched == true then
+					return
+				end
+			end
+		end
+		--没有找到,说明我们该退出了就显示
+		for _, frame in pairs(GetNamePlates()) do
+			local foundUnit = frame.namePlateUnitToken or (frame.UnitFrame and frame.UnitFrame.unit)
+			if frame ~= nil and frame.UnitFrame ~= nil then
+				frame.UnitFrame:Show()
+			end
+		end
+		IsCurrentAreaMatchedOnlyShow = false
+	end
+end
+
+function actionUnitRemovedOnlyShowMode(...)
 	removeATabValue(AreaUnitList, unitid)
 	--printAreaUnitListDebug(false)
 	if IsCurrentAreaMatchedOnlyShow == false then
@@ -331,6 +419,7 @@ function actionUnitRemovedOnlyShowMode(...)
 	end
 	-- 已经在仅显情况下了
 		-- 1. 当前移除的单位名,是否match
+	local unitid = ...
 	local curMatch = isMatchOnlyShowNameList(UnitName(unitid))
 	if curMatch == true then
 		-- 移除单位是需要仅显的,而此时已经有仅显的了,于是我们判断剩余的是否还含有,如果还有就什么也不动.如果没有了,就恢复显示,退出current模式
@@ -341,6 +430,7 @@ function actionUnitRemovedOnlyShowMode(...)
 				return
 			end
     	end
+		--没有找到,说明我们该退出了就显示
 		for key, var in ipairs(AreaUnitList) do
 			local plate = GetNamePlateForUnit(var);
 			plate:GetChildren():Show()
@@ -348,6 +438,10 @@ function actionUnitRemovedOnlyShowMode(...)
 		IsCurrentAreaMatchedOnlyShow = false
 	end
 	--移除单位是不需要仅显的,而此时已经是仅显模式,说明杀了一个不是onlyShowList的怪. 所以不用处理 
+end
+
+function euiActionUnitRemovedFilterMode(...)
+	-- do nothing
 end
 
 function actionUnitRemovedFilterMode(...)
@@ -364,9 +458,11 @@ function FilteredNamePlate_OnEvent(self,event,...)
 		end
 		-- 如果OnlyShow列表为空return
 		if Fnp_Mode == true then
-			actionUnitAddedOnlyShowMode(...)
+			-- actionUnitAddedOnlyShowMode(...)
+			euiActionUnitAddedOnlyShowMode(...)
 		else
-			actionUnitAddedFilterMode(...)
+			-- actionUnitAddedFilterMode(...)
+			euiActionUnitAddedFilterMode(...)
 		end
 	elseif event == "NAME_PLATE_UNIT_REMOVED" then  -- Removed
 		-- 关闭则直接return
@@ -374,9 +470,11 @@ function FilteredNamePlate_OnEvent(self,event,...)
 			return
 		end
 		if Fnp_Mode == true then
-			actionUnitRemovedOnlyShowMode(...)
+			-- actionUnitRemovedOnlyShowMode(...)
+			euiActionUnitRemovedOnlyShowMode(...)
 		else
-			actionUnitRemovedFilterMode(...)
+			-- actionUnitRemovedFilterMode(...)
+			-- euiActionUnitRemovedFilterMode(...)
 		end
 	elseif event == "NAME_PLATE_CREATED" then  -- Created
 	elseif event == "PLAYER_ENTERING_WORLD" then
