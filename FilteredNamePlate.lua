@@ -5,7 +5,7 @@ local GetNamePlates = C_NamePlate.GetNamePlates
 local UnitName, GetUnitName = UnitName, GetUnitName
 --Fnp_Mode  仅显模式 true 过滤模式 false
 
-function printInfo()
+local function printInfo()
 	print("-----------")
 	print("\124cFF63B8FF[过滤姓名板]\124r")
 
@@ -41,13 +41,13 @@ function printInfo()
 	print("-----------")
 end
 
-function printLog(mylog)
+local function printLog(mylog)
 	if DEBUG_LOG == true then
 		print(mylog)
 	end
 end
 
-function registerMyEvents(self)
+local function registerMyEvents(self)
 	if Added_Count == nil then
 		Added_Count = 0
 	end
@@ -92,7 +92,7 @@ function registerMyEvents(self)
 	end
 end
 
-function unRegisterMyEvents(self)
+local function unRegisterMyEvents(self)
 	if IS_REGISGER == true then
 		IS_REGISGER = false
 		-- self:UnregisterEvent("PLAYER_TARGET_CHANGED")
@@ -241,7 +241,7 @@ function SlashCmdList.FilteredNamePlate(msg)
 	end
 end
 
-function isMatchFilteredNameList(tName)
+local function isMatchFilteredNameList(tName)
 	if tName == nil then return false end
 
 	if Fnp_Enable == false or Fnp_Mode == true then
@@ -259,7 +259,7 @@ function isMatchFilteredNameList(tName)
 	return isMatch
 end
 
-function isMatchOnlyShowNameList(tName)
+local function isMatchOnlyShowNameList(tName)
 	if tName == nil then return false end
 
 	if Fnp_Enable == false or Fnp_Mode == false then
@@ -278,7 +278,7 @@ function isMatchOnlyShowNameList(tName)
 end
 
 ---- 如果存在就不写入, 不存在才写入
-function insertATabValue(tab, value)
+local function insertATabValue(tab, value)
     local isExist = false;
     for pos, name in ipairs(tab) do
         if (name == value) then        
@@ -288,7 +288,7 @@ function insertATabValue(tab, value)
     if not isExist then table.insert(tab, value) end;
 end
 -----删除某个元素
-function removeATabValue(tab, value)
+local function removeATabValue(tab, value)
     for pos, name in ipairs(tab) do
         if (name == value) then        
             table.remove(tab, pos)         
@@ -296,7 +296,7 @@ function removeATabValue(tab, value)
     end
 end
 
-function hideSingleUnitTidy(frame)
+local function hideSingleUnitTidy(frame)
 	if frame == nil then return end
 	if Fnp_OtherNPFlag == 1 then
 		local extended = frame.extended
@@ -310,7 +310,7 @@ function hideSingleUnitTidy(frame)
 	end
 end
 
-function showSingleUnitTidy(frame)
+local function showSingleUnitTidy(frame)
 	if frame == nil then return end
 	if Fnp_OtherNPFlag == 1 then
 		local extended = frame.extended
@@ -324,7 +324,7 @@ function showSingleUnitTidy(frame)
 	end
 end
 
-function actionUnitAddedOnlyShowMode(...)
+local function actionUnitAddedOnlyShowMode(...)
 	local unitid = ...
 	local name = ""
 	local matched = false
@@ -360,7 +360,7 @@ function actionUnitAddedOnlyShowMode(...)
 	end -- 新增单位不需要仅显, 此时也没有仅显, 就不管了. 
 end
 
-function actionUnitAddedFilterMode(...)
+local function actionUnitAddedFilterMode(...)
 	local unitid = ...
 	local curName = UnitName(unitid)
 	local matched = isMatchFilteredNameList(curName)
@@ -378,7 +378,7 @@ function actionUnitAddedFilterMode(...)
 	end
 end
 
-function actionUnitRemovedOnlyShowMode(...)
+local function actionUnitRemovedOnlyShowMode(...)
 	if IsCurrentAreaMatchedOnlyShow == false then
 		-- 当前处于没有仅显模式,表明所有血条都开着的
 		return
@@ -436,7 +436,7 @@ function FilteredNamePlate_OnEvent(self,event,...)
 		if Fnp_Mode == true then
 			actionUnitRemovedOnlyShowMode(...)
 		end
-	elseif event == "NAME_PLATE_CREATED" then  -- Created
+	--elseif event == "NAME_PLATE_CREATED" then  -- Created
 	elseif event == "PLAYER_ENTERING_WORLD" then
 		registerMyEvents(self)
 	end
