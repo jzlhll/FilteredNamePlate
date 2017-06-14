@@ -1,5 +1,4 @@
 SLASH_FilteredNamePlate1 = "/fnp"
-DEBUG_LOG = true
 local GetNamePlateForUnit = C_NamePlate.GetNamePlateForUnit
 local GetNamePlates = C_NamePlate.GetNamePlates
 local UnitName, GetUnitName = UnitName, GetUnitName
@@ -39,12 +38,6 @@ local function printInfo()
 		end
 	end
 	print("-----------")
-end
-
-local function printLog(mylog)
-	if DEBUG_LOG == true then
-		print(mylog)
-	end
 end
 
 local function registerMyEvents(self)
@@ -326,23 +319,17 @@ end
 
 local function actionUnitAddedOnlyShowMode(...)
 	local unitid = ...
-	local name = ""
 	local matched = false
 	-- 1. 当前Add的单位名,是否match
-	local curName = UnitName(unitid)
-	local curMatch = isMatchOnlyShowNameList(curName)
+	local curMatch = isMatchOnlyShowNameList(UnitName(unitid))
 	if curMatch == true and IsCurrentAreaMatchedOnlyShow == true then
 		-- 新增单位是需要仅显的,而此时已经有仅显的了,于是我们什么也不用干
 	elseif curMatch == true and IsCurrentAreaMatchedOnlyShow == false then
 		--新增单位是需要仅显的,而此时没有已经仅显的, 于是我们就将之前的都Hide,当前这个不用处理
 		for _, frame in pairs(GetNamePlates()) do
 			local foundUnit = frame.namePlateUnitToken or (frame.UnitFrame and frame.UnitFrame.unit)
-			if foundUnit then
-				name = GetUnitName(foundUnit)
-				if name == curName then
-				else
-					hideSingleUnitTidy(frame)
-				end
+			if foundUnit and (unitid ~= foundUnit) then
+				hideSingleUnitTidy(frame)
 			end
 		end
 		IsCurrentAreaMatchedOnlyShow = true
@@ -350,11 +337,8 @@ local function actionUnitAddedOnlyShowMode(...)
 		--新增单位不需要仅显,但是目前处于仅显情况下, 那么,就将当前这个Hide
 		for _, frame in pairs(GetNamePlates()) do
 			local foundUnit = frame.namePlateUnitToken or (frame.UnitFrame and frame.UnitFrame.unit)
-			if foundUnit then
-				name = GetUnitName(foundUnit)
-				if name == curName then
-					hideSingleUnitTidy(frame)
-				end
+			if foundUnit and (foundUnit == unitid) then
+				hideSingleUnitTidy(frame)
 			end
 		end
 	end -- 新增单位不需要仅显, 此时也没有仅显, 就不管了. 
@@ -362,17 +346,12 @@ end
 
 local function actionUnitAddedFilterMode(...)
 	local unitid = ...
-	local curName = UnitName(unitid)
-	local matched = isMatchFilteredNameList(curName)
+	local matched = isMatchFilteredNameList(UnitName(unitid))
 	if matched == true then
-		local name = ""
 		for _, frame in pairs(GetNamePlates()) do
 			local foundUnit = frame.namePlateUnitToken or (frame.UnitFrame and frame.UnitFrame.unit)
-			if foundUnit then
-				name = GetUnitName(foundUnit)
-				if name == curName then
-					hideSingleUnitTidy(frame)
-				end
+			if foundUnit and (foundUnit == unitid) then
+				hideSingleUnitTidy(frame)
 			end
 		end
 	end
@@ -412,7 +391,7 @@ local function actionUnitRemovedOnlyShowMode(...)
 	end
 end
 
---function actionUnitRemovedFilterMode(...)
+--local function actionUnitRemovedFilterMode(...)
 	-- do nothing
 --end
 
