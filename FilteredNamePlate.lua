@@ -1,6 +1,8 @@
 SLASH_FilteredNamePlate1 = "/fnp";
 DEBUG_LOG = false
 local GetNamePlateForUnit = C_NamePlate.GetNamePlateForUnit
+local GetNamePlates = C_NamePlate.GetNamePlates
+local UnitName, GetUnitName = UnitName, GetUnitName
 --Fnp_Mode  仅显模式 true 过滤模式 false
 
 function printInfo()
@@ -143,7 +145,7 @@ function ModeCheckButtonChecked(mode, checked)
 			FilteredNamePlate_Frame_OnlyShowModeCheckBtn:SetChecked(true);
 		end
 	end
-	printInfo("a")
+	printInfo()
 end
 
 function EnableButtonChecked(self, checked)
@@ -156,7 +158,7 @@ function EnableButtonChecked(self, checked)
 		AreaUnitList = {}
 		IsCurrentAreaMatchedOnlyShow = false
 	end
-	printInfo("a")
+	printInfo()
 end
 
 function ModeEditBoxWritenEsc()
@@ -183,7 +185,7 @@ function ModeEditBoxWritenEsc()
 		end
 	end
 	FilteredNamePlate_Frame_FilteredModeEditBox:SetText(names);
-	printInfo("a")
+	printInfo()
 end
 
 function ModeEditBoxWriten(mode, inputStr)
@@ -194,16 +196,25 @@ function ModeEditBoxWriten(mode, inputStr)
 		Fnp_FNameList = {}  
 		string.gsub(inputStr, '[^;]+', function(w) table.insert(Fnp_FNameList, w) end )
 	end
-	printInfo("a")
+	printInfo()
 end
 
 function SlashCmdList.FilteredNamePlate(msg)
 	local lastTarget = GetBindingKey("TARGETNEARESTENEMY");
 	if msg == "" then
 		print("\124cFF63B8FF[过滤姓名板]\124r")
-		print("/fnp options 或者/fnp opt 打开菜单")
+		print("\124cFF63B8FF/fnp options 或 /fnp opt \124r打开菜单")
+		print("\124cFF63B8FF/fnp change 或 /fnp ch \124r快速切换开关")
 	elseif msg == "options" or msg == "opt" then
 		ChangeFrameVisibility()
+	elseif msg == "change" or msg == "ch" then
+		if Fnp_Enable == true then
+			FilteredNamePlate_Frame_EnableCheckButton:SetChecked(false)
+			EnableButtonChecked(FilteredNamePlate_Frame, false)
+		else
+			FilteredNamePlate_Frame_EnableCheckButton:SetChecked(true)
+			EnableButtonChecked(FilteredNamePlate_Frame, true)
+		end
 	end
 end
 
