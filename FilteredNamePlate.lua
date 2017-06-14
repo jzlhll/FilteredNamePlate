@@ -1,4 +1,4 @@
-SLASH_FilteredNamePlate1 = "/fnp";
+SLASH_FilteredNamePlate1 = "/fnp"
 DEBUG_LOG = false
 local GetNamePlateForUnit = C_NamePlate.GetNamePlateForUnit
 local GetNamePlates = C_NamePlate.GetNamePlates
@@ -114,8 +114,8 @@ function ChangeFrameVisibility()
 
 		FilteredNamePlate_Frame_OnlyShowModeEditBox:SetText(table.concat(Fnp_ONameList, ";"));
 		FilteredNamePlate_Frame_FilteredModeEditBox:SetText(table.concat(Fnp_FNameList, ";"));
-		print("\124cFF63B8FF过滤模式：基本都显示, 只有过滤列表中的不显示\124r")
-		print("\124cFF63B8FF仅显模式：都不显示, 只有仅显列表的才显示。如果周围不存在仅显列表的敌对单位,则全部显示\124r")
+		--print("\124cFF63B8FF过滤模式：基本都显示, 只有过滤列表中的不显示\124r")
+		--print("\124cFF63B8FF仅显模式：都不显示, 只有仅显列表的才显示。如果周围不存在仅显列表的敌对单位,则全部显示\124r")
 	end
 end
 

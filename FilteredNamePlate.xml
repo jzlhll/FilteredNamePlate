@@ -71,6 +71,13 @@
 				<OnClick>
 				ModeCheckButtonChecked("o", self:GetChecked())
 				</OnClick>
+				<OnEnter>
+					GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
+					GameTooltip:SetText("都不显示,只有仅显列表的才显示;如果周围不存在仅显列表的敌对单位,则全部显示");
+				</OnEnter>
+				<OnLeave>
+					GameTooltip:Hide();
+				</OnLeave>
 			</Scripts>
 		</CheckButton>
 
@@ -120,6 +127,13 @@
 				<OnClick>
 				ModeCheckButtonChecked("f", self:GetChecked())
 				</OnClick>
+				<OnEnter>
+					GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
+					GameTooltip:SetText("基本都显示, 只有过滤列表中的不显示");
+				</OnEnter>
+				<OnLeave>
+					GameTooltip:Hide();
+				</OnLeave>
 			</Scripts>
 		</CheckButton>
 
