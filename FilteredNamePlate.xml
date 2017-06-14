@@ -56,11 +56,36 @@
 			</Scripts>
 		</CheckButton>
 
+		<CheckButton name="$parent_TidyEnableCheckBtn" inherits="OptionsCheckButtonTemplate">
+			<Anchors>
+				<Anchor point="CENTER" relativeTo="$parent_EnableCheckButton" relativePoint="BOTTOMLEFT">
+				<Offset>
+					<AbsDimension x="10" y="-30" />
+				</Offset>
+				</Anchor>
+			</Anchors>
+			<Scripts>
+				<OnLoad>
+				_G[self:GetName().."Text"]:SetText("同时使用(using with) TidyPlate");
+				</OnLoad>
+				<OnClick>
+				TidyEnableCheckButtonChecked("f", self:GetChecked())
+				</OnClick>
+				<OnEnter>
+					GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
+					GameTooltip:SetText("如果你需要使用同时使用TidyPlate,请勾选该项.");
+				</OnEnter>
+				<OnLeave>
+					GameTooltip:Hide();
+				</OnLeave>
+			</Scripts>
+		</CheckButton>
+
 		<CheckButton name="$parent_OnlyShowModeCheckBtn" inherits="OptionsCheckButtonTemplate">
 			<Anchors>
 				<Anchor point="TOPLEFT" relativeTo="$parent">
 				<Offset>
-					<AbsDimension x="30" y="-80" />
+					<AbsDimension x="30" y="-120" />
 				</Offset>
 				</Anchor>
 			</Anchors>

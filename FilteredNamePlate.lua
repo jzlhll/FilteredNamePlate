@@ -13,25 +13,30 @@ function printInfo()
 	if Fnp_Enable == true then
 		isEnable = "是"
 	end
-	print("\124cFF63B8FF当前启用状态:\124r "..isEnable)	
+	print("\124cFF63B8FF启用状态:\124r "..isEnable)
+	
+	local isTidyEnabled = "不"
+	if Fnp_TidyEnabled == true then
+		isTidyEnabled = "是"
+	end
+	print("\124cFF63B8FF支持TidyPlate:\124r "..isTidyEnabled)
 
 	if Fnp_Mode ~= nil and Fnp_Mode == true then
-		print("\124cFF63B8FF当前设置模式:\124r 仅显模式")
+		print("\124cFF63B8FF设置模式:\124r 仅显模式")
+		if Fnp_ONameList ~= nil and table.getn(Fnp_ONameList) > 0 then
+			print("\124cFF63B8FF[设置的仅显列表]：\124r")
+			print(table.concat(Fnp_ONameList, ";"))
+		else
+			print("\124cFF63B8FF[设置的仅显列表]\124r :空")
+		end
 	else
-		print("\124cFF63B8FF当前设置模式:\124r 过滤模式")
-	end
-
-	if Fnp_FNameList ~= nil and table.getn(Fnp_FNameList) > 0 then
-		print("\124cFF63B8FF[设置的过滤列表]：\124r")
-		print(table.concat(Fnp_FNameList, ";"))
-	else
-		print("\124cFF63B8FF[设置的过滤列表]\124r :空")
-	end
-	if Fnp_ONameList ~= nil and table.getn(Fnp_ONameList) > 0 then
-		print("\124cFF63B8FF[设置的仅显列表]：\124r")
-		print(table.concat(Fnp_ONameList, ";"))
-	else
-		print("\124cFF63B8FF[设置的仅显列表]\124r :空")
+		print("\124cFF63B8FF设置模式:\124r 过滤模式")
+		if Fnp_FNameList ~= nil and table.getn(Fnp_FNameList) > 0 then
+			print("\124cFF63B8FF[设置的过滤列表]：\124r")
+			print(table.concat(Fnp_FNameList, ";"))
+		else
+			print("\124cFF63B8FF[设置的过滤列表]\124r :空")
+		end
 	end
 	print("-----------")
 end
@@ -55,6 +60,10 @@ function registerMyEvents(self)
 	end
 	if Fnp_Mode == nil then
 		Fnp_Mode = true
+	end
+
+	if Fnp_TidyEnabled == nil then
+		Fnp_TidyEnabled = false
 	end
 
 	if AreaUnitList == nil then
@@ -96,7 +105,7 @@ end
 function ChangeFrameVisibility()
 	if FilteredNamePlate_Frame:IsVisible() then
 		FilteredNamePlate_Frame:Hide()
-		print("\124cFF63B8FF如果不生效,可以尝试,按显示和隐藏敌方血条快捷键, 快速让插件生效.\124r")
+		print("\124cFF63B8FF来回切换显示和隐藏敌方血条快捷键, 快速让插件生效.\124r")
 	else
 		FilteredNamePlate_Frame:Show()
 		if Fnp_Enable == true then
@@ -104,6 +113,13 @@ function ChangeFrameVisibility()
 		else
 			FilteredNamePlate_Frame_EnableCheckButton:SetChecked(false);
 		end
+
+		if Fnp_TidyEnabled == true then
+			FilteredNamePlate_Frame_TidyEnableCheckBtn:SetChecked(true);
+		else
+			FilteredNamePlate_Frame_TidyEnableCheckBtn:SetChecked(false);
+		end
+
 		if Fnp_Mode ~= nil and Fnp_Mode == true then
 			FilteredNamePlate_Frame_FilteredModeCheckBtn:SetChecked(false);
 			FilteredNamePlate_Frame_OnlyShowModeCheckBtn:SetChecked(true);
@@ -144,6 +160,15 @@ function ModeCheckButtonChecked(mode, checked)
 			Fnp_Mode = true
 			FilteredNamePlate_Frame_OnlyShowModeCheckBtn:SetChecked(true);
 		end
+	end
+	printInfo()
+end
+
+function TidyEnableCheckButtonChecked(self, checked)
+	if checked then
+		Fnp_TidyEnabled = true
+	else
+		Fnp_TidyEnabled = false
 	end
 	printInfo()
 end
@@ -269,17 +294,22 @@ function removeATabValue(tab, value)
     end
 end
 
-function printAreaUnitListDebug(Added)
-	if Added then
-		printLog("add-->")
+function hideSimpleUnitTidy(frame)
+	local extended = frame.extended
+	if (not extended) then
 	else
-		printLog("remove-->")
+		local carrier = frame.carrier
+		carrier:Hide()
 	end
-    local i = 0
-    for key, var in ipairs(AreaUnitList) do
-        i = i + 1
-	    printLog(i..(", ")..var..(" name= ")..UnitName(var))
-    end
+end
+
+function showSimpleUnitTidy(frame)
+	local extended = frame.extended
+	if (not extended) then
+	else
+		local carrier = frame.carrier
+		carrier:Show()
+	end
 end
 
 function euiActionUnitAddedOnlyShowMode(...)
@@ -299,7 +329,7 @@ function euiActionUnitAddedOnlyShowMode(...)
 				name = GetUnitName(foundUnit)
 				if name == curName then
 				else
-					frame.UnitFrame:Hide()
+				    frame.UnitFrame:Hide()
 				end
 			end
 		end
@@ -347,7 +377,6 @@ end
 
 function euiActionUnitAddedFilterMode(...)
 	local unitid = ...
-	-- printAreaUnitListDebug(true)
 	local name = UnitName(unitid)
 	local matched = isMatchFilteredNameList(name)
 	if matched == true then
@@ -411,6 +440,7 @@ function euiActionUnitRemovedOnlyShowMode(...)
 end
 
 function actionUnitRemovedOnlyShowMode(...)
+	local unitid = ...
 	removeATabValue(AreaUnitList, unitid)
 	--printAreaUnitListDebug(false)
 	if IsCurrentAreaMatchedOnlyShow == false then
@@ -419,7 +449,6 @@ function actionUnitRemovedOnlyShowMode(...)
 	end
 	-- 已经在仅显情况下了
 		-- 1. 当前移除的单位名,是否match
-	local unitid = ...
 	local curMatch = isMatchOnlyShowNameList(UnitName(unitid))
 	if curMatch == true then
 		-- 移除单位是需要仅显的,而此时已经有仅显的了,于是我们判断剩余的是否还含有,如果还有就什么也不动.如果没有了,就恢复显示,退出current模式
@@ -440,9 +469,9 @@ function actionUnitRemovedOnlyShowMode(...)
 	--移除单位是不需要仅显的,而此时已经是仅显模式,说明杀了一个不是onlyShowList的怪. 所以不用处理 
 end
 
-function euiActionUnitRemovedFilterMode(...)
+--function euiActionUnitRemovedFilterMode(...)
 	-- do nothing
-end
+--end
 
 function actionUnitRemovedFilterMode(...)
 	local unitid = ...
@@ -458,11 +487,17 @@ function FilteredNamePlate_OnEvent(self,event,...)
 		end
 		-- 如果OnlyShow列表为空return
 		if Fnp_Mode == true then
-			-- actionUnitAddedOnlyShowMode(...)
-			euiActionUnitAddedOnlyShowMode(...)
+			if Fnp_TidyEnabled == true then
+				actionUnitAddedOnlyShowMode(...)
+			else
+				euiActionUnitAddedOnlyShowMode(...)
+			end
 		else
-			-- actionUnitAddedFilterMode(...)
-			euiActionUnitAddedFilterMode(...)
+			if Fnp_TidyEnabled == true then
+				actionUnitAddedFilterMode(...)
+			else
+				euiActionUnitAddedFilterMode(...)
+			end
 		end
 	elseif event == "NAME_PLATE_UNIT_REMOVED" then  -- Removed
 		-- 关闭则直接return
@@ -470,10 +505,15 @@ function FilteredNamePlate_OnEvent(self,event,...)
 			return
 		end
 		if Fnp_Mode == true then
-			-- actionUnitRemovedOnlyShowMode(...)
-			euiActionUnitRemovedOnlyShowMode(...)
+			if Fnp_TidyEnabled == true then
+				actionUnitRemovedOnlyShowMode(...)
+			else
+				euiActionUnitRemovedOnlyShowMode(...)
+			end
 		else
-			-- actionUnitRemovedFilterMode(...)
+			if Fnp_TidyEnabled == true then
+				actionUnitRemovedFilterMode(...)
+			end
 			-- euiActionUnitRemovedFilterMode(...)
 		end
 	elseif event == "NAME_PLATE_CREATED" then  -- Created
