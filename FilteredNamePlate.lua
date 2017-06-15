@@ -4,6 +4,8 @@ local GetNamePlates = C_NamePlate.GetNamePlates
 local UnitName, GetUnitName = UnitName, GetUnitName
 local string_find = string.find
 --Fnp_Mode  仅显模式 true 过滤模式 false
+--Fnp_OtherNPFlag 0是默认和EUI模式 1是TidyPlate模式 2是Kui
+
 local FilterNp_EventList = FilterNp_EventList
 local function printInfo()
 	print("\124cFF63B8FF[过滤姓名板]\124r")
@@ -291,33 +293,28 @@ end
 local function hideSingleUnitTidy(frame)
 	if frame == nil then return end
 	if Fnp_OtherNPFlag == 1 then
-		local extended = frame.extended
-		if (not extended) then
-		else
-			local carrier = frame.carrier
-			carrier:Hide()
-		end
+		local carrier = frame.carrier
+		if carrier then carrier:Hide() end
 	else
-		frame.UnitFrame:Hide()
+		frame.UnitFrame.healthBar:Hide()
 	end
 end
 
 local function showSingleUnitTidy(frame)
 	if frame == nil then return end
 	if Fnp_OtherNPFlag == 1 then
-		local extended = frame.extended
-		if (not extended) then
-		else
-			local carrier = frame.carrier
-			carrier:Show()
-		end
+		local carrier = frame.carrier
+		if carrier then carrier:Show() end
 	else
-		frame.UnitFrame:Show()
+		frame.UnitFrame.healthBar:Show()
 	end
 end
 
 local function actionUnitAddedOnlyShowMode(...)
 	local unitid = ...
+	if UnitIsPlayer(unitid) then
+		return
+	end
 	local matched = false
 	-- 1. 当前Add的单位名,是否match
 	local curMatch = isMatchOnlyShowNameList(UnitName(unitid))
@@ -345,6 +342,9 @@ end
 
 local function actionUnitAddedFilterMode(...)
 	local unitid = ...
+	if UnitIsPlayer(unitid) then
+		return
+	end
 	local matched = isMatchFilteredNameList(UnitName(unitid))
 	if matched == true then
 		for _, frame in pairs(GetNamePlates()) do
@@ -364,6 +364,9 @@ local function actionUnitRemovedOnlyShowMode(...)
 	-- 已经在仅显情况下了
 		-- 1. 当前移除的单位名,是否match
 	local unitid = ...
+	if UnitIsPlayer(unitid) then
+		return
+	end
 	local curMatch = isMatchOnlyShowNameList(UnitName(unitid))
 	if curMatch == true then
 		-- 移除单位是需要仅显的,而此时已经仅显即IsCurrentAreaMatchedOnlyShow为true,
