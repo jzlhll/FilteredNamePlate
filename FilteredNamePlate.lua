@@ -7,6 +7,7 @@ local FilterNp_EventList = FilterNp_EventList
 
 local DEBUG_V = false
 local DEBUG_D = false
+local DEBUG_NP = false
 
 --Fnp_Mode  仅显模式 true 过滤模式 false
 --Fnp_OtherNPFlag 0是默认和EUI模式 1是TidyPlate模式 2是Kui
@@ -22,6 +23,32 @@ local function logv(str)
 		print(str)
 	end
 end
+
+local function lognp(str)
+	if DEBUG_NP then
+		print(str)
+	end
+end
+
+--[[-- 如果存在就不写入, 不存在才写入
+local function insertATabValue(tab, value)
+    local isExist = false;
+    for pos, name in ipairs(tab) do
+        if (name == value) then        
+            isExist = true;
+        end
+    end
+    if not isExist then table.insert(tab, value) end;
+end
+-----删除某个元素
+local function removeATabValue(tab, value)
+    for pos, name in ipairs(tab) do
+        if (name == value) then        
+            table.remove(tab, pos)         
+        end
+    end
+end
+--]]
 
 local function printInfo()
 	print("\124cFF63B8FF[过滤姓名板]\124r")
@@ -287,42 +314,29 @@ local function isMatchOnlyShowNameList(tName)
 	return isMatch
 end
 
----- 如果存在就不写入, 不存在才写入
-local function insertATabValue(tab, value)
-    local isExist = false;
-    for pos, name in ipairs(tab) do
-        if (name == value) then        
-            isExist = true;
-        end
-    end
-    if not isExist then table.insert(tab, value) end;
-end
------删除某个元素
-local function removeATabValue(tab, value)
-    for pos, name in ipairs(tab) do
-        if (name == value) then        
-            table.remove(tab, pos)         
-        end
-    end
-end
-
 local function hideSingleUnitTidy(frame)
 	if frame == nil then return end
 	if Fnp_OtherNPFlag == 1 then
-		local carrier = frame.carrier
-		if carrier then carrier:Hide() end
+		--if frame.carrier then frame.carrier:Hide() end
+		if frame.extended then frame.extended.visual.healthbar:Hide() end
 	else
-		frame.UnitFrame:Hide()
+		if frame.UnitFrame then
+			frame.UnitFrame.healthBar:Hide()
+			--frame.UnitFrame:Hide()
+		end
 	end
 end
 
 local function showSingleUnitTidy(frame)
 	if frame == nil then return end
 	if Fnp_OtherNPFlag == 1 then
-		local carrier = frame.carrier
-		if carrier then carrier:Show() end
+		--if frame.carrier then frame.carrier:Show() end
+		if frame.extended then frame.extended.visual.healthbar:Show() end
 	else
-		frame.UnitFrame:Show()
+		if frame.UnitFrame then
+			frame.UnitFrame.healthBar:Show()
+			--frame.UnitFrame:Show()
+		end
 	end
 end
 
@@ -335,26 +349,30 @@ local function actionUnitAddedOnlyShowMode(...)
 	local matched = false
 	-- 1. 当前Add的单位名,是否match
 	local curMatch = isMatchOnlyShowNameList(UnitName(unitid))
-	--if curMatch == true and IsCurrentAreaMatchedOnlyShow == true then
-		-- 新增单位是需要仅显的,而此时已经有仅显的了,于是我们什么也不用干
-	if curMatch == true and IsCurrentAreaMatchedOnlyShow == false then
+	if curMatch == false and IsCurrentAreaMatchedOnlyShow == true then
+		--新增单位不需要仅显,但是目前处于仅显情况下, 那么,就将当前这个Hide
+		for _, frame in pairs(GetNamePlates()) do
+			local foundUnit = frame.namePlateUnitToken
+			if foundUnit and (foundUnit == unitid) then
+				hideSingleUnitTidy(frame)
+				break
+			end
+		end
+	elseif curMatch == false and IsCurrentAreaMatchedOnlyShow == false then 
+	 -- 新增单位不需要仅显, 此时也没有仅显, 就不管了. 	
+	elseif curMatch == true and IsCurrentAreaMatchedOnlyShow == true then
+		-- 新增单位是需要仅显的,而此时已经有仅显的了,于是我们什么也不用干 -- 更新，怀疑在异步调用的时候莫名奇妙被hide了这里开出来确保
+		showSingleUnitTidy(GetNamePlateForUnit(unitid))
+	elseif curMatch == true and IsCurrentAreaMatchedOnlyShow == false then
 		--新增单位是需要仅显的,而此时没有已经仅显的, 于是我们就将之前的都Hide,当前这个不用处理
 		for _, frame in pairs(GetNamePlates()) do
-			local foundUnit = frame.namePlateUnitToken or (frame.UnitFrame and frame.UnitFrame.unit)
+			local foundUnit = frame.namePlateUnitToken
 			if foundUnit and (unitid ~= foundUnit) then
 				hideSingleUnitTidy(frame)
 			end
 		end
 		IsCurrentAreaMatchedOnlyShow = true
-	elseif curMatch == false and IsCurrentAreaMatchedOnlyShow == true then
-		--新增单位不需要仅显,但是目前处于仅显情况下, 那么,就将当前这个Hide
-		for _, frame in pairs(GetNamePlates()) do
-			local foundUnit = frame.namePlateUnitToken or (frame.UnitFrame and frame.UnitFrame.unit)
-			if foundUnit and (foundUnit == unitid) then
-				hideSingleUnitTidy(frame)
-			end
-		end
-	end -- 新增单位不需要仅显, 此时也没有仅显, 就不管了. 
+	end
 end
 
 local function actionUnitAddedFilterMode(...)
@@ -365,9 +383,10 @@ local function actionUnitAddedFilterMode(...)
 	local matched = isMatchFilteredNameList(UnitName(unitid))
 	if matched == true then
 		for _, frame in pairs(GetNamePlates()) do
-			local foundUnit = frame.namePlateUnitToken or (frame.UnitFrame and frame.UnitFrame.unit)
+			local foundUnit = frame.namePlateUnitToken
 			if foundUnit and (foundUnit == unitid) then
 				hideSingleUnitTidy(frame)
+				break
 			end
 		end
 	end
@@ -391,7 +410,7 @@ local function actionUnitRemovedOnlyShowMode(...)
 		local matched = false
 		local name = ""
 		for _, frame in pairs(GetNamePlates()) do
-			local foundUnit = frame.namePlateUnitToken or (frame.UnitFrame and frame.UnitFrame.unit)
+			local foundUnit = frame.namePlateUnitToken
 			if foundUnit then
 				matched = isMatchOnlyShowNameList(GetUnitName(foundUnit))
 				if matched == true then
@@ -401,10 +420,7 @@ local function actionUnitRemovedOnlyShowMode(...)
 		end
 		--没有找到,说明我们该退出了就显示
 		for _, frame in pairs(GetNamePlates()) do
-			local foundUnit = frame.namePlateUnitToken or (frame.UnitFrame and frame.UnitFrame.unit)
-			if frame ~= nil and frame.UnitFrame ~= nil and foundUnit ~= nil then
-				showSingleUnitTidy(frame)
-			end
+			showSingleUnitTidy(frame)
 		end
 		IsCurrentAreaMatchedOnlyShow = false
 	end
@@ -454,7 +470,7 @@ local function actionUnitSpellCastStartOnlyShowMode(...)
 	-- true的话，表明是我们要的，那么肯定是在显示了。
 	if curMatch == false then --false，而且是处于isCurrentOnlyShow
 		for _, frame in pairs(GetNamePlates()) do
-			local foundUnit = frame.namePlateUnitToken or (frame.UnitFrame and frame.UnitFrame.unit)
+			local foundUnit = frame.namePlateUnitToken
 			if foundUnit and (foundUnit == unitid) then
 				showSingleUnitTidy(frame)
 			end
@@ -477,7 +493,7 @@ local function actionUnitSpellCastStopOnlyShowMode(...)
 	-- true的话，表明是我们要的，那么肯定是在显示了。
 	if curMatch == false then --false，而且是处于isCurrentOnlyShow
 		for _, frame in pairs(GetNamePlates()) do
-			local foundUnit = frame.namePlateUnitToken or (frame.UnitFrame and frame.UnitFrame.unit)
+			local foundUnit = frame.namePlateUnitToken
 			if foundUnit and (foundUnit == unitid) then
 				hideSingleUnitTidy(frame)
 			end
