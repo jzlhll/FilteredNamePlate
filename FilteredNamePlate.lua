@@ -7,6 +7,7 @@ local FilterNp_EventList = FilterNp_EventList
 
 local DEBUG_V = false
 local DEBUG_D = false
+
 --Fnp_Mode  仅显模式 true 过滤模式 false
 --Fnp_OtherNPFlag 0是默认和EUI模式 1是TidyPlate模式 2是Kui
 
