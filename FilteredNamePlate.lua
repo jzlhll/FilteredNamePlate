@@ -2,10 +2,27 @@ SLASH_FilteredNamePlate1 = "/fnp"
 local GetNamePlateForUnit = C_NamePlate.GetNamePlateForUnit
 local GetNamePlates = C_NamePlate.GetNamePlates
 local UnitName, GetUnitName = UnitName, GetUnitName
+local string_find = string.find
+local FilterNp_EventList = FilterNp_EventList
+
+local DEBUG_V = false
+local DEBUG_D = false
 --Fnp_Mode  仅显模式 true 过滤模式 false
+--Fnp_OtherNPFlag 0是默认和EUI模式 1是TidyPlate模式 2是Kui
+
+local function logd(str)
+	if DEBUG_D then
+		print(str)
+	end
+end
+
+local function logv(str)
+	if DEBUG_V then
+		print(str)
+	end
+end
 
 local function printInfo()
-	print("-----------")
 	print("\124cFF63B8FF[过滤姓名板]\124r")
 
 	local isEnable = "不"
@@ -40,7 +57,7 @@ local function printInfo()
 	print("-----------")
 end
 
-local function registerMyEvents(self)
+local function registerMyEvents(self, event, ...)
 	if Added_Count == nil then
 		Added_Count = 0
 	end
@@ -77,10 +94,11 @@ local function registerMyEvents(self)
 	end
 
 	if IS_REGISGER == false then
-		-- self:RegisterEvent("PLAYER_TARGET_CHANGED")
-		self:RegisterEvent("NAME_PLATE_UNIT_ADDED")
-		self:RegisterEvent("NAME_PLATE_UNIT_REMOVED")
-		self:RegisterEvent("NAME_PLATE_CREATED")
+		for k, v in pairs(FilterNp_EventList) do
+			if k ~= "PLAYER_ENTERING_WORLD" then
+				self:RegisterEvent(k,v)
+			end
+        end
 		IS_REGISGER = true
 	end
 end
@@ -88,14 +106,15 @@ end
 local function unRegisterMyEvents(self)
 	if IS_REGISGER == true then
 		IS_REGISGER = false
-		-- self:UnregisterEvent("PLAYER_TARGET_CHANGED")
-		self:UnregisterEvent("NAME_PLATE_UNIT_ADDED")
-		self:UnregisterEvent("NAME_PLATE_UNIT_REMOVED")
-		self:UnregisterEvent("NAME_PLATE_CREATED")
+		for k, v in pairs(FilterNp_EventList) do
+			if k ~= "PLAYER_ENTERING_WORLD" then
+				self:UnregisterEvent(k,v)
+			end
+        end
 	end
 end
 
-function ChangeFrameVisibility()
+function FNP_ChangeFrameVisibility()
 	if FilteredNamePlate_Frame:IsVisible() then
 		FilteredNamePlate_Frame:Hide()
 		print("\124cFF63B8FF来回切换显示和隐藏敌方血条快捷键, 快速让插件生效.\124r")
@@ -129,12 +148,9 @@ end
 function FilteredNamePlate_OnLoad(self)
 	IS_REGISGER = false
 	self:RegisterEvent("PLAYER_ENTERING_WORLD")
-	-- self:RegisterEvent("CHALLENGE_MODE_COMPLETED")
-	-- self:RegisterEvent("CHALLENGE_MODE_START")
-	-- self:RegisterEvent("CHALLENGE_MODE_RESET")
 end
 
-function ModeCheckButtonChecked(mode, checked)
+function FNP_ModeCheckButtonChecked(mode, checked)
 	if mode == "o" then
 		if checked == true then
 			Fnp_Mode = true
@@ -155,7 +171,7 @@ function ModeCheckButtonChecked(mode, checked)
 	printInfo()
 end
 
-function TidyEnableCheckButtonChecked(self, checked)
+function FNP_TidyEnableCheckButtonChecked(self, checked)
 	if checked then
 		Fnp_OtherNPFlag = 1
 	else
@@ -164,10 +180,10 @@ function TidyEnableCheckButtonChecked(self, checked)
 	printInfo()
 end
 
-function EnableButtonChecked(self, checked)
+function FNP_EnableButtonChecked(self, checked)
 	if (checked) then
 		Fnp_Enable = true;
-		registerMyEvents(self)
+		registerMyEvents(self, "", "")
 	else
 		Fnp_Enable = false;
 		unRegisterMyEvents(self)
@@ -177,7 +193,7 @@ function EnableButtonChecked(self, checked)
 	printInfo()
 end
 
-function ModeEditBoxWritenEsc()
+function FNP_ModeEditBoxWritenEsc()
 	local names = ""
 	local first = true
 	for key, var in ipairs(Fnp_ONameList) do
@@ -204,7 +220,7 @@ function ModeEditBoxWritenEsc()
 	printInfo()
 end
 
-function ModeEditBoxWriten(mode, inputStr)
+function FNP_ModeEditBoxWriten(mode, inputStr)
 	if mode == "o" then
 		Fnp_ONameList = {}  
 		string.gsub(inputStr, '[^;]+', function(w) table.insert(Fnp_ONameList, w) end )
@@ -222,14 +238,14 @@ function SlashCmdList.FilteredNamePlate(msg)
 		print("\124cFF63B8FF/fnp options 或 /fnp opt \124r打开菜单")
 		print("\124cFF63B8FF/fnp change 或 /fnp ch \124r快速切换开关")
 	elseif msg == "options" or msg == "opt" then
-		ChangeFrameVisibility()
+		FNP_ChangeFrameVisibility()
 	elseif msg == "change" or msg == "ch" then
 		if Fnp_Enable == true then
 			FilteredNamePlate_Frame_EnableCheckButton:SetChecked(false)
-			EnableButtonChecked(FilteredNamePlate_Frame, false)
+			FNP_EnableButtonChecked(FilteredNamePlate_Frame, false)
 		else
 			FilteredNamePlate_Frame_EnableCheckButton:SetChecked(true)
-			EnableButtonChecked(FilteredNamePlate_Frame, true)
+			FNP_EnableButtonChecked(FilteredNamePlate_Frame, true)
 		end
 	end
 end
@@ -243,7 +259,7 @@ local function isMatchFilteredNameList(tName)
 
 	local isMatch = false
 	for key, var in ipairs(Fnp_FNameList) do
-		local _, ret = string.find(tName, var)
+		local _, ret = string_find(tName, var)
 		if ret ~= nil then
 			isMatch = true
 			break
@@ -261,7 +277,7 @@ local function isMatchOnlyShowNameList(tName)
 
 	local isMatch = false
 	for key, var in ipairs(Fnp_ONameList) do
-		local _, ret = string.find(tName, var)
+		local _, ret = string_find(tName, var)
 		if ret ~= nil then
 			isMatch = true
 			break
@@ -292,12 +308,8 @@ end
 local function hideSingleUnitTidy(frame)
 	if frame == nil then return end
 	if Fnp_OtherNPFlag == 1 then
-		local extended = frame.extended
-		if (not extended) then
-		else
-			local carrier = frame.carrier
-			carrier:Hide()
-		end
+		local carrier = frame.carrier
+		if carrier then carrier:Hide() end
 	else
 		frame.UnitFrame:Hide()
 	end
@@ -306,25 +318,25 @@ end
 local function showSingleUnitTidy(frame)
 	if frame == nil then return end
 	if Fnp_OtherNPFlag == 1 then
-		local extended = frame.extended
-		if (not extended) then
-		else
-			local carrier = frame.carrier
-			carrier:Show()
-		end
+		local carrier = frame.carrier
+		if carrier then carrier:Show() end
 	else
 		frame.UnitFrame:Show()
 	end
 end
 
+---------kkkkk---kkkkk---kkkkk-------------
 local function actionUnitAddedOnlyShowMode(...)
 	local unitid = ...
+	if UnitIsPlayer(unitid) then
+		return
+	end
 	local matched = false
 	-- 1. 当前Add的单位名,是否match
 	local curMatch = isMatchOnlyShowNameList(UnitName(unitid))
-	if curMatch == true and IsCurrentAreaMatchedOnlyShow == true then
+	--if curMatch == true and IsCurrentAreaMatchedOnlyShow == true then
 		-- 新增单位是需要仅显的,而此时已经有仅显的了,于是我们什么也不用干
-	elseif curMatch == true and IsCurrentAreaMatchedOnlyShow == false then
+	if curMatch == true and IsCurrentAreaMatchedOnlyShow == false then
 		--新增单位是需要仅显的,而此时没有已经仅显的, 于是我们就将之前的都Hide,当前这个不用处理
 		for _, frame in pairs(GetNamePlates()) do
 			local foundUnit = frame.namePlateUnitToken or (frame.UnitFrame and frame.UnitFrame.unit)
@@ -346,6 +358,9 @@ end
 
 local function actionUnitAddedFilterMode(...)
 	local unitid = ...
+	if UnitIsPlayer(unitid) then
+		return
+	end
 	local matched = isMatchFilteredNameList(UnitName(unitid))
 	if matched == true then
 		for _, frame in pairs(GetNamePlates()) do
@@ -365,6 +380,9 @@ local function actionUnitRemovedOnlyShowMode(...)
 	-- 已经在仅显情况下了
 		-- 1. 当前移除的单位名,是否match
 	local unitid = ...
+	if UnitIsPlayer(unitid) then
+		return
+	end
 	local curMatch = isMatchOnlyShowNameList(UnitName(unitid))
 	if curMatch == true then
 		-- 移除单位是需要仅显的,而此时已经仅显即IsCurrentAreaMatchedOnlyShow为true,
@@ -390,33 +408,116 @@ local function actionUnitRemovedOnlyShowMode(...)
 		IsCurrentAreaMatchedOnlyShow = false
 	end
 end
+---------k k k---k k k---k k k-------------
+
+local function actionUnitAdded(self, event, ...)
+	-- 关闭则直接return
+	if Fnp_Enable == false then
+		return
+	end
+	-- 如果OnlyShow列表为空return
+	if Fnp_Mode == true then
+		actionUnitAddedOnlyShowMode(...)
+	else
+		actionUnitAddedFilterMode(...)
+	end
+end
+
+local function actionUnitRemoved(self, event, ...)
+	-- 关闭则直接return
+	if Fnp_Enable == false then
+		return
+	end
+	if Fnp_Mode == true then
+		actionUnitRemovedOnlyShowMode(...)
+	end
+end
 
 --local function actionUnitRemovedFilterMode(...)
 	-- do nothing
 --end
 
-function FilteredNamePlate_OnEvent(self,event,...)
-	if event == "NAME_PLATE_UNIT_ADDED" then  -- Added
-		-- 关闭则直接return
-		if Fnp_Enable == false then
-			return
+--[[
+local function actionUnitSpellCastStartOnlyShowMode(...)
+	if IsCurrentAreaMatchedOnlyShow == false then
+		-- 当前处于没有仅显模式,表明所有血条都开着的
+		return
+	end
+	local unitid = ...
+	if UnitIsPlayer(unitid) then
+		return
+	end
+	local curName = UnitName(unitid)
+	if curName == nil then return end
+	local curMatch = isMatchOnlyShowNameList(curName)
+	-- true的话，表明是我们要的，那么肯定是在显示了。
+	if curMatch == false then --false，而且是处于isCurrentOnlyShow
+		for _, frame in pairs(GetNamePlates()) do
+			local foundUnit = frame.namePlateUnitToken or (frame.UnitFrame and frame.UnitFrame.unit)
+			if foundUnit and (foundUnit == unitid) then
+				showSingleUnitTidy(frame)
+			end
 		end
-		-- 如果OnlyShow列表为空return
-		if Fnp_Mode == true then
-			actionUnitAddedOnlyShowMode(...)
-		else
-			actionUnitAddedFilterMode(...)
+	end
+end
+
+local function actionUnitSpellCastStopOnlyShowMode(...)
+	if IsCurrentAreaMatchedOnlyShow == false then
+		-- 当前处于没有仅显模式,表明所有血条都开着的
+		return
+	end
+	local unitid = ...
+	if UnitIsPlayer(unitid) then
+		return
+	end
+	local curName = UnitName(unitid)
+	if curName == nil then return end
+	local curMatch = isMatchOnlyShowNameList(curName)
+	-- true的话，表明是我们要的，那么肯定是在显示了。
+	if curMatch == false then --false，而且是处于isCurrentOnlyShow
+		for _, frame in pairs(GetNamePlates()) do
+			local foundUnit = frame.namePlateUnitToken or (frame.UnitFrame and frame.UnitFrame.unit)
+			if foundUnit and (foundUnit == unitid) then
+				hideSingleUnitTidy(frame)
+			end
 		end
-	elseif event == "NAME_PLATE_UNIT_REMOVED" then  -- Removed
-		-- 关闭则直接return
-		if Fnp_Enable == false then
-			return
-		end
-		if Fnp_Mode == true then
-			actionUnitRemovedOnlyShowMode(...)
-		end
-	--elseif event == "NAME_PLATE_CREATED" then  -- Created
-	elseif event == "PLAYER_ENTERING_WORLD" then
-		registerMyEvents(self)
+	end
+end
+
+local function actionUnitSpellCastStart(self, event, ...)
+	if Fnp_Enable == false then
+		return
+	end
+	if Fnp_Mode == true then
+		actionUnitSpellCastStartOnlyShowMode(...)
+	end -- filter mode no need to do
+end
+
+local function actionUnitSpellCastStop(self, event, ...)
+	if Fnp_Enable == false then
+		return
+	end
+	if Fnp_Mode == true then
+		actionUnitSpellCastStopOnlyShowMode(...)
+	end -- filter mode no need to do
+end
+--]]
+
+FilterNp_EventList = {
+	["NAME_PLATE_UNIT_ADDED"]         = actionUnitAdded,
+	["NAME_PLATE_UNIT_REMOVED"]       = actionUnitRemoved,
+	-- ["UNIT_SPELLCAST_START"]          = actionUnitSpellCastStart,
+	-- ["UNIT_SPELLCAST_CHANNEL_START"]  = actionUnitSpellCastStart,
+	-- ["UNIT_SPELLCAST_STOP"]           = actionUnitSpellCastStop,
+	-- ["UNIT_SPELLCAST_SUCCEEDED"]      = actionUnitSpellCastStop,
+	-- ["UNIT_SPELLCAST_CHANNEL_STOP"]   = actionUnitSpellCastStop,
+	-- ["UNIT_SPELLCAST_CHANNEL_UPDATE"] = actionUnitSpellCastUpdate,
+	["PLAYER_ENTERING_WORLD"]         = registerMyEvents,
+};
+
+function FilteredNamePlate_OnEvent(self, event, ...)
+	local handler = FilterNp_EventList[event]
+	if handler then
+	    handler(self, event, ...)
 	end
 end

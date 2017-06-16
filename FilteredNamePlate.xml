@@ -33,7 +33,7 @@
 			</Anchors>
 			<Scripts>
 				<OnClick>
-					ChangeFrameVisibility()
+					FNP_ChangeFrameVisibility()
 				</OnClick>
 			</Scripts>
 		</Button>
@@ -51,7 +51,7 @@
 				_G[self:GetName().."Text"]:SetText("启用(Enable)");
 				</OnLoad>
 				<OnClick>
-				EnableButtonChecked(self, self:GetChecked())
+				FNP_EnableButtonChecked(self, self:GetChecked())
 				</OnClick>
 			</Scripts>
 		</CheckButton>
@@ -69,7 +69,7 @@
 				_G[self:GetName().."Text"]:SetText("同时使用(using with) TidyPlate");
 				</OnLoad>
 				<OnClick>
-				TidyEnableCheckButtonChecked("f", self:GetChecked())
+				FNP_TidyEnableCheckButtonChecked("f", self:GetChecked())
 				</OnClick>
 				<OnEnter>
 					GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
@@ -94,7 +94,7 @@
 				_G[self:GetName().."Text"]:SetText("仅显模式(Only Show Mode)");
 				</OnLoad>
 				<OnClick>
-				ModeCheckButtonChecked("o", self:GetChecked())
+				FNP_ModeCheckButtonChecked("o", self:GetChecked())
 				</OnClick>
 				<OnEnter>
 					GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
@@ -127,11 +127,11 @@
                 <Scripts>
                     <OnEnterPressed>
                         self:ClearFocus();
-						ModeEditBoxWriten("o", self:GetText())
+						FNP_ModeEditBoxWriten("o", self:GetText())
                     </OnEnterPressed>
                     <OnEscapePressed>
                         self:ClearFocus();
-						ModeEditBoxWritenEsc()
+						FNP_ModeEditBoxWritenEsc()
                     </OnEscapePressed>
                 </Scripts>
                 <FontString inherits="ChatFontNormal" />
@@ -150,7 +150,7 @@
 				_G[self:GetName().."Text"]:SetText("过滤模式(Filtered Mode)");
 				</OnLoad>
 				<OnClick>
-				ModeCheckButtonChecked("f", self:GetChecked())
+				FNP_ModeCheckButtonChecked("f", self:GetChecked())
 				</OnClick>
 				<OnEnter>
 					GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
@@ -183,11 +183,11 @@
                 <Scripts>
                     <OnEnterPressed>
                         self:ClearFocus();
-						ModeEditBoxWriten("f", self:GetText())
+						FNP_ModeEditBoxWriten("f", self:GetText())
                     </OnEnterPressed>
                     <OnEscapePressed>
                         self:ClearFocus();
-						ModeEditBoxWritenEsc()
+						FNP_ModeEditBoxWritenEsc()
                     </OnEscapePressed>
                 </Scripts>
                 <FontString inherits="ChatFontNormal" />
