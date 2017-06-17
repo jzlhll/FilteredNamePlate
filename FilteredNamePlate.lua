@@ -6,7 +6,7 @@ local string_find = string.find
 local table_getn = table.getn
 local FilterNp_EventList = FilterNp_EventList
 
-local IS_REGISGER, IsCurOnlyShowStat
+local IS_REGISGER, IsCurOnlyShowStat, KuiScaleVal
 
 local DEBUG_V = true
 
@@ -331,7 +331,7 @@ end
 local function hideSingleUnitTidy(frame)
 	if frame == nil then return end
 	if Fnp_OtherNPFlag == 1 then
-		if frame.carrier then frame.carrier:Hide() end
+		if frame.carrier then frame.carrier:Hide() end --0--
 		--1-- if frame.extended then 
 		--1-- frame.extended.visual.healthbar:Hide() 
 		--1-- frame.extended.visual.healthborder:Hide() 
@@ -343,9 +343,15 @@ local function hideSingleUnitTidy(frame)
 		end
 	else
 		if frame.kui then
-			frame.kui.HealthBar:Hide()
-			frame.kui.HealthBar.fill:Hide()
-			frame.kui.bg:Hide()
+			if not KuiScaleVal then
+				KuiScaleVal = frame.kui:GetEffectiveScale()
+			end
+			frame.kui:SetScale(0.01)
+			--frame.kui:Hide()
+			--frame.kui:SetScale(0.1)
+			--frame.kui.HealthBar:Hide()
+			--frame.kui.HealthBar.fill:Hide()
+			--1-- frame.kui.bg:Hide()
 		end
 	end
 end
@@ -353,7 +359,7 @@ end
 local function showSingleUnitTidy(frame)
 	if frame == nil then return end
 	if Fnp_OtherNPFlag == 1 then
-		if frame.carrier then frame.carrier:Show() end
+		if frame.carrier then frame.carrier:Show() end --0--
 		--1-- if frame.extended then 
 		--1-- frame.extended.visual.healthbar:Show()
 		--1-- frame.extended.visual.healthborder:Show()
@@ -365,9 +371,15 @@ local function showSingleUnitTidy(frame)
 		end
 	else
 		if frame.kui then
-			frame.kui.HealthBar:Show()
-			frame.kui.HealthBar.fill:Show()
-			frame.kui.bg:Show()
+			--frame.kui:Show()
+			if not KuiScaleVal then
+				KuiScaleVal = frame.kui:GetEffectiveScale()
+			end
+			frame.kui:SetScale(KuiScaleVal)
+			--frame.kui:SetScale(frame.kui.uiscale)
+			--1-- frame.kui.HealthBar:Show()
+			--1-- frame.kui.HealthBar.fill:Show()
+			--1-- frame.kui.bg:Show()
 		end
 	end
 end
@@ -475,7 +487,7 @@ local function actionUnitRemoved(self, event, ...)
 		actionUnitRemovedOnlyShowMode(...)
 	end
 end
-
+--[[
 local function actionTargetChanged(self, event, ...)
 	if Fnp_Mode == true and IsCurOnlyShowStat == true then
 		local targetId = ...
@@ -490,7 +502,7 @@ local function actionTargetChanged(self, event, ...)
 		end
 	end
 end
-
+--]]
 --local function actionUnitRemovedFilterMode(...)
 	-- do nothing
 --end
@@ -509,12 +521,14 @@ local function actionUnitSpellCastStartOnlyShowMode(...)
 	local curMatch = isMatchOnlyShowNameList(curName)
 	-- true的话，表明是我们要的，那么肯定是在显示了。
 	if curMatch == false then --false，而且是处于isCurrentOnlyShow
-		for _, frame in pairs(GetNamePlates()) do
-			local foundUnit = frame.namePlateUnitToken
-			if foundUnit and (foundUnit == unitid) then
-				showSingleUnitTidy(frame)
-			end
-		end
+		--for _, frame in pairs(GetNamePlates()) do
+		--	local foundUnit = frame.namePlateUnitToken
+		--	if foundUnit and (foundUnit == unitid) then
+		--		showSingleUnitTidy(frame)
+		--	end
+		--end
+		local frame = GetNamePlateForUnit(unitid)
+		showSingleUnitTidy(frame)
 	end
 end
 
@@ -532,12 +546,8 @@ local function actionUnitSpellCastStopOnlyShowMode(...)
 	local curMatch = isMatchOnlyShowNameList(curName)
 	-- true的话，表明是我们要的，那么肯定是在显示了。
 	if curMatch == false then --false，而且是处于isCurrentOnlyShow
-		for _, frame in pairs(GetNamePlates()) do
-			local foundUnit = frame.namePlateUnitToken
-			if foundUnit and (foundUnit == unitid) then
-				hideSingleUnitTidy(frame)
-			end
-		end
+		local frame = GetNamePlateForUnit(unitid)
+		hideSingleUnitTidy(frame)
 	end
 end
 
@@ -563,7 +573,7 @@ FilterNp_EventList = {
 	["UNIT_SPELLCAST_CHANNEL_STOP"]   = actionUnitSpellCastStop,
 	-- ["UNIT_SPELLCAST_CHANNEL_UPDATE"] = actionUnitSpellCastUpdate,
 	["PLAYER_ENTERING_WORLD"]         = registerMyEvents,
-	["PLAYER_TARGET_CHANGED"]		  = actionTargetChanged,
+	-- ["PLAYER_TARGET_CHANGED"]		  = actionTargetChanged,
 };
 
 function FilteredNamePlate_OnEvent(self, event, ...)
