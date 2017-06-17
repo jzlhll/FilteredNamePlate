@@ -90,7 +90,7 @@
 				</OnClick>
 				<OnEnter>
 					GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
-					GameTooltip:SetText("如果你使用了TidyPlate,请勾选该项.");
+					GameTooltip:SetText("如果你使用了TidyPlate，请勾选该项。");
 				</OnEnter>
 				<OnLeave>
 					GameTooltip:Hide();
@@ -99,9 +99,9 @@
 		</CheckButton>
 		<CheckButton name="$parent_KuiCheckBtn" inherits="OptionsCheckButtonTemplate">
 			<Anchors>
-				<Anchor point="CENTER" relativeTo="$parent_TidyEnableCheckBtn" relativePoint="RIGHT">
+				<Anchor point="TOPRIGHT" relativeTo="$parent_TidyEnableCheckBtn" relativePoint="TOPRIGHT">
 				<Offset>
-					<AbsDimension x="90" y="0" />
+					<AbsDimension x="110" y="0" />
 				</Offset>
 				</Anchor>
 			</Anchors>
@@ -114,7 +114,7 @@
 				</OnClick>
 				<OnEnter>
 					GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
-					GameTooltip:SetText("如果你使用了Kui_NamePlates,请勾选该项.");
+					GameTooltip:SetText("如果你使用了Kui_NamePlates，请勾选该项。");
 				</OnEnter>
 				<OnLeave>
 					GameTooltip:Hide();
@@ -123,9 +123,9 @@
 		</CheckButton>
 				<CheckButton name="$parent_OrgCheckBtn" inherits="OptionsCheckButtonTemplate">
 			<Anchors>
-				<Anchor point="CENTER" relativeTo="$parent_KuiCheckBtn" relativePoint="RIGHT">
+				<Anchor point="TOPLEFT" relativeTo="$parent_KuiCheckBtn" relativePoint="TOPRIGHT">
 				<Offset>
-					<AbsDimension x="70" y="0" />
+					<AbsDimension x="80" y="0" />
 				</Offset>
 				</Anchor>
 			</Anchors>
@@ -138,7 +138,7 @@
 				</OnClick>
 				<OnEnter>
 					GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
-					GameTooltip:SetText("原生,大脚,有爱和EUI勾选此项.Origin or EUI.");
+					GameTooltip:SetText("如果你使用原生，大脚，有爱和EUI勾选此项。Origin or EUI。");
 				</OnEnter>
 				<OnLeave>
 					GameTooltip:Hide();
@@ -155,7 +155,7 @@
 			</Anchors>
 			<Scripts>
 				<OnLoad>
-				_G[self:GetName().."Text"]:SetText("仅显模式(Only Show Mode)");
+				_G[self:GetName().."Text"]:SetText("仅显模式(OnlyShow Mode)");
 				</OnLoad>
 				<OnClick>
 				FNP_ModeCheckButtonChecked("o", self:GetChecked())

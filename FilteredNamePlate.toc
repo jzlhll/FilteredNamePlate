@@ -9,5 +9,3 @@
 ## LoadOnDemand: 0
 ## SavedVariables: Fnp_Enable, Fnp_FNameList, Fnp_ONameList, Fnp_Mode, Fnp_OtherNPFlag
 FilteredNamePlate.xml
-FilteredNamePlateAdvanced.xml
-FilteredNamePlateAdvanced.lua
