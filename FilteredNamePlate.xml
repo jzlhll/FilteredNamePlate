@@ -2,14 +2,14 @@
 <Script file="FilteredNamePlate.lua"/>
 <Frame name="FilteredNamePlate_Frame" hidden="true" parent="UIParent" toplevel="true" movable="true" frameStrata="HIGH" enableMouse="true" enableKeyboard="true">
 	<Size>
-		<AbsDimension x="320" y="400" />
+		<AbsDimension x="380" y="400" />
 	</Size>
 	<Anchors>
 		<Anchor point="CENTER" />
 	</Anchors>
 	<Backdrop bgFile="Interface\DialogFrame\UI-DialogBox-Background" edgeFile="Interface\DialogFrame\UI-DialogBox-Border" tile="true">
 		<BackgroundInsets>
-			<AbsInset left="11" right="12" top="12" bottom="11" />
+			<AbsInset left="5" right="6" top="6" bottom="5" />
 		</BackgroundInsets>
 		<TileSize>
 			<AbsValue val="32" />
@@ -27,13 +27,30 @@
 			<Anchors>
 				<Anchor point="TOPRIGTH" relativeTo="$parent">
 				<Offset>
-					<AbsDimension x="270" y="-10" />
+					<AbsDimension x="330" y="-10" />
 				</Offset>
 				</Anchor>
 			</Anchors>
 			<Scripts>
 				<OnClick>
 					FNP_ChangeFrameVisibility()
+				</OnClick>
+			</Scripts>
+		</Button>
+		<Button name="$parent_AdvOpenIcon" inherits="OptionsButtonTemplate" hidden="true" text="高级">
+			<Size>
+				<AbsDimension x="40" y="40" />
+			</Size>
+			<Anchors>
+				<Anchor point="BOTTOMLEFT" relativeTo="$parent_CloseIcon">
+				<Offset>
+					<AbsDimension x="0" y="-46" />
+				</Offset>
+				</Anchor>
+			</Anchors>
+			<Scripts>
+				<OnClick>
+					FNP_ChangeFrameVisibility("adv")
 				</OnClick>
 			</Scripts>
 		</Button>
@@ -60,27 +77,74 @@
 			<Anchors>
 				<Anchor point="CENTER" relativeTo="$parent_EnableCheckButton" relativePoint="BOTTOMLEFT">
 				<Offset>
-					<AbsDimension x="10" y="-30" />
+					<AbsDimension x="0" y="-30" />
 				</Offset>
 				</Anchor>
 			</Anchors>
 			<Scripts>
 				<OnLoad>
-				_G[self:GetName().."Text"]:SetText("同时使用(using with) TidyPlate");
+				_G[self:GetName().."Text"]:SetText("TidyPlate");
 				</OnLoad>
 				<OnClick>
-				FNP_TidyEnableCheckButtonChecked("f", self:GetChecked())
+				FNP_TidyEnableCheckButtonChecked(self, self:GetChecked(), 1)
 				</OnClick>
 				<OnEnter>
 					GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
-					GameTooltip:SetText("原生,大脚,有爱和EUI不能勾选. 如果你使用了TidyPlate,请勾选该项.");
+					GameTooltip:SetText("如果你使用了TidyPlate,请勾选该项.");
 				</OnEnter>
 				<OnLeave>
 					GameTooltip:Hide();
 				</OnLeave>
 			</Scripts>
 		</CheckButton>
-
+		<CheckButton name="$parent_KuiCheckBtn" inherits="OptionsCheckButtonTemplate">
+			<Anchors>
+				<Anchor point="CENTER" relativeTo="$parent_TidyEnableCheckBtn" relativePoint="RIGHT">
+				<Offset>
+					<AbsDimension x="90" y="0" />
+				</Offset>
+				</Anchor>
+			</Anchors>
+			<Scripts>
+				<OnLoad>
+				_G[self:GetName().."Text"]:SetText("Kui");
+				</OnLoad>
+				<OnClick>
+				FNP_TidyEnableCheckButtonChecked(self, self:GetChecked(), 2)
+				</OnClick>
+				<OnEnter>
+					GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
+					GameTooltip:SetText("如果你使用了Kui_NamePlates,请勾选该项.");
+				</OnEnter>
+				<OnLeave>
+					GameTooltip:Hide();
+				</OnLeave>
+			</Scripts>
+		</CheckButton>
+				<CheckButton name="$parent_OrgCheckBtn" inherits="OptionsCheckButtonTemplate">
+			<Anchors>
+				<Anchor point="CENTER" relativeTo="$parent_KuiCheckBtn" relativePoint="RIGHT">
+				<Offset>
+					<AbsDimension x="70" y="0" />
+				</Offset>
+				</Anchor>
+			</Anchors>
+			<Scripts>
+				<OnLoad>
+				_G[self:GetName().."Text"]:SetText("原生/EUI");
+				</OnLoad>
+				<OnClick>
+				FNP_TidyEnableCheckButtonChecked(self, self:GetChecked(), 0)
+				</OnClick>
+				<OnEnter>
+					GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
+					GameTooltip:SetText("原生,大脚,有爱和EUI勾选此项.Origin or EUI.");
+				</OnEnter>
+				<OnLeave>
+					GameTooltip:Hide();
+				</OnLeave>
+			</Scripts>
+		</CheckButton>
 		<CheckButton name="$parent_OnlyShowModeCheckBtn" inherits="OptionsCheckButtonTemplate">
 			<Anchors>
 				<Anchor point="TOPLEFT" relativeTo="$parent">
@@ -244,7 +308,7 @@
 				</Anchors>
 			</FontString>
 		</Layer>
-	</Layers>						
+	</Layers>
 	<Scripts>
 		<OnLoad>
 			FilteredNamePlate_OnLoad(self);
@@ -253,7 +317,5 @@
 			FilteredNamePlate_OnEvent(self,event,...);
 		</OnEvent>
 	</Scripts>
-
- 
 </Frame>
 </Ui>
