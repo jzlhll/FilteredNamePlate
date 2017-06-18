@@ -131,14 +131,14 @@
 			</Anchors>
 			<Scripts>
 				<OnLoad>
-				_G[self:GetName().."Text"]:SetText("原生/EUI");
+				_G[self:GetName().."Text"]:SetText("原生/EUI/RayUI");
 				</OnLoad>
 				<OnClick>
 				FNP_TidyEnableCheckButtonChecked(self, self:GetChecked(), 0)
 				</OnClick>
 				<OnEnter>
 					GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
-					GameTooltip:SetText("如果你使用原生，大脚，有爱和EUI勾选此项。Origin or EUI。");
+					GameTooltip:SetText("如果你使用原生，大脚，有爱和EUI, RayUI勾选此项。Origin or EUI, RayUI。");
 				</OnEnter>
 				<OnLeave>
 					GameTooltip:Hide();
