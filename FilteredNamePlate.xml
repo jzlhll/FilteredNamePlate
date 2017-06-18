@@ -280,7 +280,7 @@
 					</Anchor>
 				</Anchors>
 			</FontString>
-			<FontString name="$parent_note" inherits="GameFontNormal" text="输入框用英文的分号';'追加多个名字">
+			<FontString name="$parent_note" inherits="GameFontNormal" text="列表框用英文的分号';'追加多个名字">
 				<Anchors>
 					<Anchor point="BOTTOMLEFT" relativeTo="$parent">
 						<Offset>
@@ -289,7 +289,7 @@
 					</Anchor>
 				</Anchors>
 			</FontString>
-			<FontString name="$parent_AuthorText" inherits="GameFontNormal" text="作者:Allan 版本:7.2.0.20170614">
+			<FontString name="$parent_AuthorText" inherits="GameFontNormal" text="作者:Allan 版本:7.2.0.20170618 V3">
 				<Anchors>
 					<Anchor point="BOTTOMLEFT" relativeTo="$parent">
 						<Offset>

@@ -6,17 +6,10 @@ local string_find = string.find
 local table_getn = table.getn
 local FilterNp_EventList = FilterNp_EventList
 
-local IS_REGISGER, IsCurOnlyShowStat, KuiScaleVal, IsCurrentUseSpell
-local DEBUG_V = true
+local IS_REGISGER, IsCurOnlyShowStat, KuiScaleVal
 
 --Fnp_Mode  仅显模式 true 过滤模式 false 暂时去掉过滤模式，其实没什么用
 --Fnp_OtherNPFlag 0是默认和EUI模式 1是TidyPlate模式 2是Kui
-
-local function logv(str)
-	if DEBUG_V then
-		print(str)
-	end
-end
 
 --[[
 local function insertATabValue(tab, value)
@@ -94,23 +87,15 @@ local function registerMyEvents(self, event, ...)
 		Fnp_FNameList = {}
 	end
 
-	IsCurrentUseSpell = true
-
 	if IsCurOnlyShowStat == nil then
 		IsCurOnlyShowStat = false
 	end
 
 	if Fnp_Enable == true and IS_REGISGER == false then
-		local isSpell = false
 		for k, v in pairs(FilterNp_EventList) do
-			if Fnp_Mode == false then
-				local _, ret = string_find(k, "UNIT_SPELLCAST_")
-				if ret ~= nil then isSpell = true end
-			end
-			if k ~= "PLAYER_ENTERING_WORLD" and isSpell == false then
+			if k ~= "PLAYER_ENTERING_WORLD" then
 				self:RegisterEvent(k,v)
 			end
-			
         end
 		IS_REGISGER = true
 	end
@@ -164,7 +149,7 @@ local function isMatchOnlyShowNameList(tName)
 end
 
 ---------kkkkk---kkkkk---kkkkk-------------
-local function hidesingleUnit(frame)
+local function hideSingleUnit(frame)
 	if frame == nil then return end
 	if Fnp_OtherNPFlag == 1 then
 		if frame.carrier then frame.carrier:Hide() end --0--
@@ -227,30 +212,22 @@ local function actionUnitStateAfterChanged()
 			local isNullList = false
 			if table_getn(Fnp_ONameList) == 0 then isNullList = true end
 			for _, frame in pairs(GetNamePlates()) do
-				local foundUnit = frame.namePlateUnitToken
-				if foundUnit then
-					matched = isMatchOnlyShowNameList(GetUnitName(foundUnit))
-					if matched == true or isNullList == true then
-						if IsCurrentUseSpell == true then
-							showSingleUnit(frame)
-						else
-							hidesingleUnit(frame)
-						end
-					else
-						hidesingleUnit(frame)
-					end
+				local foundUnit = frame.namePlateUnitToken or (frame.UnitFrame and frame.UnitFrame.unit)
+				matched = isMatchOnlyShowNameList(GetUnitName(foundUnit))
+				if matched == true or isNullList == true then
+					showSingleUnit(frame)
+				else
+					hideSingleUnit(frame)
 				end
 			end
 		else					-- 开启并过滤模式
 			for _, frame in pairs(GetNamePlates()) do
-				local foundUnit = frame.namePlateUnitToken
-				if foundUnit then
-					matched = isMatchFilteredNameList(GetUnitName(foundUnit))
-					if matched == true then
-						hidesingleUnit(frame)
-					else
-						showSingleUnit(frame)
-					end
+				local foundUnit = frame.namePlateUnitToken or (frame.UnitFrame and frame.UnitFrame.unit)
+				matched = isMatchFilteredNameList(GetUnitName(foundUnit))
+				if matched == true then
+					hideSingleUnit(frame)
+				else
+					showSingleUnit(frame)
 				end
 			end	
 		end
@@ -275,9 +252,9 @@ local function actionUnitAddedOnlyShowMode(...)
 	if curMatch == false and IsCurOnlyShowStat == true then
 		--新增单位不需要仅显,但是目前处于仅显情况下, 那么,就将当前这个Hide
 		for _, frame in pairs(GetNamePlates()) do
-			local foundUnit = frame.namePlateUnitToken
+			local foundUnit = frame.namePlateUnitToken or (frame.UnitFrame and frame.UnitFrame.unit)
 			if foundUnit and (foundUnit == unitid) then
-				hidesingleUnit(frame)
+				hideSingleUnit(frame)
 				break
 			end
 		end
@@ -289,9 +266,9 @@ local function actionUnitAddedOnlyShowMode(...)
 	elseif curMatch == true and IsCurOnlyShowStat == false then
 		--新增单位是需要仅显的,而此时没有已经仅显的, 于是我们就将之前的都Hide,当前这个不用处理
 		for _, frame in pairs(GetNamePlates()) do
-			local foundUnit = frame.namePlateUnitToken
+			local foundUnit = frame.namePlateUnitToken or (frame.UnitFrame and frame.UnitFrame.unit)
 			if foundUnit and (unitid ~= foundUnit) then
-				hidesingleUnit(frame)
+				hideSingleUnit(frame)
 			end
 		end
 		IsCurOnlyShowStat = true
@@ -306,9 +283,9 @@ local function actionUnitAddedFilterMode(...)
 	local matched = isMatchFilteredNameList(UnitName(unitid))
 	if matched == true then
 		for _, frame in pairs(GetNamePlates()) do
-			local foundUnit = frame.namePlateUnitToken
+			local foundUnit = frame.namePlateUnitToken or (frame.UnitFrame and frame.UnitFrame.unit)
 			if foundUnit and (foundUnit == unitid) then
-				hidesingleUnit(frame)
+				hideSingleUnit(frame)
 				break
 			end
 		end
@@ -333,7 +310,7 @@ local function actionUnitRemovedOnlyShowMode(...)
 		local matched = false
 		local name = ""
 		for _, frame in pairs(GetNamePlates()) do
-			local foundUnit = frame.namePlateUnitToken
+			local foundUnit = frame.namePlateUnitToken or (frame.UnitFrame and frame.UnitFrame.unit)
 			if foundUnit then
 				matched = isMatchOnlyShowNameList(GetUnitName(foundUnit))
 				if matched == true then
@@ -343,7 +320,13 @@ local function actionUnitRemovedOnlyShowMode(...)
 		end
 		--没有找到,说明我们该退出了就显示
 		for _, frame in pairs(GetNamePlates()) do
-			showSingleUnit(frame)
+			local foundUnit = frame.namePlateUnitToken or (frame.UnitFrame and frame.UnitFrame.unit)
+			if foundUnit then
+				matched = isMatchOnlyShowNameList(GetUnitName(foundUnit))
+				if matched == false then
+					showSingleUnit(frame)
+				end
+			end
 		end
 		IsCurOnlyShowStat = false
 	end
@@ -371,11 +354,11 @@ local function actionTargetChanged(self, event, ...)
 	if Fnp_Mode == true and IsCurOnlyShowStat == true then
 		local targetId = ...
 		for _, frame in pairs(GetNamePlates()) do
-			local foundUnit = frame.namePlateUnitToken
+			local foundUnit = frame.namePlateUnitToken or (frame.UnitFrame and frame.UnitFrame.unit)
 			if foundUnit then
 				matched = isMatchOnlyShowNameList(GetUnitName(foundUnit))
 				if matched == false and foundUnit ~= targetId then
-					hidesingleUnit(frame)
+					hideSingleUnit(frame)
 				end
 			end
 		end
@@ -420,7 +403,7 @@ local function actionUnitSpellCastStopOnlyShowMode(...)
 	-- true的话，表明是我们要的，那么肯定是在显示了。
 	if curMatch == false then --false，而且是处于isCurrentOnlyShow
 		local frame = GetNamePlateForUnit(unitid)
-		hidesingleUnit(frame)
+		hideSingleUnit(frame)
 	end
 end
 
@@ -437,7 +420,7 @@ local function actionUnitSpellCastStop(self, event, ...)
 end
 
 local function actionAreaChanged(self, event)
-	logv("areaChanged> "..event)
+	print("areaChanged> "..event)
 end
 
 FilterNp_EventList = {
@@ -451,7 +434,7 @@ FilterNp_EventList = {
 	-- ["UNIT_SPELLCAST_CHANNEL_UPDATE"] = actionUnitSpellCastUpdate,
 	["PLAYER_ENTERING_WORLD"]         = registerMyEvents,
 	-- ["PLAYER_TARGET_CHANGED"]		  = actionTargetChanged,
-	["ZONE_CHANGED_NEW_AREA"]         = actionAreaChanged,
+	-- ["ZONE_CHANGED_NEW_AREA"]         = actionAreaChanged,
 };
 
 function FilteredNamePlate_OnEvent(self, event, ...)
@@ -506,7 +489,7 @@ function FNP_TidyEnableCheckButtonChecked(checkbtn, checked, flag)
 	else
 		checkbtn:SetChecked(true)
 	end
-	actionUnitStateAfterChanged()
+	print("\124cFFF58CBA修改了插件类型，请重载/reload或者/rl。\124r")
 end
 
 function FNP_EnableButtonChecked(self, checked)
@@ -626,7 +609,6 @@ function SlashCmdList.FilteredNamePlate(msg)
 			FNP_EnableButtonChecked(FilteredNamePlate_Frame, true)
 		end
 	elseif msg == "hideSpellCast" or msg == "hsc" then
-		IsCurrentUseSpell = false
 		actionUnitStateAfterChanged()
 	end
 end
