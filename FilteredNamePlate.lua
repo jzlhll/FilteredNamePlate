@@ -6,8 +6,11 @@ local string_find = string.find
 local table_getn = table.getn
 local FilterNp_EventList = FilterNp_EventList
 
-local IS_REGISGER, IsCurOnlyShowStat, KuiScaleVal
+local IS_REGISGER, IsCurOnlyShowStat, KuiScaleVal, OrgNameWidth
 
+local AllAreaUnits
+local DEFAULT_SCALE_SIZE = 0.5
+local DEFUALT_SPEELCAST_SCALE_SIZE = 0.6
 --Fnp_Mode  仅显模式 true 过滤模式 false 暂时去掉过滤模式，其实没什么用
 --Fnp_OtherNPFlag 0是默认和EUI模式 1是TidyPlate模式 2是Kui
 
@@ -91,6 +94,14 @@ local function registerMyEvents(self, event, ...)
 		IsCurOnlyShowStat = false
 	end
 
+	if AllAreaUnits == nil then
+		AllAreaUnits = {}
+	end
+
+	OrgNameHeight = nil
+	OrgNameWidth = nil
+	KuiScaleVal = nil
+	
 	if Fnp_Enable == true and IS_REGISGER == false then
 		for k, v in pairs(FilterNp_EventList) do
 			if k ~= "PLAYER_ENTERING_WORLD" then
@@ -152,27 +163,26 @@ end
 local function hideSingleUnit(frame)
 	if frame == nil then return end
 	if Fnp_OtherNPFlag == 1 then
-		if frame.carrier then frame.carrier:Hide() end --0--
-		--1-- if frame.extended then 
-		--1-- frame.extended.visual.healthbar:Hide() 
-		--1-- frame.extended.visual.healthborder:Hide() 
-		--1-- end
+		if frame.carrier then
+			if not KuiScaleVal then
+				KuiScaleVal = frame.carrier:GetEffectiveScale()
+			end
+			frame.carrier:SetScale(DEFAULT_SCALE_SIZE)
+		end
 	elseif Fnp_OtherNPFlag == 0 then
 		if frame.UnitFrame then
-			frame.UnitFrame:Hide()
-			--frame.UnitFrame.healthBar:Hide()
+			if OrgNameWidth == nil then
+				OrgNameWidth = frame.UnitFrame:GetWidth()
+			end
+			frame.UnitFrame.name:SetWidth(OrgNameWidth * DEFAULT_SCALE_SIZE)
+			frame.UnitFrame.healthBar:Hide()
 		end
 	else
 		if frame.kui then
 			if not KuiScaleVal then
 				KuiScaleVal = frame.kui:GetEffectiveScale()
 			end
-			frame.kui:SetScale(0.01)
-			--frame.kui:Hide()
-			--frame.kui:SetScale(0.1)
-			--frame.kui.HealthBar:Hide()
-			--frame.kui.HealthBar.fill:Hide()
-			--1-- frame.kui.bg:Hide()
+			frame.kui:SetScale(DEFAULT_SCALE_SIZE)
 		end
 	end
 end
@@ -180,27 +190,26 @@ end
 local function showSingleUnit(frame)
 	if frame == nil then return end
 	if Fnp_OtherNPFlag == 1 then
-		if frame.carrier then frame.carrier:Show() end --0--
-		--1-- if frame.extended then 
-		--1-- frame.extended.visual.healthbar:Show()
-		--1-- frame.extended.visual.healthborder:Show()
-		--1-- end
+		if frame.carrier then
+			if not KuiScaleVal then
+				KuiScaleVal = frame.carrier:GetEffectiveScale()
+			end
+			frame.carrier:SetScale(KuiScaleVal)
+		end
 	elseif Fnp_OtherNPFlag == 0 then
 		if frame.UnitFrame then
-			frame.UnitFrame:Show()
-			--frame.UnitFrame.healthBar:Show()
+			if OrgNameWidth == nil then
+				OrgNameWidth = frame.UnitFrame:GetWidth()
+			end
+			frame.UnitFrame.name:SetWidth(OrgNameWidth)
+			frame.UnitFrame.healthBar:Show()
 		end
 	else
 		if frame.kui then
-			--frame.kui:Show()
 			if not KuiScaleVal then
 				KuiScaleVal = frame.kui:GetEffectiveScale()
 			end
 			frame.kui:SetScale(KuiScaleVal)
-			--frame.kui:SetScale(frame.kui.uiscale)
-			--1-- frame.kui.HealthBar:Show()
-			--1-- frame.kui.HealthBar.fill:Show()
-			--1-- frame.kui.bg:Show()
 		end
 	end
 end
