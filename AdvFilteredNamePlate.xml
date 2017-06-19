@@ -1,0 +1,161 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/..\FrameXML\UI.xsd">
+<Script file="FilteredNamePlate.lua"/>
+<Frame name="FilteredNamePlate_AdvancedFrame" hidden="true" parent="UIParent" toplevel="true" movable="true" frameStrata="HIGH" enableMouse="true" enableKeyboard="true">
+	<Size>
+		<AbsDimension x="250" y="400" />
+	</Size>
+	<Anchors>
+		<Anchor point="CENTER">
+		<Offset>
+			<AbsDimension x="300" y="0" />
+		</Offset>
+		</Anchor>
+	</Anchors>
+	<Backdrop bgFile="Interface\DialogFrame\UI-DialogBox-Background" edgeFile="Interface\DialogFrame\UI-DialogBox-Border" tile="true">
+		<BackgroundInsets>
+			<AbsInset left="5" right="6" top="6" bottom="5" />
+		</BackgroundInsets>
+		<TileSize>
+			<AbsValue val="32" />
+		</TileSize>
+		<EdgeSize>
+			<AbsValue val="32" />
+		</EdgeSize>
+	</Backdrop>
+	 
+	<Frames>
+		<Button name="$parent_CloseIcon" inherits="OptionsButtonTemplate" text="X">
+			<Size>
+				<AbsDimension x="35" y="35" />
+			</Size>
+			<Anchors>
+				<Anchor point="TOPRIGTH" relativeTo="$parent">
+				<Offset>
+					<AbsDimension x="200" y="-10" />
+				</Offset>
+				</Anchor>
+			</Anchors>
+			<Scripts>
+				<OnClick>
+					FNP_ChangeFrameVisibility("adv")
+				</OnClick>
+			</Scripts>
+		</Button>
+		<Slider name="$parent_OnlyShowScale" inherits="OptionsSliderTemplate">
+               <Anchors>
+                   <Anchor point="LEFT">
+                      <Offset>
+                         <AbsDimension x="30" y="100" />
+                      </Offset>
+                   </Anchor>
+               </Anchors>
+               <Scripts>
+                   <OnLoad>
+                      _G[self:GetName().."Text"]:SetText("仅显比例");
+                      _G[self:GetName().."High"]:SetText("高 200%");
+                      _G[self:GetName().."Low"]:SetText("低 100%");
+                      self:SetMinMaxValues(100, 200);
+                      self:SetValueStep(1);
+                   </OnLoad>
+                   <OnValueChanged>
+                      _G[self:GetName().."Text"]:SetText("仅显比例".."("..string.format("%.0f", self:GetValue()).."%)");
+					  <!-- FilteredNamePlate_AdvancedFrame_show_TextOnly:SetText("OnlyShow Scale".."("..string.format("%.0f", self:GetValue()).."%)");
+					  -->
+					  Fnp_OSScale = string.format("%.2f", self:GetValue() / 100)
+                   </OnValueChanged>
+                   <OnEnter>
+                      GameTooltip:SetOwner(self, "ANCHOR_RIGTH");
+                      GameTooltip:SetText("仅显单位的姓名板比例 OnyShow Name Plate Scale");
+                   </OnEnter>
+                   <OnLeave>
+                      GameTooltip:Hide();
+                   </OnLeave>
+               </Scripts>
+        </Slider>
+
+		<Slider name="$parent_OnlyOtherShowScale" inherits="OptionsSliderTemplate">
+               <Anchors>
+                   <Anchor point="LEFT">
+                      <Offset>
+                         <AbsDimension x="30" y="20" />
+                      </Offset>
+                   </Anchor>
+               </Anchors>
+               <Scripts>
+                   <OnLoad>
+                      _G[self:GetName().."Text"]:SetText("非仅显的其他比例");
+                      _G[self:GetName().."High"]:SetText("高 65%");
+                      _G[self:GetName().."Low"]:SetText("低 15%");
+                      self:SetMinMaxValues(15, 65);
+                      self:SetValueStep(1);
+                   </OnLoad>
+                   <OnValueChanged>
+                      _G[self:GetName().."Text"]:SetText("非仅显的其他比例".."("..string.format("%.0f", self:GetValue()).."%)");
+					  <!-- FilteredNamePlate_AdvancedFrame_show_TextOnlyOther:SetText("OnyShow Exclude Scale".."("..string.format("%.0f", self:GetValue()).."%)");
+					  -->
+					  Fnp_OSOtherScale = string.format("%.2f", self:GetValue() / 100)
+				   </OnValueChanged>
+                   <OnEnter>
+                      GameTooltip:SetOwner(self, "ANCHOR_RIGTH");
+                      GameTooltip:SetText("仅显模式下其他单位的姓名板比例 OnyShow Exclude Name Plate Scale");
+                   </OnEnter>
+                   <OnLeave>
+                      GameTooltip:Hide();
+                   </OnLeave>
+               </Scripts>
+        </Slider>
+	</Frames>
+	<Layers>
+		<Layer>
+			<Texture name="$parent_Header" file="Interface\DialogFrame\UI-DialogBox-Header">
+				<Size>
+					<AbsDimension x="210" y="50" />
+				</Size>
+				<Anchors>
+					<Anchor point="TOP">
+						<Offset>
+							<AbsDimension x="0" y="12" />
+						</Offset>
+					</Anchor>
+				</Anchors>
+			</Texture>
+			<FontString name="$parent_Header_Text" inherits="GameFontNormal" text="高级设置">
+				<Anchors>
+					<Anchor point="TOP" relativeTo="$parent_Header">
+						<Offset>
+							<AbsDimension x="0" y="-8" />
+						</Offset>
+					</Anchor>
+				</Anchors>
+			</FontString>
+			<!-- FontString name="$parent_show_TextOnly" inherits="GameFontNormal" text="OnlyShow Scale">
+				<Anchors>
+					<Anchor point="TOP" relativeTo="$parent_Header_Text">
+						<Offset>
+							<AbsDimension x="-20" y="-80" />
+						</Offset>
+					</Anchor>
+				</Anchors>
+			</FontString>
+			<FontString name="$parent_show_TextOnlyOther" inherits="GameFontNormal" text="OnlyShow Exclude Scale">
+				<Anchors>
+					<Anchor point="TOP" relativeTo="$parent_Header_Text">
+						<Offset>
+							<AbsDimension x="0" y="-190" />
+						</Offset>
+					</Anchor>
+				</Anchors>
+			</FontString> -->
+			<FontString name="$parent_show_Text2" inherits="GameFontNormal" text="注意此类设置, 需要/rl或者/reload.">
+				<Anchors>
+					<Anchor point="TOP" relativeTo="$parent_Header_Text">
+						<Offset>
+							<AbsDimension x="0" y="-350" />
+						</Offset>
+					</Anchor>
+				</Anchors>
+			</FontString>
+		</Layer>
+	</Layers>
+</Frame>
+</Ui>

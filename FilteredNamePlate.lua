@@ -1,3 +1,5 @@
+local FilteredNamePlate = FilteredNamePlate
+
 SLASH_FilteredNamePlate1 = "/fnp"
 local GetNamePlateForUnit = C_NamePlate.GetNamePlateForUnit
 local GetNamePlates = C_NamePlate.GetNamePlates
@@ -6,11 +8,17 @@ local string_find = string.find
 local table_getn = table.getn
 local FilterNp_EventList = FilterNp_EventList
 
-local IS_REGISGER, IsCurOnlyShowStat, KuiScaleVal, OrgNameWidth
+local IS_REGISGER, IsCurOnlyShowStat, NORMAL_SYS_NP_SCALE, OrgNameWidth
+
+local SpellcastInCurOnlyShowScale
+-- NORMAL_SYS_NP_SCALE 是保存了临时变量不存档, 信息是系统当前普通的血条大小
+-- SpellcastInCurOnlyShowScale 是临时变量, onlySHow的读条怪的血条比例
+-- Fnp_OSScale 是存档的,它乘以NORMAL_SYS_NP_SCALE就是当前的ONlyShow怪的比例
+-- Fnp_OSOtherScale是存档的,他乘以NORMAL_SYS_NP_SCALE就是当前非OnlyShow怪的比例
 
 local AllAreaUnits
-local DEFAULT_SCALE_SIZE = 0.5
-local DEFUALT_SPEELCAST_SCALE_SIZE = 0.6
+local DEFAULT_SMALL_NAMEWIDTH = 40
+local DEFUALT_SPEELCAST_SCALE_SIZE = 0.8
 --Fnp_Mode  仅显模式 true 过滤模式 false 暂时去掉过滤模式，其实没什么用
 --Fnp_OtherNPFlag 0是默认和EUI模式 1是TidyPlate模式 2是Kui
 
@@ -18,7 +26,7 @@ local DEFUALT_SPEELCAST_SCALE_SIZE = 0.6
 local function insertATabValue(tab, value)
     local isExist = false;
     for pos, name in ipairs(tab) do
-        if (name == value) then        
+        if (name == value) then
             isExist = true;
         end
     end
@@ -27,8 +35,8 @@ end
 
 local function removeATabValue(tab, value)
     for pos, name in ipairs(tab) do
-        if (name == value) then        
-            table.remove(tab, pos)         
+        if (name == value) then
+            table.remove(tab, pos)
         end
     end
 end
@@ -67,9 +75,12 @@ local function printInfo()
 		end
 	end
 	print(showstr)
+	print("\124cFFF58CBA仅显比例:\124r "..Fnp_OSScale)
+	print("\124cFFF58CBA仅显其他比例:\124r "..Fnp_OSOtherScale)
 end
 
 local function registerMyEvents(self, event, ...)
+	-- 默认值修改处
 	if Fnp_Enable == nil then
 		Fnp_Enable = false
 	end
@@ -80,12 +91,12 @@ local function registerMyEvents(self, event, ...)
 	if Fnp_OtherNPFlag == nil then
 		Fnp_OtherNPFlag = 0
 	end
-	
+
 	if Fnp_ONameList == nil then
 		Fnp_ONameList = {}
 		table.insert(Fnp_ONameList, "邪能炸药")
 	end
-	
+
 	if Fnp_FNameList == nil then
 		Fnp_FNameList = {}
 	end
@@ -98,10 +109,12 @@ local function registerMyEvents(self, event, ...)
 		AllAreaUnits = {}
 	end
 
+	if Fnp_OSScale == nil then Fnp_OSScale = 1.0 end
+	if Fnp_OSOtherScale == nil then Fnp_OSOtherScale = 0.25 end
 	OrgNameHeight = nil
 	OrgNameWidth = nil
-	KuiScaleVal = nil
-	
+	NORMAL_SYS_NP_SCALE = nil
+
 	if Fnp_Enable == true and IS_REGISGER == false then
 		for k, v in pairs(FilterNp_EventList) do
 			if k ~= "PLAYER_ENTERING_WORLD" then
@@ -160,56 +173,72 @@ local function isMatchOnlyShowNameList(tName)
 end
 
 ---------kkkkk---kkkkk---kkkkk-------------
-local function hideSingleUnit(frame)
-	if frame == nil then return end
-	if Fnp_OtherNPFlag == 1 then
-		if frame.carrier then
-			if not KuiScaleVal then
-				KuiScaleVal = frame.carrier:GetEffectiveScale()
-			end
-			frame.carrier:SetScale(DEFAULT_SCALE_SIZE)
-		end
-	elseif Fnp_OtherNPFlag == 0 then
+
+local function getScaleValues(indx, frame)
+	if NORMAL_SYS_NP_SCALE ~= nil then return end
+
+	if indx == 0 then
 		if frame.UnitFrame then
+			NORMAL_SYS_NP_SCALE = frame.UnitFrame:GetEffectiveScale()
 			if OrgNameWidth == nil then
 				OrgNameWidth = frame.UnitFrame:GetWidth()
 			end
-			frame.UnitFrame.name:SetWidth(OrgNameWidth * DEFAULT_SCALE_SIZE)
-			frame.UnitFrame.healthBar:Hide()
+		end
+	elseif indx == 1 then
+		NORMAL_SYS_NP_SCALE = frame.carrier:GetEffectiveScale()
+	elseif indx == 2 then
+		NORMAL_SYS_NP_SCALE = frame.kui:GetEffectiveScale()
+	end
+	SpellcastInCurOnlyShowScale = NORMAL_SYS_NP_SCALE * 0.8
+	print("normalSize "..NORMAL_SYS_NP_SCALE..(" onlyshow scale ")..Fnp_OSScale..(" other scale ")..Fnp_OSOtherScale..(" onlyShowSpell scale ")..SpellcastInCurOnlyShowScale)
+end
+
+local function hideSingleUnit(frame)
+	if frame == nil then return end
+	print("hide "..GetUnitName(frame))
+	if Fnp_OtherNPFlag == 1 then
+		if frame.carrier then
+			getScaleValues(1, frame)
+			frame.carrier:SetScale(Fnp_OSOtherScale)
+		end
+	elseif Fnp_OtherNPFlag == 0 then
+		if frame.UnitFrame then
+			getScaleValues(0, frame)
+			-- org frame.UnitFrame.name:SetWidth(DEFAULT_SMALL_NAMEWIDTH)
+			-- org frame.UnitFrame.healthBar:Hide()
+			-- eui
+			frame.UnitFrame:SetScale(Fnp_OSOtherScale)
 		end
 	else
 		if frame.kui then
-			if not KuiScaleVal then
-				KuiScaleVal = frame.kui:GetEffectiveScale()
-			end
-			frame.kui:SetScale(DEFAULT_SCALE_SIZE)
+			getScaleValues(2, frame)
+			frame.kui:SetScale(Fnp_OSOtherScale)
 		end
 	end
 end
 
-local function showSingleUnit(frame)
+local function showSingleUnit(frame, isOnlyShowSpellCast)
 	if frame == nil then return end
 	if Fnp_OtherNPFlag == 1 then
 		if frame.carrier then
-			if not KuiScaleVal then
-				KuiScaleVal = frame.carrier:GetEffectiveScale()
-			end
-			frame.carrier:SetScale(KuiScaleVal)
+			getScaleValues(1, frame)
+			frame.carrier:SetScale(NORMAL_SYS_NP_SCALE)
 		end
 	elseif Fnp_OtherNPFlag == 0 then
 		if frame.UnitFrame then
-			if OrgNameWidth == nil then
-				OrgNameWidth = frame.UnitFrame:GetWidth()
+			getScaleValues(0, frame)
+			--org frame.UnitFrame.name:SetWidth(OrgNameWidth)
+			--org  frame.UnitFrame.healthBar:Show()
+			if isOnlyShowSpellCast then
+				frame.UnitFrame:SetScale(SpellcastInCurOnlyShowScale)
+			else
+				frame.UnitFrame:SetScale(NORMAL_SYS_NP_SCALE)
 			end
-			frame.UnitFrame.name:SetWidth(OrgNameWidth)
-			frame.UnitFrame.healthBar:Show()
 		end
 	else
 		if frame.kui then
-			if not KuiScaleVal then
-				KuiScaleVal = frame.kui:GetEffectiveScale()
-			end
-			frame.kui:SetScale(KuiScaleVal)
+			getScaleValues(2, frame)
+			frame.kui:SetScale(NORMAL_SYS_NP_SCALE)
 		end
 	end
 end
@@ -255,7 +284,7 @@ local function actionUnitAddedOnlyShowMode(...)
 		return
 	end
 	local matched = false
-	
+
 	-- 1. 当前Add的单位名,是否match
 	local curMatch = isMatchOnlyShowNameList(UnitName(unitid))
 	if curMatch == false and IsCurOnlyShowStat == true then
@@ -267,8 +296,8 @@ local function actionUnitAddedOnlyShowMode(...)
 				break
 			end
 		end
-	elseif curMatch == false and IsCurOnlyShowStat == false then 
-	 -- 新增单位不需要仅显, 此时也没有仅显, 就不管了. 	
+	elseif curMatch == false and IsCurOnlyShowStat == false then
+	 -- 新增单位不需要仅显, 此时也没有仅显, 就不管了.
 	elseif curMatch == true and IsCurOnlyShowStat == true then
 		-- 新增单位是需要仅显的,而此时已经有仅显的了,于是我们什么也不用干 -- 更新，怀疑在异步调用的时候莫名奇妙被hide了这里开出来确保
 		showSingleUnit(GetNamePlateForUnit(unitid))
@@ -486,14 +515,22 @@ function FNP_TidyEnableCheckButtonChecked(checkbtn, checked, flag)
 			FilteredNamePlate_Frame_TidyEnableCheckBtn:SetChecked(false)
 			FilteredNamePlate_Frame_KuiCheckBtn:SetChecked(false)
 			FilteredNamePlate_Frame_OrgCheckBtn:SetChecked(true)
+			FilteredNamePlate_Frame_EUIRayBtn:SetChecked(false)
 		elseif flag == 1 then
 			FilteredNamePlate_Frame_TidyEnableCheckBtn:SetChecked(true)
 			FilteredNamePlate_Frame_KuiCheckBtn:SetChecked(false)
 			FilteredNamePlate_Frame_OrgCheckBtn:SetChecked(false)
+			FilteredNamePlate_Frame_EUIRayBtn:SetChecked(false)
 		elseif flag == 2 then
 			FilteredNamePlate_Frame_TidyEnableCheckBtn:SetChecked(false)
 			FilteredNamePlate_Frame_KuiCheckBtn:SetChecked(true)
 			FilteredNamePlate_Frame_OrgCheckBtn:SetChecked(false)
+			FilteredNamePlate_Frame_EUIRayBtn:SetChecked(false)
+		elseif flag == 3 then
+			FilteredNamePlate_Frame_TidyEnableCheckBtn:SetChecked(false)
+			FilteredNamePlate_Frame_KuiCheckBtn:SetChecked(false)
+			FilteredNamePlate_Frame_OrgCheckBtn:SetChecked(false)
+			FilteredNamePlate_Frame_EUIRayBtn:SetChecked(true)
 		end
 	else
 		checkbtn:SetChecked(true)
@@ -561,9 +598,11 @@ function FNP_ChangeFrameVisibility(...)
 
 	if FilteredNamePlate_Frame:IsVisible() then
 		FilteredNamePlate_Frame:Hide()
+		FilteredNamePlate_AdvancedFrame:Hide()
 		printInfo()
 	else
 		FilteredNamePlate_Frame:Show()
+		-- FilteredNamePlate_AdvancedFrame:Show()
 		if Fnp_Enable == true then
 			FilteredNamePlate_Frame_EnableCheckButton:SetChecked(true);
 		else
@@ -580,7 +619,7 @@ function FNP_ChangeFrameVisibility(...)
 		else
 			FilteredNamePlate_Frame_TidyEnableCheckBtn:SetChecked(false);
 		end
-		
+
 		if Fnp_OtherNPFlag == 2 then
 			FilteredNamePlate_Frame_KuiCheckBtn:SetChecked(true);
 		else
@@ -594,6 +633,9 @@ function FNP_ChangeFrameVisibility(...)
 			FilteredNamePlate_Frame_FilteredModeCheckBtn:SetChecked(true);
 			FilteredNamePlate_Frame_OnlyShowModeCheckBtn:SetChecked(false);
 		end
+
+		FilteredNamePlate_AdvancedFrame_OnlyShowScale:SetValue(Fnp_OSScale * 100)
+		FilteredNamePlate_AdvancedFrame_OnlyOtherShowScale:SetValue(Fnp_OSOtherScale * 100)
 
 		FilteredNamePlate_Frame_OnlyShowModeEditBox:SetText(table.concat(Fnp_ONameList, ";"));
 		FilteredNamePlate_Frame_FilteredModeEditBox:SetText(table.concat(Fnp_FNameList, ";"));

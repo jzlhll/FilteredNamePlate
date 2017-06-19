@@ -18,11 +18,11 @@
 			<AbsValue val="32" />
 		</EdgeSize>
 	</Backdrop>
-	 
+
 	<Frames>
 		<Button name="$parent_CloseIcon" inherits="OptionsButtonTemplate" text="X">
 			<Size>
-				<AbsDimension x="40" y="40" />
+				<AbsDimension x="35" y="35" />
 			</Size>
 			<Anchors>
 				<Anchor point="TOPRIGTH" relativeTo="$parent">
@@ -37,14 +37,14 @@
 				</OnClick>
 			</Scripts>
 		</Button>
-		<Button name="$parent_AdvOpenIcon" inherits="OptionsButtonTemplate" hidden="true" text="高级">
+		<Button name="$parent_AdvOpenIcon" inherits="OptionsButtonTemplate" hidden="false" text="高级">
 			<Size>
-				<AbsDimension x="40" y="40" />
+				<AbsDimension x="45" y="35" />
 			</Size>
 			<Anchors>
 				<Anchor point="BOTTOMLEFT" relativeTo="$parent_CloseIcon">
 				<Offset>
-					<AbsDimension x="0" y="-46" />
+					<AbsDimension x="-10" y="-120" />
 				</Offset>
 				</Anchor>
 			</Anchors>
@@ -54,7 +54,7 @@
 				</OnClick>
 			</Scripts>
 		</Button>
-		
+
 		<CheckButton name="$parent_EnableCheckButton" inherits="OptionsCheckButtonTemplate">
 			<Anchors>
 				<Anchor point="TOPLEFT" relativeTo="$parent">
@@ -101,7 +101,7 @@
 			<Anchors>
 				<Anchor point="TOPRIGHT" relativeTo="$parent_TidyEnableCheckBtn" relativePoint="TOPRIGHT">
 				<Offset>
-					<AbsDimension x="110" y="0" />
+					<AbsDimension x="100" y="0" />
 				</Offset>
 				</Anchor>
 			</Anchors>
@@ -121,24 +121,48 @@
 				</OnLeave>
 			</Scripts>
 		</CheckButton>
-				<CheckButton name="$parent_OrgCheckBtn" inherits="OptionsCheckButtonTemplate">
+		<CheckButton name="$parent_OrgCheckBtn" inherits="OptionsCheckButtonTemplate">
 			<Anchors>
 				<Anchor point="TOPLEFT" relativeTo="$parent_KuiCheckBtn" relativePoint="TOPRIGHT">
 				<Offset>
-					<AbsDimension x="80" y="0" />
+					<AbsDimension x="50" y="0" />
 				</Offset>
 				</Anchor>
 			</Anchors>
 			<Scripts>
 				<OnLoad>
-				_G[self:GetName().."Text"]:SetText("原生/EUI/RayUI");
+				_G[self:GetName().."Text"]:SetText("原生");
 				</OnLoad>
 				<OnClick>
 				FNP_TidyEnableCheckButtonChecked(self, self:GetChecked(), 0)
 				</OnClick>
 				<OnEnter>
 					GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
-					GameTooltip:SetText("如果你使用原生，大脚，有爱和EUI, RayUI勾选此项。Origin or EUI, RayUI。");
+					GameTooltip:SetText("如果你使用原生，大脚，有爱, 勾选此项。Origin。");
+				</OnEnter>
+				<OnLeave>
+					GameTooltip:Hide();
+				</OnLeave>
+			</Scripts>
+		</CheckButton>
+		<CheckButton name="$parent_EUIRayBtn" inherits="OptionsCheckButtonTemplate">
+			<Anchors>
+				<Anchor point="TOPLEFT" relativeTo="$parent_OrgCheckBtn" relativePoint="TOPRIGHT">
+				<Offset>
+					<AbsDimension x="50" y="0" />
+				</Offset>
+				</Anchor>
+			</Anchors>
+			<Scripts>
+				<OnLoad>
+				_G[self:GetName().."Text"]:SetText("EUI/RayUI");
+				</OnLoad>
+				<OnClick>
+				FNP_TidyEnableCheckButtonChecked(self, self:GetChecked(), 3)
+				</OnClick>
+				<OnEnter>
+					GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
+					GameTooltip:SetText("EUI, RayUI勾选此项。EUI or RayUI。");
 				</OnEnter>
 				<OnLeave>
 					GameTooltip:Hide();
@@ -289,7 +313,7 @@
 					</Anchor>
 				</Anchors>
 			</FontString>
-			<FontString name="$parent_AuthorText" inherits="GameFontNormal" text="作者:Allan 版本:7.2.0.20170618 V3">
+			<FontString name="$parent_AuthorText" inherits="GameFontNormal" text="作者:Allan 版本:7.2.0.20170619 V3">
 				<Anchors>
 					<Anchor point="BOTTOMLEFT" relativeTo="$parent">
 						<Offset>
