@@ -61,7 +61,7 @@
                       _G[self:GetName().."Text"]:SetText("仅显比例".."("..string.format("%.0f", self:GetValue()).."%)");
 					  <!-- FilteredNamePlate_AdvancedFrame_show_TextOnly:SetText("OnlyShow Scale".."("..string.format("%.0f", self:GetValue()).."%)");
 					  -->
-					  Fnp_OSScale = string.format("%.2f", self:GetValue() / 100)
+					  Fnp_SavedScaleList["only"] = string.format("%.2f", self:GetValue() / 100)
                    </OnValueChanged>
                    <OnEnter>
                       GameTooltip:SetOwner(self, "ANCHOR_RIGTH");
@@ -93,7 +93,7 @@
                       _G[self:GetName().."Text"]:SetText("非仅显的其他比例".."("..string.format("%.0f", self:GetValue()).."%)");
 					  <!-- FilteredNamePlate_AdvancedFrame_show_TextOnlyOther:SetText("OnyShow Exclude Scale".."("..string.format("%.0f", self:GetValue()).."%)");
 					  -->
-					  Fnp_OSOtherScale = string.format("%.2f", self:GetValue() / 100)
+					  Fnp_SavedScaleList["other"] = string.format("%.2f", self:GetValue() / 100)
 				   </OnValueChanged>
                    <OnEnter>
                       GameTooltip:SetOwner(self, "ANCHOR_RIGTH");

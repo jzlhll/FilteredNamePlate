@@ -280,6 +280,37 @@
                 </Scripts>
                 <FontString inherits="ChatFontNormal" />
         </EditBox>
+		<Slider name="$parent_SystemScale" inherits="OptionsSliderTemplate">
+			<Anchors>
+                    <Anchor point="TOPLEFT" relativeTo="$parent_FilteredModeEditBox" relativePoint="BOTTOMLEFT">
+                        <Offset>
+                            <AbsDimension x="10" y="-40" />
+                        </Offset>
+                    </Anchor>
+            </Anchors>
+            <Scripts>
+                   <OnLoad>
+                      _G[self:GetName().."Text"]:SetText("默认缩放比例");
+                      _G[self:GetName().."High"]:SetText("大 150%");
+                      _G[self:GetName().."Low"]:SetText("小 40%");
+                      self:SetMinMaxValues(40, 150);
+                      self:SetValueStep(1);
+                   </OnLoad>
+                   <OnValueChanged>
+                      _G[self:GetName().."Text"]:SetText("默认缩放比例".."("..string.format("%.0f", self:GetValue()).."%)");
+					  <!-- FilteredNamePlate_AdvancedFrame_show_TextOnlyOther:SetText("OnyShow Exclude Scale".."("..string.format("%.0f", self:GetValue()).."%)");
+					  -->
+					  Fnp_SavedScaleList["system"] = string.format("%.2f", self:GetValue() / 100)
+				   </OnValueChanged>
+                   <OnEnter>
+                      GameTooltip:SetOwner(self, "ANCHOR_RIGTH");
+                      GameTooltip:SetText("默认缩放姓名板大小 Default Scale");
+                   </OnEnter>
+                   <OnLeave>
+                      GameTooltip:Hide();
+                   </OnLeave>
+            </Scripts>
+        </Slider>
 	</Frames>
 	<Layers>
 		<Layer>
@@ -308,16 +339,16 @@
 				<Anchors>
 					<Anchor point="BOTTOMLEFT" relativeTo="$parent">
 						<Offset>
-							<AbsDimension x="20" y="60" />
+							<AbsDimension x="20" y="50" />
 						</Offset>
 					</Anchor>
 				</Anchors>
 			</FontString>
-			<FontString name="$parent_AuthorText" inherits="GameFontNormal" text="作者:Allan 版本:7.2.0.20170619 V3">
+			<FontString name="$parent_AuthorText" inherits="GameFontNormal" text="作者:Allan 版本:7.2.5.20170620 V3">
 				<Anchors>
 					<Anchor point="BOTTOMLEFT" relativeTo="$parent">
 						<Offset>
-							<AbsDimension x="20" y="35" />
+							<AbsDimension x="20" y="25" />
 						</Offset>
 					</Anchor>
 				</Anchors>
