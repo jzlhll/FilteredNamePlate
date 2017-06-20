@@ -256,6 +256,8 @@
                     <OnEnterPressed>
                         self:ClearFocus();
 						FilteredNamePlate.FNP_ModeEditBoxWriten("o", self:GetText())
+						FilteredNamePlate.isSettingChanged = true
+					    FilteredNamePlate_Frame_takeEffectBtn:Show()
                     </OnEnterPressed>
                     <OnEscapePressed>
                         self:ClearFocus();
@@ -312,6 +314,8 @@
                     <OnEnterPressed>
                         self:ClearFocus();
 						FilteredNamePlate.FNP_ModeEditBoxWriten("f", self:GetText())
+						FilteredNamePlate.isSettingChanged = true
+					    FilteredNamePlate_Frame_takeEffectBtn:Show()
                     </OnEnterPressed>
                     <OnEscapePressed>
                         self:ClearFocus();

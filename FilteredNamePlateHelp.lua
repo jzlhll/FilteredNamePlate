@@ -1,6 +1,8 @@
 function FilteredNamePlate.printCurrentScaleList(sl)
-    print("Curr SYSTEM "..sl.SYSTEM..(" normal ")..sl.normal..(" only ")..sl.only)
-    print("Curr other "..sl.other..(" orgwidht ")..sl.orgWidth..(" smallWidth ")..sl.smallWidth)
+	if sl.SYSTEM then
+		print("Curr SYSTEM "..sl.SYSTEM..(" normal ")..sl.normal..(" only ")..sl.only)
+		print("Curr other "..sl.other..(" orgwidht ")..sl.orgWidth..(" smallWidth ")..sl.smallWidth..(" spellInOs")..sl.spellInOs)
+	end
 end
 
 function FilteredNamePlate.printSavedScaleList(sl)
