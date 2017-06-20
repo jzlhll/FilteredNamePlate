@@ -1,8 +1,7 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/..\FrameXML\UI.xsd">
-<Script file="FilteredNamePlate.lua"/>
 <Frame name="FilteredNamePlate_AdvancedFrame" hidden="true" parent="UIParent" toplevel="true" movable="true" frameStrata="HIGH" enableMouse="true" enableKeyboard="true">
 	<Size>
-		<AbsDimension x="250" y="400" />
+		<AbsDimension x="250" y="440" />
 	</Size>
 	<Anchors>
 		<Anchor point="CENTER">
@@ -37,7 +36,7 @@
 			</Anchors>
 			<Scripts>
 				<OnClick>
-					FNP_ChangeFrameVisibility("adv")
+					FilteredNamePlate.FNP_ChangeFrameVisibility("adv")
 				</OnClick>
 			</Scripts>
 		</Button>
@@ -62,6 +61,8 @@
 					  <!-- FilteredNamePlate_AdvancedFrame_show_TextOnlyOther:SetText("OnyShow Exclude Scale".."("..string.format("%.0f", self:GetValue()).."%)");
 					  -->
 					  Fnp_SavedScaleList.normal = string.format("%.2f", self:GetValue() / 100)
+					  FilteredNamePlate.isSettingChanged = true
+					  FilteredNamePlate_Frame_takeEffectBtn:Show()
 				   </OnValueChanged>
                    <OnEnter>
                       GameTooltip:SetOwner(self, "ANCHOR_RIGTH");
@@ -93,6 +94,8 @@
 					  <!-- FilteredNamePlate_AdvancedFrame_show_TextOnly:SetText("OnlyShow Scale".."("..string.format("%.0f", self:GetValue()).."%)");
 					  -->
 					  Fnp_SavedScaleList.only = string.format("%.2f", self:GetValue() / 100)
+					  FilteredNamePlate.isSettingChanged = true
+					  FilteredNamePlate_Frame_takeEffectBtn:Show()
                    </OnValueChanged>
                    <OnEnter>
                       GameTooltip:SetOwner(self, "ANCHOR_RIGTH");
@@ -125,6 +128,8 @@
 					  <!-- FilteredNamePlate_AdvancedFrame_show_TextOnlyOther:SetText("OnyShow Exclude Scale".."("..string.format("%.0f", self:GetValue()).."%)");
 					  -->
 					  Fnp_SavedScaleList.other = string.format("%.2f", self:GetValue() / 100)
+					  FilteredNamePlate.isSettingChanged = true
+					  FilteredNamePlate_Frame_takeEffectBtn:Show()
 				   </OnValueChanged>
                    <OnEnter>
                       GameTooltip:SetOwner(self, "ANCHOR_RIGTH");
@@ -177,7 +182,7 @@
 					</Anchor>
 				</Anchors>
 			</FontString> -->
-			<FontString name="$parent_show_Text2" inherits="GameFontNormal" text="注意此类设置, 需要/rl或者/reload.">
+			<!--FontString name="$parent_show_Text2" inherits="GameFontNormal" text="注意此类设置, 需要/rl或者/reload.">
 				<Anchors>
 					<Anchor point="TOP" relativeTo="$parent_Header_Text">
 						<Offset>
@@ -185,7 +190,7 @@
 						</Offset>
 					</Anchor>
 				</Anchors>
-			</FontString>
+			</FontString -->
 		</Layer>
 	</Layers>
 </Frame>

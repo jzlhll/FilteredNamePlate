@@ -1,18 +1,15 @@
+FilteredNamePlate = {}
 local FilteredNamePlate = FilteredNamePlate
-
 SLASH_FilteredNamePlate1 = "/fnp"
 local GetNamePlateForUnit = C_NamePlate.GetNamePlateForUnit
 local GetNamePlates = C_NamePlate.GetNamePlates
 local UnitName, GetUnitName = UnitName, GetUnitName
 local string_find = string.find
-local table_getn = table.getn
 local FilterNp_EventList = FilterNp_EventList
 
 local IS_REGISGER, IsCurOnlyShowStat, currentNpFlag, isScaleListBeSet, isNullOnlyList, isNullFilterList
-
+local ONE_LOAD_SYSTEM_SCALE
 local CurrentScaleList
-
-local AllAreaUnits
 
 --Fnp_Mode  仅显模式 true 过滤模式 false 暂时去掉过滤模式，其实没什么用
 --Fnp_OtherNPFlag 0是默认 1是TidyPlate模式 2是Kui 3是EUI
@@ -34,14 +31,14 @@ local function printInfo()
 	showstr = showstr.."\124cFFF58CBAUI类型:\124r "..supportUIName
 	print(showstr)
 	showstr = ""
-	if Fnp_ONameList ~= nil and table_getn(Fnp_ONameList) > 0 then
+	if Fnp_ONameList ~= nil and FilteredNamePlate.getTableCount(Fnp_ONameList) > 0 then
 		showstr = showstr.."\124cFFF58CBA仅显列表：\124r"..table.concat(Fnp_ONameList, ";")
 	else
 		showstr = showstr.."\124cFFF58CBA仅显列表：\124r空"
 	end
 	print(showstr)
 	showstr = ""
-	if Fnp_FNameList ~= nil and table_getn(Fnp_FNameList) > 0 then
+	if Fnp_FNameList ~= nil and FilteredNamePlate.getTableCount(Fnp_FNameList) > 0 then
 		showstr = showstr.."\124cFFF58CBA过滤列表：\124r"..table.concat(Fnp_FNameList, ";")
 	else
 		showstr = showstr.."\124cFFF58CBA过滤列表：\124r空"
@@ -50,7 +47,7 @@ local function printInfo()
 	print("\124cFFF58CBA默认比例:\124r "..Fnp_SavedScaleList.normal)
 	print("\124cFFF58CBA仅显单位比例:\124r "..Fnp_SavedScaleList.only)
 	print("\124cFFF58CBA非仅显单位比例:\124r "..Fnp_SavedScaleList.other)
-	--FilteredNamePlate:printATab(Fnp_SavedScaleList)
+	--FilteredNamePlate.printATab(Fnp_SavedScaleList)
 end
 
 local function registerMyEvents(self, event, ...)
@@ -78,10 +75,6 @@ local function registerMyEvents(self, event, ...)
 		IsCurOnlyShowStat = false
 	end
 
-	if AllAreaUnits == nil then
-		AllAreaUnits = {}
-	end
-
 	if Fnp_SavedScaleList == nil then
 		Fnp_SavedScaleList = {
 			only = 1.2,
@@ -90,14 +83,18 @@ local function registerMyEvents(self, event, ...)
 		}
 	end
 
+	ONE_LOAD_SYSTEM_SCALE = 0
 	isNullOnlyList = false
 	isNullFilterList = false
-	if table_getn(Fnp_ONameList) == 0 then isNullOnlyList = true end
-	if table_getn(Fnp_FNameList) == 0 then isNullFilterList = true end
+	FilteredNamePlate.printATab(Fnp_ONameList, "FnpOname:")
+	FilteredNamePlate.printATab(Fnp_FNameList, "FnpFname:")
+	if FilteredNamePlate.getTableCount(Fnp_ONameList) == 0 then isNullOnlyList = true end
+	if FilteredNamePlate.getTableCount(Fnp_FNameList) == 0 then isNullFilterList = true end
 
 	isScaleListBeSet = false
-	print("current is nil!!")
+	print("current is nil!!"..tostring(isNullOnlyList)..(" ")..tostring(isNullFilterList))
 	if Fnp_Enable == true then
+		FilteredNamePlate.isSettingChanged = false
 		for k, v in pairs(FilterNp_EventList) do
 			if k ~= "PLAYER_ENTERING_WORLD" then
 				self:RegisterEvent(k,v)
@@ -138,7 +135,6 @@ local function initScaleValues()
 	-- cannot use List ~= nil to if
 	if isScaleListBeSet == true then return end
 	print("initScaleValuees!!!")
-	isScaleListBeSet = true
 	local indx = currentNpFlag
 	if currentNpFlag == 3 then
 		indx = 0
@@ -146,7 +142,6 @@ local function initScaleValues()
 	for _, frame in pairs(GetNamePlates()) do
 		local foundUnit = frame.namePlateUnitToken or (frame.UnitFrame and frame.UnitFrame.unit)
 		if foundUnit then
-			isScaleListBeSet = true
 			CurrentScaleList = {
 			SYSTEM = 0.78,
 			normal = 1.0,
@@ -155,32 +150,37 @@ local function initScaleValues()
 			orgWidth = 130,
 			smallWidth = 40,
 			};
-			local tempSystemSc = 0.78
-			if indx == 0 then
-				if frame.UnitFrame then
-				tempSystemSc = frame.UnitFrame:GetEffectiveScale()
-				CurrentScaleList.orgWidth = frame.UnitFrame:GetWidth()
-				end
-			elseif indx == 1 then
-			if frame.carrier then
-				tempSystemSc = frame.carrier:GetEffectiveScale()
+			local tempSystemSc = ONE_LOAD_SYSTEM_SCALE
+			if tempSystemSc < 0.08 then
+				if indx == 0 then
+					if frame.UnitFrame then
+						tempSystemSc = frame.UnitFrame:GetEffectiveScale()
+						CurrentScaleList.orgWidth = frame.UnitFrame:GetWidth()
+					end
+				elseif indx == 1 then
+					if frame.carrier then
+						tempSystemSc = frame.carrier:GetEffectiveScale()
+					end
+				elseif indx == 2 then
+					if frame.kui then
+						tempSystemSc = frame.kui:GetEffectiveScale()
+					end
 			end
-			elseif indx == 2 then
-			if frame.kui then
-				tempSystemSc = frame.kui:GetEffectiveScale()
 			end
+			if tempSystemSc > 0.08 then
+				ONE_LOAD_SYSTEM_SCALE = tempSystemSc
+				CurrentScaleList.SYSTEM = tempSystemSc
+				CurrentScaleList.normal = tempSystemSc * Fnp_SavedScaleList.normal
+				CurrentScaleList.only = tempSystemSc * Fnp_SavedScaleList.only
+				CurrentScaleList.other = tempSystemSc * Fnp_SavedScaleList.other
+				isScaleListBeSet = true
+				CurrentScaleList.smallWidth = 40
+				-- CurrentScaleList.smallSpellBar"] = CurrentScaleList.normal * 0.8
+				print("Current Scale List")
+				FilteredNamePlate.printCurrentScaleList(CurrentScaleList)
+				print("Fnp Saved Scale List")
+				FilteredNamePlate.printSavedScaleList(Fnp_SavedScaleList)
 			end
-			CurrentScaleList.SYSTEM = tempSystemSc
-			CurrentScaleList.normal = tempSystemSc * Fnp_SavedScaleList.normal
-			CurrentScaleList.only = tempSystemSc * Fnp_SavedScaleList.only
-			CurrentScaleList.other = tempSystemSc * Fnp_SavedScaleList.other
-			CurrentScaleList.smallWidth = 40
-			-- CurrentScaleList.smallSpellBar"] = CurrentScaleList.normal * 0.8
-
-			print("Current Scale List")
-			FilteredNamePlate:printCurrentScaleList(CurrentScaleList)
-			print("Fnp Saved Scale List")
-			FilteredNamePlate:printSavedScaleList(Fnp_SavedScaleList)
 		end
 		break
 	end
@@ -203,7 +203,7 @@ local hideSwitchSingleUnit = {
 	[2] = function(frame)
 		if frame == nil then return end
 		if frame.kui then
-			frame.kui:SetScale(CurrentScaleList["other"])
+			frame.kui:SetScale(CurrentScaleList.other)
 		end
 	end,
 	[3] = function(frame)
@@ -270,12 +270,14 @@ local function showSingleUnit(frame, isOnlyShowSpellCast, isThisOnlyShow, restor
 	end
 end
 
-local function actionUnitStateAfterChanged()
+function FilteredNamePlate.actionUnitStateAfterChanged()
+	isScaleListBeSet = false
+	initScaleValues()
 	local matched = false
 	if Fnp_Enable == true then
 		--仅显
 		isNullOnlyList = false
-		if table_getn(Fnp_ONameList) == 0 then isNullOnlyList = true end
+		if FilteredNamePlate.getTableCount(Fnp_ONameList) == 0 then isNullOnlyList = true end
 		for _, frame in pairs(GetNamePlates()) do
 			if isNullOnlyList == true then
 				showSingleUnit(frame, false, true, false)
@@ -285,13 +287,13 @@ local function actionUnitStateAfterChanged()
 				if matched == true then
 					showSingleUnit(frame, false, true, false)
 				else
-					local func = hideSwitchSingleUnit[currentNpFlag];func(frame)
+					hideSwitchSingleUnit[currentNpFlag](frame)
 				end
 			end
 		end
  		--过滤
 		isNullFilterList = false
-		if table_getn(Fnp_FNameList) == 0 then isNullFilterList = true end
+		if FilteredNamePlate.getTableCount(Fnp_FNameList) == 0 then isNullFilterList = true end
 		for _, frame in pairs(GetNamePlates()) do
 			if isNullFilterList == true then
 				showSingleUnit(frame, false, false, false)
@@ -299,7 +301,7 @@ local function actionUnitStateAfterChanged()
 				local foundUnit = frame.namePlateUnitToken or (frame.UnitFrame and frame.UnitFrame.unit)
 				matched = isMatchedNameList(Fnp_FNameList, GetUnitName(foundUnit))
 				if matched == true then
-					local func = hideSwitchSingleUnit[currentNpFlag];func(frame)
+					hideSwitchSingleUnit[currentNpFlag](frame)
 				else
 					showSingleUnit(frame, false, false, false)
 				end
@@ -318,17 +320,6 @@ local function actionUnitStateAfterChanged()
 	end
 end
 
---[[ find a unit by GetNamePlates
-for _, frame in pairs(GetNamePlates()) do
-			local foundUnit = frame.namePlateUnitToken or (frame.UnitFrame and frame.UnitFrame.unit)
-			if foundUnit and (foundUnit == unitid) then
-				-- TODO 判断是否是正在读条
-				-- hideSingleUnit(frame)
-				local func = hideSwitchSingleUnit[currentNpFlag];func(frame)
-				break
-			end
-		end
-]]
 local function getNamePlateFromPlatesById(unitid)
 	for _, frame in pairs(GetNamePlates()) do
 		local foundUnit = frame.namePlateUnitToken or (frame.UnitFrame and frame.UnitFrame.unit)
@@ -346,7 +337,7 @@ local function actionUnitAddedForce(unitid)
 	if isNullFilterList == false then curFilterMatch = isMatchedNameList(Fnp_FNameList, addedname) end
 	if curFilterMatch == true then
 		local frame = GetNamePlateForUnit(unitid)
-		local func = hideSwitchSingleUnit[currentNpFlag];func(frame)
+		hideSwitchSingleUnit[currentNpFlag](frame)
 		return
 	end
 	-- 1. 当前add的单位名,是否match
@@ -355,7 +346,7 @@ local function actionUnitAddedForce(unitid)
 		--新增单位不需要仅显,但是目前处于仅显情况下, 那么,就将当前这个Hide TODO 这里改成直接用自己,而不是用GetNamePlates
 		-- local frame = getNamePlateFromPlatesById(unitid)
 		local frame = GetNamePlateForUnit(unitid)
-		local func = hideSwitchSingleUnit[currentNpFlag];func(frame)
+		hideSwitchSingleUnit[currentNpFlag](frame)
 	elseif curOnlyMatch == false and IsCurOnlyShowStat == false then
 		-- 新增单位不需要仅显, 此时也没有仅显, 就不管了.现在我们将当前的效果展示出来
 		showSingleUnit(GetNamePlateForUnit(unitid), false, false, false)
@@ -371,7 +362,7 @@ local function actionUnitAddedForce(unitid)
 				if (unitid == foundUnit) then
 					showSingleUnit(frame, false, true, false)
 				else
-					local func = hideSwitchSingleUnit[currentNpFlag];func(frame)
+					hideSwitchSingleUnit[currentNpFlag](frame)
 				end
 			end
 		end
@@ -415,9 +406,11 @@ local function actionUnitAdded(self, event, ...)
 	if isScaleListBeSet == false then
 		initScaleValues()
 	end
-	if isNullOnlyList == false and isNullFilterList == false then
+
+	if isNullOnlyList == true and isNullFilterList == true then
 		return
 	end
+
 	local unitid = ...
 	if UnitIsPlayer(unitid) then
 		return
@@ -427,7 +420,7 @@ end
 
 local function actionUnitRemoved(self, event, ...)
 	--这里不需要判断是否为空
-	-- if isNullOnlyList == false and isNullFilterList == false then
+	-- if isNullOnlyList == true and isNullFilterList == true then
 	--	return
 	-- end
 	if IsCurOnlyShowStat == false then
@@ -480,7 +473,7 @@ local function actionUnitSpellCastStopOnlyShowMode(...)
 	if curMatch == false then --false，而且是处于isCurrentOnlyShow
 		local frame = GetNamePlateForUnit(unitid)
 		-- hideSingleUnit(frame)
-		local func = hideSwitchSingleUnit[currentNpFlag];func(frame)
+		hideSwitchSingleUnit[currentNpFlag](frame)
 	end
 end
 
@@ -522,47 +515,26 @@ function FilteredNamePlate_OnLoad(self)
 	self:RegisterEvent("PLAYER_ENTERING_WORLD")
 end
 
---[[function FNP_ModeCheckButtonChecked(mode, checked)
-	if mode == "o" then
-		if checked == true then
-			Fnp_Mode = true
-			FilteredNamePlate_Frame_FilteredModeCheckBtn:SetChecked(false);
-		else
-			Fnp_Mode = false
-			FilteredNamePlate_Frame_FilteredModeCheckBtn:SetChecked(true);
-		end
-	else
-		if checked == true then
-			Fnp_Mode = false
-			FilteredNamePlate_Frame_OnlyShowModeCheckBtn:SetChecked(false);
-		else
-			Fnp_Mode = true
-			FilteredNamePlate_Frame_OnlyShowModeCheckBtn:SetChecked(true);
-		end
-	end
-	actionUnitStateAfterChanged()
-end --]]
-
-function FNP_TidyEnableCheckButtonChecked(checkbtn, checked, flag)
+function FilteredNamePlate.FNP_UITypeChanged(checkbtn, checked, flag)
 	if checked then
 		Fnp_OtherNPFlag = flag
 		if flag == 0 then
-			FilteredNamePlate_Frame_TidyEnableCheckBtn:SetChecked(false)
+			FilteredNamePlate_Frame_tidyCheckBtn:SetChecked(false)
 			FilteredNamePlate_Frame_KuiCheckBtn:SetChecked(false)
 			FilteredNamePlate_Frame_OrgCheckBtn:SetChecked(true)
 			FilteredNamePlate_Frame_EUIRayBtn:SetChecked(false)
 		elseif flag == 1 then
-			FilteredNamePlate_Frame_TidyEnableCheckBtn:SetChecked(true)
+			FilteredNamePlate_Frame_tidyCheckBtn:SetChecked(true)
 			FilteredNamePlate_Frame_KuiCheckBtn:SetChecked(false)
 			FilteredNamePlate_Frame_OrgCheckBtn:SetChecked(false)
 			FilteredNamePlate_Frame_EUIRayBtn:SetChecked(false)
 		elseif flag == 2 then
-			FilteredNamePlate_Frame_TidyEnableCheckBtn:SetChecked(false)
+			FilteredNamePlate_Frame_tidyCheckBtn:SetChecked(false)
 			FilteredNamePlate_Frame_KuiCheckBtn:SetChecked(true)
 			FilteredNamePlate_Frame_OrgCheckBtn:SetChecked(false)
 			FilteredNamePlate_Frame_EUIRayBtn:SetChecked(false)
 		elseif flag == 3 then
-			FilteredNamePlate_Frame_TidyEnableCheckBtn:SetChecked(false)
+			FilteredNamePlate_Frame_tidyCheckBtn:SetChecked(false)
 			FilteredNamePlate_Frame_KuiCheckBtn:SetChecked(false)
 			FilteredNamePlate_Frame_OrgCheckBtn:SetChecked(false)
 			FilteredNamePlate_Frame_EUIRayBtn:SetChecked(true)
@@ -573,17 +545,17 @@ function FNP_TidyEnableCheckButtonChecked(checkbtn, checked, flag)
 	print("\124cFFF58CBA修改了插件类型，请重载/reload或者/rl !!!\124r")
 end
 
-function FNP_EnableButtonChecked(self, checked)
+function FilteredNamePlate.FNP_EnableButtonChecked(self, checked)
 	if (checked) then
 		Fnp_Enable = true;
 	else
 		Fnp_Enable = false;
 		IsCurOnlyShowStat = false
 	end
-	actionUnitStateAfterChanged()
+	FilteredNamePlate.actionUnitStateAfterChanged()
 end
 
-function FNP_ModeEditBoxWritenEsc()
+function FilteredNamePlate.FNP_ModeEditBoxWritenEsc()
 	local names = ""
 	local first = true
 	for key, var in ipairs(Fnp_ONameList) do
@@ -609,7 +581,7 @@ function FNP_ModeEditBoxWritenEsc()
 	FilteredNamePlate_Frame_FilteredModeEditBox:SetText(names);
 end
 
-function FNP_ModeEditBoxWriten(mode, inputStr)
+function FilteredNamePlate.FNP_ModeEditBoxWriten(mode, inputStr)
 	if mode == "o" then
 		Fnp_ONameList = {}  
 		string.gsub(inputStr, '[^;]+', function(w) table.insert(Fnp_ONameList, w) end )
@@ -617,10 +589,9 @@ function FNP_ModeEditBoxWriten(mode, inputStr)
 		Fnp_FNameList = {}  
 		string.gsub(inputStr, '[^;]+', function(w) table.insert(Fnp_FNameList, w) end )
 	end
-	actionUnitStateAfterChanged()
 end
 
-function FNP_ChangeFrameVisibility(...)
+function FilteredNamePlate.FNP_ChangeFrameVisibility(...)
 	local advanced = ...
 	if advanced then
 		if FilteredNamePlate_AdvancedFrame:IsVisible() then
@@ -636,8 +607,10 @@ function FNP_ChangeFrameVisibility(...)
 		FilteredNamePlate_AdvancedFrame:Hide()
 		printInfo()
 	else
+		local oldChange = FilteredNamePlate.isSettingChanged
 		FilteredNamePlate_Frame:Show()
-		-- FilteredNamePlate_AdvancedFrame:Show()
+		FilteredNamePlate_AdvancedFrame:Show()
+
 		if Fnp_Enable == true then
 			FilteredNamePlate_Frame_EnableCheckButton:SetChecked(true);
 		else
@@ -650,9 +623,9 @@ function FNP_ChangeFrameVisibility(...)
 			FilteredNamePlate_Frame_OrgCheckBtn:SetChecked(false);
 		end
 		if Fnp_OtherNPFlag == 1 then
-			FilteredNamePlate_Frame_TidyEnableCheckBtn:SetChecked(true);
+			FilteredNamePlate_Frame_tidyCheckBtn:SetChecked(true);
 		else
-			FilteredNamePlate_Frame_TidyEnableCheckBtn:SetChecked(false);
+			FilteredNamePlate_Frame_tidyCheckBtn:SetChecked(false);
 		end
 
 		if Fnp_OtherNPFlag == 2 then
@@ -682,6 +655,10 @@ function FNP_ChangeFrameVisibility(...)
 
 		FilteredNamePlate_Frame_OnlyShowModeEditBox:SetText(table.concat(Fnp_ONameList, ";"));
 		FilteredNamePlate_Frame_FilteredModeEditBox:SetText(table.concat(Fnp_FNameList, ";"));
+		
+		if oldChange == false then
+			FilteredNamePlate_Frame_takeEffectBtn:Hide()
+		end
 	end
 end
 
@@ -693,16 +670,16 @@ function SlashCmdList.FilteredNamePlate(msg)
 		print("\124cFFF58CBA/fnp change 或 /fnp ch \124r快速切换开关")
 		print("\124cFFF58CBA/fnp hideSpellCast 或 /fnp hsc \124r快速隐藏正在施法的怪")
 	elseif msg == "options" or msg == "opt" then
-		FNP_ChangeFrameVisibility()
+		FilteredNamePlate.FNP_ChangeFrameVisibility()
 	elseif msg == "change" or msg == "ch" then
 		if Fnp_Enable == true then
 			FilteredNamePlate_Frame_EnableCheckButton:SetChecked(false)
-			FNP_EnableButtonChecked(FilteredNamePlate_Frame, false)
+			FilteredNamePlate.FNP_EnableButtonChecked(FilteredNamePlate_Frame, false)
 		else
 			FilteredNamePlate_Frame_EnableCheckButton:SetChecked(true)
-			FNP_EnableButtonChecked(FilteredNamePlate_Frame, true)
+			FilteredNamePlate.FNP_EnableButtonChecked(FilteredNamePlate_Frame, true)
 		end
 	elseif msg == "hideSpellCast" or msg == "hsc" then
-		actionUnitStateAfterChanged()
+		FilteredNamePlate.actionUnitStateAfterChanged()
 	end
 end

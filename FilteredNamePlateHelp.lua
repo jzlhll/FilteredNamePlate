@@ -1,14 +1,29 @@
-FilteredNamePlate = {}
-function FilteredNamePlate:printCurrentScaleList(sl)
+function FilteredNamePlate.printCurrentScaleList(sl)
     print("Curr SYSTEM "..sl.SYSTEM..(" normal ")..sl.normal..(" only ")..sl.only)
     print("Curr other "..sl.other..(" orgwidht ")..sl.orgWidth..(" smallWidth ")..sl.smallWidth)
 end
 
-function FilteredNamePlate:printSavedScaleList(sl)
+function FilteredNamePlate.printSavedScaleList(sl)
     print("Saved other "..sl.other..(" only ")..sl.only..(" normal ")..sl.normal)
 end
 
-function FilteredNamePlate:insertATabValue(tab, value)
+function FilteredNamePlate.printATab(atab, extStr)
+	local str = ""
+    for pos, name in ipairs(atab) do
+        str = str..pos..(" ")..name..(", ")
+    end
+	print(extStr..str)
+end
+
+function FilteredNamePlate.getTableCount(atab)
+	local count = 0
+    for pos, name in ipairs(atab) do
+        count = count + 1
+    end
+	return count
+end
+
+function FilteredNamePlate.insertATabValue(tab, value)
     local isExist = false;
     for pos, name in ipairs(tab) do
         if (name == value) then
@@ -18,7 +33,7 @@ function FilteredNamePlate:insertATabValue(tab, value)
     if not isExist then table.insert(tab, value) end;
 end
 
-function FilteredNamePlate:removeATabValue(tab, value)
+function FilteredNamePlate.removeATabValue(tab, value)
     for pos, name in ipairs(tab) do
         if (name == value) then
             table.remove(tab, pos)
