@@ -41,11 +41,42 @@
 				</OnClick>
 			</Scripts>
 		</Button>
+		<Slider name="$parent_SystemScale" inherits="OptionsSliderTemplate">
+			<Anchors>
+                    <Anchor point="LEFT">
+                      <Offset>
+                         <AbsDimension x="30" y="110" />
+                      </Offset>
+                   </Anchor>
+            </Anchors>
+            <Scripts>
+                   <OnLoad>
+                      _G[self:GetName().."Text"]:SetText("默认缩放比例");
+                      _G[self:GetName().."High"]:SetText("大 150%");
+                      _G[self:GetName().."Low"]:SetText("小 40%");
+                      self:SetMinMaxValues(40, 150);
+                      self:SetValueStep(1);
+                   </OnLoad>
+                   <OnValueChanged>
+                      _G[self:GetName().."Text"]:SetText("默认缩放比例".."("..string.format("%.0f", self:GetValue()).."%)");
+					  <!-- FilteredNamePlate_AdvancedFrame_show_TextOnlyOther:SetText("OnyShow Exclude Scale".."("..string.format("%.0f", self:GetValue()).."%)");
+					  -->
+					  Fnp_SavedScaleList.normal = string.format("%.2f", self:GetValue() / 100)
+				   </OnValueChanged>
+                   <OnEnter>
+                      GameTooltip:SetOwner(self, "ANCHOR_RIGTH");
+                      GameTooltip:SetText("默认缩放姓名板大小 Default Scale");
+                   </OnEnter>
+                   <OnLeave>
+                      GameTooltip:Hide();
+                   </OnLeave>
+            </Scripts>
+        </Slider>
 		<Slider name="$parent_OnlyShowScale" inherits="OptionsSliderTemplate">
                <Anchors>
                    <Anchor point="LEFT">
                       <Offset>
-                         <AbsDimension x="30" y="100" />
+                         <AbsDimension x="30" y="10" />
                       </Offset>
                    </Anchor>
                </Anchors>
@@ -61,7 +92,7 @@
                       _G[self:GetName().."Text"]:SetText("仅显比例".."("..string.format("%.0f", self:GetValue()).."%)");
 					  <!-- FilteredNamePlate_AdvancedFrame_show_TextOnly:SetText("OnlyShow Scale".."("..string.format("%.0f", self:GetValue()).."%)");
 					  -->
-					  Fnp_SavedScaleList["only"] = string.format("%.2f", self:GetValue() / 100)
+					  Fnp_SavedScaleList.only = string.format("%.2f", self:GetValue() / 100)
                    </OnValueChanged>
                    <OnEnter>
                       GameTooltip:SetOwner(self, "ANCHOR_RIGTH");
@@ -77,7 +108,7 @@
                <Anchors>
                    <Anchor point="LEFT">
                       <Offset>
-                         <AbsDimension x="30" y="20" />
+                         <AbsDimension x="30" y="-50" />
                       </Offset>
                    </Anchor>
                </Anchors>
@@ -93,7 +124,7 @@
                       _G[self:GetName().."Text"]:SetText("非仅显的其他比例".."("..string.format("%.0f", self:GetValue()).."%)");
 					  <!-- FilteredNamePlate_AdvancedFrame_show_TextOnlyOther:SetText("OnyShow Exclude Scale".."("..string.format("%.0f", self:GetValue()).."%)");
 					  -->
-					  Fnp_SavedScaleList["other"] = string.format("%.2f", self:GetValue() / 100)
+					  Fnp_SavedScaleList.other = string.format("%.2f", self:GetValue() / 100)
 				   </OnValueChanged>
                    <OnEnter>
                       GameTooltip:SetOwner(self, "ANCHOR_RIGTH");

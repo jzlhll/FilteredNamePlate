@@ -1,5 +1,6 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/..\FrameXML\UI.xsd">
 <Script file="FilteredNamePlate.lua"/>
+<Script file="FilteredNamePlateHelp.lua" />
 <Frame name="FilteredNamePlate_Frame" hidden="true" parent="UIParent" toplevel="true" movable="true" frameStrata="HIGH" enableMouse="true" enableKeyboard="true">
 	<Size>
 		<AbsDimension x="380" y="400" />
@@ -280,37 +281,6 @@
                 </Scripts>
                 <FontString inherits="ChatFontNormal" />
         </EditBox>
-		<Slider name="$parent_SystemScale" inherits="OptionsSliderTemplate">
-			<Anchors>
-                    <Anchor point="TOPLEFT" relativeTo="$parent_FilteredModeEditBox" relativePoint="BOTTOMLEFT">
-                        <Offset>
-                            <AbsDimension x="10" y="-40" />
-                        </Offset>
-                    </Anchor>
-            </Anchors>
-            <Scripts>
-                   <OnLoad>
-                      _G[self:GetName().."Text"]:SetText("默认缩放比例");
-                      _G[self:GetName().."High"]:SetText("大 150%");
-                      _G[self:GetName().."Low"]:SetText("小 40%");
-                      self:SetMinMaxValues(40, 150);
-                      self:SetValueStep(1);
-                   </OnLoad>
-                   <OnValueChanged>
-                      _G[self:GetName().."Text"]:SetText("默认缩放比例".."("..string.format("%.0f", self:GetValue()).."%)");
-					  <!-- FilteredNamePlate_AdvancedFrame_show_TextOnlyOther:SetText("OnyShow Exclude Scale".."("..string.format("%.0f", self:GetValue()).."%)");
-					  -->
-					  Fnp_SavedScaleList["system"] = string.format("%.2f", self:GetValue() / 100)
-				   </OnValueChanged>
-                   <OnEnter>
-                      GameTooltip:SetOwner(self, "ANCHOR_RIGTH");
-                      GameTooltip:SetText("默认缩放姓名板大小 Default Scale");
-                   </OnEnter>
-                   <OnLeave>
-                      GameTooltip:Hide();
-                   </OnLeave>
-            </Scripts>
-        </Slider>
 	</Frames>
 	<Layers>
 		<Layer>
