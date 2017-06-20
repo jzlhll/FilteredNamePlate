@@ -134,6 +134,7 @@ local function initScaleValues()
 	-- cannot use List ~= nil to if
 	print("initttScaleValuessss")
 	local indx = currentNpFlag
+	local tempSystemSc = ONE_LOAD_SYSTEM_SCALE
 	for _, frame in pairs(GetNamePlates()) do
 		local foundUnit = frame.namePlateUnitToken or (frame.UnitFrame and frame.UnitFrame.unit)
 		if foundUnit then
@@ -144,11 +145,13 @@ local function initScaleValues()
 			other = 0.25,
 			orgWidth = 130,
 			smallWidth = 40,
+			orgCastWidth = 130,
+			smallCastWidth = 80,
 			spellInOs = 0.6,
 			};
-			local tempSystemSc = ONE_LOAD_SYSTEM_SCALE
 			local tempSpellScale = 0.5
 			if tempSystemSc < 0.08 then
+				print("getScale")
 				if indx == 3 then --EUI
 					if frame.UnitFrame then
 						tempSystemSc = frame.UnitFrame:GetEffectiveScale()
@@ -164,8 +167,12 @@ local function initScaleValues()
 					end
 				elseif indx == 0 then --Orig
 					if frame.UnitFrame then
+						tempSpellScale = 1
+						tempSystemSc = 0.8
 						CurrentScaleList.orgWidth = frame.UnitFrame:GetWidth()
-						tempSystemSc = frame.UnitFrame.castBar:GetEffectiveScale()
+						CurrentScaleList.orgCastWidth = frame.UnitFrame.castBar:GetWidth()
+						CurrentScaleList.smallCastWidth = 80
+						CurrentScaleList.smallWidth = 40
 					end
 				end
 			end
@@ -178,7 +185,7 @@ local function initScaleValues()
 				CurrentScaleList.other = tempSystemSc * Fnp_SavedScaleList.other
 				isScaleListBeSet = true
 				isUITypeError = 0
-				CurrentScaleList.smallWidth = 40
+
 				CurrentScaleList.spellInOs = CurrentScaleList.normal * tempSpellScale
 				print("not delete inittt")
 				FilteredNamePlate.printCurrentScaleList(CurrentScaleList)
@@ -194,7 +201,7 @@ local hideSwitchSingleUnit = {
 		if frame.UnitFrame then
 			frame.UnitFrame.name:SetWidth(CurrentScaleList.smallWidth)
 			frame.UnitFrame.healthBar:Hide()
-			frame.UnitFrame.castBar:SetScale(CurrentScaleList.spellInOs)
+			frame.UnitFrame.castBar:SetWidth(CurrentScaleList.smallCastWidth)
 		end
 	end,
 	[1] = function(frame)
@@ -224,15 +231,15 @@ local function showSingleUnit(frame, isOnlyShowSpellCast, isThisOnlyShow, restor
 		frame.UnitFrame.name:SetWidth(CurrentScaleList.orgWidth)
 		if isOnlyShowSpellCast == false then frame.UnitFrame.healthBar:Show() end
 		if restore then
-			frame.UnitFrame.castBar:SetScale(CurrentScaleList.SYSTEM)
+			frame.UnitFrame.castBar:SetWidth(CurrentScaleList.orgCastWidth)
 		else
 			if isOnlyShowSpellCast then
-				frame.UnitFrame.castBar:SetScale(CurrentScaleList.spellInOs)
+				frame.UnitFrame.castBar:SetWidth(CurrentScaleList.smallCastWidth)
 			else
 				if isThisOnlyShow then
-					frame.UnitFrame.castBar:SetScale(CurrentScaleList.only)
+					frame.UnitFrame.castBar:SetWidth(CurrentScaleList.orgCastWidth)
 				else
-					frame.UnitFrame.castBar:SetScale(CurrentScaleList.normal)
+					frame.UnitFrame.castBar:SetWidth(CurrentScaleList.orgCastWidth)
 				end
 			end
 		end
@@ -290,7 +297,6 @@ end
 function FilteredNamePlate.actionUnitStateAfterChanged()
 	isScaleListBeSet = false
 	isUITypeError = 0
-	ONE_LOAD_SYSTEM_SCALE = 0
 	initScaleValues()
 	local matched = false
 	if Fnp_Enable == true then
