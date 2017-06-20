@@ -170,7 +170,7 @@
 				</OnLeave>
 			</Scripts>
 		</CheckButton>
-		<CheckButton name="$parent_OnlyShowModeCheckBtn" inherits="OptionsCheckButtonTemplate">
+		<!-- CheckButton name="$parent_OnlyShowModeCheckBtn" inherits="OptionsCheckButtonTemplate">
 			<Anchors>
 				<Anchor point="TOPLEFT" relativeTo="$parent">
 				<Offset>
@@ -193,7 +193,7 @@
 					GameTooltip:Hide();
 				</OnLeave>
 			</Scripts>
-		</CheckButton>
+		</CheckButton -->
 
         <EditBox name="$parent_OnlyShowModeEditBox" letters="300" autoFocus="false" multiLine="true">
                 <Layers>
@@ -207,9 +207,9 @@
                     <AbsDimension x="200" y="60" />
                 </Size>
                 <Anchors>
-                    <Anchor point="TOPLEFT" relativeTo="$parent_OnlyShowModeCheckBtn" relativePoint="BOTTOMLEFT">
+                    <Anchor point="TOPLEFT" relativeTo="$parent_TidyEnableCheckBtn" relativePoint="BOTTOMLEFT">
                         <Offset>
-                            <AbsDimension x="0" y="0" />
+                            <AbsDimension x="0" y="-50" />
                         </Offset>
                     </Anchor>
                 </Anchors>
@@ -226,7 +226,7 @@
                 <FontString inherits="ChatFontNormal" />
         </EditBox>
 
-		<CheckButton name="$parent_FilteredModeCheckBtn" inherits="OptionsCheckButtonTemplate">
+		<!-- CheckButton name="$parent_FilteredModeCheckBtn" inherits="OptionsCheckButtonTemplate">
 			<Anchors>
 				<Anchor point="CENTER" relativeTo="$parent_OnlyShowModeEditBox" relativePoint="BOTTOMLEFT">
 				<Offset>
@@ -249,7 +249,7 @@
 					GameTooltip:Hide();
 				</OnLeave>
 			</Scripts>
-		</CheckButton>
+		</CheckButton -->
 
 		<EditBox name="$parent_FilteredModeEditBox" letters="300" autoFocus="false" multiLine="true">
                 <Layers>
@@ -263,9 +263,9 @@
                     <AbsDimension x="200" y="60" />
                 </Size>
                 <Anchors>
-                    <Anchor point="TOPLEFT" relativeTo="$parent_FilteredModeCheckBtn" relativePoint="BOTTOMLEFT">
+                    <Anchor point="TOPLEFT" relativeTo="$parent_OnlyShowModeEditBox" relativePoint="BOTTOMLEFT">
                         <Offset>
-                            <AbsDimension x="0" y="0" />
+                            <AbsDimension x="0" y="-80" />
                         </Offset>
                     </Anchor>
                 </Anchors>
@@ -302,6 +302,24 @@
 						<Offset>
 							<AbsDimension x="0" y="-14" />
 						</Offset>
+					</Anchor>
+				</Anchors>
+			</FontString>
+			<FontString name="$parent_OnlyShows_Text" inherits="GameFontNormal" text="仅显列表 OnlyShow List">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parent_OnlyShowModeEditBox" relativePoint="TOPLEFT">
+					<Offset>
+						<AbsDimension x="5" y="25" />
+					</Offset>
+					</Anchor>
+				</Anchors>
+			</FontString>
+			<FontString name="$parent_Filters_Text" inherits="GameFontNormal" text="过滤列表 Filter List">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parent_FilteredModeEditBox" relativePoint="TOPLEFT">
+					<Offset>
+						<AbsDimension x="5" y="25" />
+					</Offset>
 					</Anchor>
 				</Anchors>
 			</FontString>
