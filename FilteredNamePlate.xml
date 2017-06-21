@@ -3,7 +3,7 @@
 <Script file="FilteredNamePlateHelp.lua" />
 <Frame name="FilteredNamePlate_Frame" hidden="true" parent="UIParent" toplevel="true" movable="true" frameStrata="HIGH" enableMouse="true" enableKeyboard="true">
 	<Size>
-		<AbsDimension x="650" y="420" />
+		<AbsDimension x="621" y="420" />
 	</Size>
 	<Anchors>
 		<Anchor point="CENTER" />
@@ -274,7 +274,7 @@
 			<Anchors>
 				<Anchor point="RIGHT">
 				  <Offset>
-					 <AbsDimension x="-100" y="110" />
+					 <AbsDimension x="-30" y="110" />
 				  </Offset>
 			   </Anchor>
             </Anchors>
@@ -339,7 +339,7 @@
 		   <Anchors>
 			   <Anchor point="RIGHT">
 				  <Offset>
-					 <AbsDimension x="-100" y="0" />
+					 <AbsDimension x="-30" y="0" />
 				  </Offset>
 			   </Anchor>
 		   </Anchors>
@@ -419,7 +419,7 @@
 					</Anchor>
 				</Anchors>
 			</Texture>
-			<FontString name="$parent_Header_Text" inherits="GameFontNormal" text="过滤姓名板">
+			<FontString name="$parent_Header_Text" inherits="GameFontNormal" text="过滤姓名板 FNP (A)">
 				<Anchors>
 					<Anchor point="TOP" relativeTo="$parent_Header">
 						<Offset>

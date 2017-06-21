@@ -236,11 +236,11 @@ local hideSwitchSingleUnit = {
 		if frame == nil then return end
 		if frame.UnitFrame then
 			frame.UnitFrame.name:SetWidth(CurrentOrigScaleList.name.small)
-			-- frame.UnitFrame.healthBar:Hide()
-			frame.UnitFrame.healthBar:SetWidth(CurrentOrigScaleList.healthbar.small)
-			frame.UnitFrame.healthBar:SetScale(CurrentOrigScaleList.healthbar.smallScale)
-			frame.UnitFrame.castBar:SetWidth(CurrentOrigScaleList.castbar.small)
-			frame.UnitFrame.castBar:SetScale(CurrentOrigScaleList.castbar.smallScale)
+			frame.UnitFrame.healthBar:Hide()
+			--frame.UnitFrame.healthBar:SetWidth(CurrentOrigScaleList.healthbar.small)
+			--frame.UnitFrame.castBar:SetWidth(CurrentOrigScaleList.castbar.small)
+			--frame.UnitFrame.healthBar:SetScale(CurrentOrigScaleList.healthbar.smallScale)
+			--frame.UnitFrame.castBar:SetScale(CurrentOrigScaleList.castbar.smallScale)
 		end
 	end,
 	[1] = function(frame)
@@ -268,25 +268,25 @@ local function showSingleUnit(frame, isOnlyShowSpellCast, restore)
 	if currentNpFlag == 0 and frame.UnitFrame then  -- ORig
 		if restore == true then
 			frame.UnitFrame.name:SetWidth(CurrentOrigScaleList.name.SYSTEM)
-			-- frame.UnitFrame.healthBar:Show()
-			frame.UnitFrame.healthBar:SetWidth(CurrentOrigScaleList.healthbar.SYSTEM)
-			frame.UnitFrame.healthBar:SetScale(CurrentOrigScaleList.healthbar.SYSTEM_SCALE)
-			frame.UnitFrame.castBar:SetWidth(CurrentOrigScaleList.castbar.SYSTEM)
-			frame.UnitFrame.castBar:SetScale(CurrentOrigScaleList.castbar.SYSTEM_SCALE)
+			frame.UnitFrame.healthBar:Show()
+			--frame.UnitFrame.healthBar:SetWidth(CurrentOrigScaleList.healthbar.SYSTEM)
+			--frame.UnitFrame.healthBar:SetScale(CurrentOrigScaleList.healthbar.SYSTEM_SCALE)
+			--frame.UnitFrame.castBar:SetWidth(CurrentOrigScaleList.castbar.SYSTEM)
+			--frame.UnitFrame.castBar:SetScale(CurrentOrigScaleList.castbar.SYSTEM_SCALE)
 		elseif isOnlyShowSpellCast == false then
 			frame.UnitFrame.name:SetWidth(CurrentOrigScaleList.name.normal)
-			-- frame.UnitFrame.healthBar:Show()
-			frame.UnitFrame.healthBar:SetWidth(CurrentOrigScaleList.healthbar.normal)
-			frame.UnitFrame.healthBar:SetScale(CurrentOrigScaleList.healthbar.normalScale)
-			frame.UnitFrame.castBar:SetWidth(CurrentOrigScaleList.castbar.normal)
-			frame.UnitFrame.castBar:SetScale(CurrentOrigScaleList.castbar.normalScale)
+			frame.UnitFrame.healthBar:Show()
+			--frame.UnitFrame.healthBar:SetWidth(CurrentOrigScaleList.healthbar.normal)
+			--frame.UnitFrame.healthBar:SetScale(CurrentOrigScaleList.healthbar.normalScale)
+			--frame.UnitFrame.castBar:SetWidth(CurrentOrigScaleList.castbar.normal)
+			--frame.UnitFrame.castBar:SetScale(CurrentOrigScaleList.castbar.normalScale)
 		else
 			frame.UnitFrame.name:SetWidth(CurrentOrigScaleList.name.middle)
-			-- frame.UnitFrame.healthBar:Show()
-			frame.UnitFrame.healthBar:SetWidth(CurrentOrigScaleList.healthbar.middle)
-			frame.UnitFrame.healthBar:SetScale(CurrentOrigScaleList.healthbar.middleScale)
-			frame.UnitFrame.castBar:SetWidth(CurrentOrigScaleList.castbar.middle)
-			frame.UnitFrame.castBar:SetScale(CurrentOrigScaleList.castbar.middleScale)
+			frame.UnitFrame.healthBar:Show()
+			--frame.UnitFrame.healthBar:SetWidth(CurrentOrigScaleList.healthbar.middle)
+			--frame.UnitFrame.healthBar:SetScale(CurrentOrigScaleList.healthbar.middleScale)
+			--frame.UnitFrame.castBar:SetWidth(CurrentOrigScaleList.castbar.middle)
+			--frame.UnitFrame.castBar:SetScale(CurrentOrigScaleList.castbar.middleScale)
 		end
 		return
 	end
@@ -311,7 +311,7 @@ local function showSingleUnit(frame, isOnlyShowSpellCast, restore)
 end
 
 function FilteredNamePlate.actionUnitStateAfterChanged()
-    FilteredNamePlate.printATab(Fnp_SavedScaleList, "Saved:")
+    FilteredNamePlate.printSavedScaleList(Fnp_SavedScaleList)
 	initScaleValues()
 	local matched = false
 	if Fnp_Enable == true then
@@ -560,7 +560,6 @@ function FilteredNamePlate_OnEvent(self, event, ...)
 end
 
 function FilteredNamePlate_OnLoad(self)
-	print("ONLOADDDD")
 	IS_REGISGER = false
 	isUIErrorInOneLoad = false
 	self:RegisterEvent("PLAYER_ENTERING_WORLD")

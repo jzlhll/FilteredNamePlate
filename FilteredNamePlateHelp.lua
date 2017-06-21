@@ -5,7 +5,8 @@ function FilteredNamePlate.printCurrentScaleList(cl, col, flag)
         print("}")
         return
     end
-    print("CurrentOrigList = { name = {")
+    print("CurrentOrigList = {")
+	print("name = {")
     print("SYSTEM = "..col.name.SYSTEM..", normal = "..col.name.normal..", small = "..col.name.small..", mid = "..col.name.middle)
     print("}")
     print(", castbar = {")
@@ -24,12 +25,11 @@ function FilteredNamePlate.printSavedScaleList(sl)
     print("Saved normal "..sl.normal..(" small ")..sl.small)
 end
 
-function FilteredNamePlate.printATab(atab, extStr)
+function FilteredNamePlate.printATab(atab)
 	local str = ""
     for pos, name in ipairs(atab) do
         str = str..pos..(" ")..name..(", ")
     end
-	print(extStr..str)
 end
 
 function FilteredNamePlate.getTableCount(atab)
