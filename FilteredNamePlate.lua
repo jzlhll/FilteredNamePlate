@@ -13,7 +13,7 @@ local CurrentScaleList, CurrentOrigScaleList
 
 --Fnp_Mode  仅显模式 true 过滤模式 false 暂时去掉过滤模式，其实没什么用
 --Fnp_OtherNPFlag 0是默认 1是TidyPlate模式 2是Kui 3是EUI
-
+--[[
 local function printInfo()
 	print("\124cFFF58CBA>>>>>>[过滤姓名板]\124r")
 	local showstr = ""
@@ -48,7 +48,7 @@ local function printInfo()
 	print("\124cFFF58CBA非仅显单位比例:\124r "..Fnp_SavedScaleList.small)
 	-- FilteredNamePlate.printATab(Fnp_SavedScaleList)
 end
-
+--]]
 local function registerMyEvents(self, event, ...)
 	if IS_REGISGER == true then return end
 	if Fnp_Enable == nil then
@@ -133,7 +133,9 @@ local function reinitScaleValues()
 
 	CurrentOrigScaleList.name.normal = CurrentOrigScaleList.name.SYSTEM
 	CurrentOrigScaleList.name.small = CurrentOrigScaleList.name.normal * Fnp_SavedScaleList.small
+	if CurrentOrigScaleList.name.small < 60 then CurrentOrigScaleList.name.small = 60 end
 	CurrentOrigScaleList.name.middle = CurrentOrigScaleList.name.normal * 0.75
+	if CurrentOrigScaleList.name.middle < 80 then CurrentOrigScaleList.name.middle = 80 end
 
 	CurrentOrigScaleList.castbar.normal = CurrentOrigScaleList.castbar.SYSTEM * Fnp_SavedScaleList.normal
 	CurrentOrigScaleList.castbar.small = 50
@@ -148,7 +150,7 @@ local function reinitScaleValues()
 	CurrentOrigScaleList.healthbar.normalScale = CurrentOrigScaleList.healthbar.SYSTEM_SCALE * Fnp_SavedScaleList.normal
 	CurrentOrigScaleList.healthbar.smallScale = CurrentOrigScaleList.healthbar.normalScale * Fnp_SavedScaleList.small
 	CurrentOrigScaleList.healthbar.middleScale = CurrentOrigScaleList.healthbar.normalScale * 0.75
-	FilteredNamePlate.printCurrentScaleList(CurrentScaleList, CurrentOrigScaleList, currentNpFlag)
+	--FilteredNamePlate.printCurrentScaleList(CurrentScaleList, CurrentOrigScaleList, currentNpFlag)
 end
 
 
@@ -222,7 +224,6 @@ local function initScaleValues()
 			end
 			if sys > 0.01 then -- it's a real info
 				CurrentScaleList.SYSTEM = sys
-				print("inittt CurrentScaleLList>>>>")
 				reinitScaleValues()
 				isScaleListInited = true
 				break
@@ -311,17 +312,42 @@ local function showSingleUnit(frame, isOnlyShowSpellCast, restore)
 end
 
 function FilteredNamePlate.actionUnitStateAfterChanged()
-    FilteredNamePlate.printSavedScaleList(Fnp_SavedScaleList)
+    --FilteredNamePlate.printSavedScaleList(Fnp_SavedScaleList)
 	initScaleValues()
 	local matched = false
+	local matched2 = false
 	if Fnp_Enable == true then
+		IsCurOnlyShowStat = false
 		--仅显
 		isNullOnlyList = false
 		if FilteredNamePlate.getTableCount(Fnp_ONameList) == 0 then isNullOnlyList = true end
+		--过滤
+		isNullFilterList = false
+		if FilteredNamePlate.getTableCount(Fnp_FNameList) == 0 then isNullFilterList = true end
+		local isHide = false
 		for _, frame in pairs(GetNamePlates()) do
 			if isNullOnlyList == true then
-				showSingleUnit(frame, false, false)
+				matched2 = false
+				if isNullFilterList == false then
+					local foundUnit = frame.namePlateUnitToken or (frame.UnitFrame and frame.UnitFrame.unit)
+					matched2 = isMatchedNameList(Fnp_FNameList, GetUnitName(foundUnit))
+				end
+				if matched2 == true then
+					hideSwitchSingleUnit[currentNpFlag](frame)
+				else
+					showSingleUnit(frame, false, false)
+				end
 			else
+				local foundUnit = frame.namePlateUnitToken or (frame.UnitFrame and frame.UnitFrame.unit)
+				matched = isMatchedNameList(Fnp_ONameList, GetUnitName(foundUnit))
+				if matched == true then
+					isHide = true
+					break
+				end
+			end
+		end
+		if isHide == true then
+			for _, frame in pairs(GetNamePlates()) do
 				local foundUnit = frame.namePlateUnitToken or (frame.UnitFrame and frame.UnitFrame.unit)
 				matched = isMatchedNameList(Fnp_ONameList, GetUnitName(foundUnit))
 				if matched == true then
@@ -330,33 +356,18 @@ function FilteredNamePlate.actionUnitStateAfterChanged()
 					hideSwitchSingleUnit[currentNpFlag](frame)
 				end
 			end
+			IsCurOnlyShowStat = true
 		end
- 		--过滤
-		isNullFilterList = false
-		if FilteredNamePlate.getTableCount(Fnp_FNameList) == 0 then isNullFilterList = true end
-		for _, frame in pairs(GetNamePlates()) do
-			if isNullFilterList == true then
-				showSingleUnit(frame, false, false)
-			else
-				local foundUnit = frame.namePlateUnitToken or (frame.UnitFrame and frame.UnitFrame.unit)
-				matched = isMatchedNameList(Fnp_FNameList, GetUnitName(foundUnit))
-				if matched == true then
-					hideSwitchSingleUnit[currentNpFlag](frame)
-				else
-					showSingleUnit(frame, false, false)
-				end
-			end
-		end
-		registerMyEvents(FilteredNamePlate_Frame, "", "")
+		-- registerMyEvents(FilteredNamePlate_Frame, "", "")
 	else -- 已经关闭功能就全部显示
 		for _, frame in pairs(GetNamePlates()) do
 			local foundUnit = frame.namePlateUnitToken or (frame.UnitFrame and frame.UnitFrame.unit)
 			if foundUnit then
 				showSingleUnit(frame, false, true)
-				break
 			end
 		end
-		unRegisterMyEvents(FilteredNamePlate_Frame)
+		IsCurOnlyShowStat = false
+		-- unRegisterMyEvents(FilteredNamePlate_Frame)
 	end
 end
 
@@ -414,8 +425,8 @@ local function actionUnitRemovedForce(unitid)
 	-- 1. 当前移除的单位名,是否match
 	local curOnlyMatch = isMatchedNameList(Fnp_ONameList, UnitName(unitid))
 	if curOnlyMatch == true then
-		-- 移除单位是需要仅显的,而此时肯定已经仅显即IsCurOnlyShowStat为true,
-		--于是我们判断剩余的是否还含有,如果还有就什么也不动.如果没有了,就恢复显示,IsCurOnlyShowStat改成false
+		-- 移除单位是需要仅显的,而此时肯定已经仅显,
+		--于是我们判断剩余的是否还含有,如果还有就什么也不动.如果没有了,就恢复显示
 		local matched = false
 		local name = ""
 		for _, frame in pairs(GetNamePlates()) do
@@ -464,6 +475,7 @@ local function actionUnitAdded(self, event, ...)
 	if UnitIsPlayer(unitid) then
 		return
 	end
+	if Fnp_Enable == false then return end
 	actionUnitAddedForce(unitid)
 end
 
@@ -600,7 +612,6 @@ function FilteredNamePlate.FNP_EnableButtonChecked(self, checked)
 		Fnp_Enable = true;
 	else
 		Fnp_Enable = false;
-		IsCurOnlyShowStat = false
 	end
 	FilteredNamePlate.actionUnitStateAfterChanged()
 end
@@ -707,7 +718,7 @@ function SlashCmdList.FilteredNamePlate(msg)
 		print("\124cFFF58CBA[过滤姓名板]\124r")
 		print("\124cFFF58CBA/fnp options 或 /fnp opt \124r打开菜单")
 		print("\124cFFF58CBA/fnp change 或 /fnp ch \124r快速切换开关")
-		print("\124cFFF58CBA/fnp hideSpellCast 或 /fnp hsc \124r快速隐藏正在施法的怪")
+		print("\124cFFF58CBA/fnp refresh \124r快速隐藏正在施法的怪")
 	elseif msg == "options" or msg == "opt" then
 		FilteredNamePlate.FNP_ChangeFrameVisibility()
 	elseif msg == "change" or msg == "ch" then

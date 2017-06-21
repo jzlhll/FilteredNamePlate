@@ -282,8 +282,8 @@
 			   <OnLoad>
 				  _G[self:GetName().."Text"]:SetText("默认缩放比例");
 				  _G[self:GetName().."High"]:SetText("大 150%");
-				  _G[self:GetName().."Low"]:SetText("小 40%");
-				  self:SetMinMaxValues(40, 150);
+				  _G[self:GetName().."Low"]:SetText("小 50%");
+				  self:SetMinMaxValues(50, 150);
 				  self:SetValueStep(1);
 			   </OnLoad>
 			   <OnValueChanged>
@@ -482,7 +482,7 @@
 					</Anchor>
 				</Anchors>
 			</FontString>
-			<FontString name="$parent_show_TextOnly" inherits="GameFontNormal" text="隐藏和显示血条,即可生效">
+			<!-- FontString name="$parent_show_TextOnly" inherits="GameFontNormal" text="来回切换隐藏和显示血条,即刻生效">
 				<Anchors>
 					<Anchor point="BOTTOMRIGHT" relativeTo="$parent">
 						<Offset>
@@ -491,7 +491,7 @@
 					</Anchor>
 				</Anchors>
 			</FontString>
-			<FontString name="$parent_show_TextOnlyOther" inherits="GameFontNormal" text="如果效果不佳,来回切换">
+			<FontString name="$parent_show_TextOnlyOther" inherits="GameFontNormal" text="点击生效按钮以后,">
 				<Anchors>
 					<Anchor point="BOTTOMRIGHT" relativeTo="$parent_show_TextOnly">
 						<Offset>
@@ -499,7 +499,7 @@
 						</Offset>
 					</Anchor>
 				</Anchors>
-			</FontString>
+			</FontString -->
 		</Layer>
 	</Layers>
 	<Scripts>
