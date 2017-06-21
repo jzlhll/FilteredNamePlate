@@ -384,7 +384,7 @@
 					</Anchor>
 				</Anchors>
 			</FontString>
-			<FontString name="$parent_AuthorText" inherits="GameFontNormal" text="作者:Allan 版本:7.2.5.20170620 V3">
+			<FontString name="$parent_AuthorText" inherits="GameFontNormal" text="作者:Allan 版本:7.2.5.20170621 V3">
 				<Anchors>
 					<Anchor point="TOPLEFT" relativeTo="$parent_note" relativePoint="BOTTOMLEFT">
 						<Offset>
