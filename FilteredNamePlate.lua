@@ -46,7 +46,7 @@ local function printInfo()
 	print(showstr)
 	print("\124cFFF58CBA默认比例:\124r "..Fnp_SavedScaleList.normal)
 	print("\124cFFF58CBA非仅显单位比例:\124r "..Fnp_SavedScaleList.small)
-	--FilteredNamePlate.printATab(Fnp_SavedScaleList)
+	-- FilteredNamePlate.printATab(Fnp_SavedScaleList)
 end
 
 local function registerMyEvents(self, event, ...)
@@ -127,7 +127,6 @@ end
 
 ---------kkkkk---kkkkk---kkkkk-------------
 local function reinitScaleValues()
-	if isScaleListInited == false then return end
 	CurrentScaleList.normal = CurrentScaleList.SYSTEM * Fnp_SavedScaleList.normal
 	CurrentScaleList.small = CurrentScaleList.normal * Fnp_SavedScaleList.small
 	CurrentScaleList.middle = CurrentScaleList.normal * 0.75
@@ -149,6 +148,7 @@ local function reinitScaleValues()
 	CurrentOrigScaleList.healthbar.normalScale = CurrentOrigScaleList.healthbar.SYSTEM_SCALE * Fnp_SavedScaleList.normal
 	CurrentOrigScaleList.healthbar.smallScale = CurrentOrigScaleList.healthbar.normalScale * Fnp_SavedScaleList.small
 	CurrentOrigScaleList.healthbar.middleScale = CurrentOrigScaleList.healthbar.normalScale * 0.75
+	FilteredNamePlate.printCurrentScaleList(CurrentScaleList, CurrentOrigScaleList, currentNpFlag)
 end
 
 
@@ -222,10 +222,9 @@ local function initScaleValues()
 			end
 			if sys > 0.01 then -- it's a real info
 				CurrentScaleList.SYSTEM = sys
+				print("inittt CurrentScaleLList>>>>")
 				reinitScaleValues()
 				isScaleListInited = true
-				print("inittt CurrentScaleLList>>>>")
-				FilteredNamePlate.printCurrentScaleList(CurrentScaleList, CurrentOrigScaleList, currentNpFlag)
 				break
 			end
 		end
@@ -312,6 +311,7 @@ local function showSingleUnit(frame, isOnlyShowSpellCast, restore)
 end
 
 function FilteredNamePlate.actionUnitStateAfterChanged()
+    FilteredNamePlate.printATab(Fnp_SavedScaleList, "Saved:")
 	initScaleValues()
 	local matched = false
 	if Fnp_Enable == true then
@@ -639,6 +639,7 @@ function FilteredNamePlate.FNP_ModeEditBoxWriten(mode, inputStr)
 end
 
 function FilteredNamePlate.FNP_ChangeFrameVisibility(...)
+
 	local advanced = ...
 	if advanced then
 		if FilteredNamePlate_AdvancedFrame:IsVisible() then

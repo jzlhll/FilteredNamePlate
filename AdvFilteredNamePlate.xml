@@ -125,7 +125,7 @@
                       _G[self:GetName().."Text"]:SetText("非仅显的其他比例".."("..string.format("%.0f", self:GetValue()).."%)");
 					  <!-- FilteredNamePlate_AdvancedFrame_show_TextOnlyOther:SetText("OnyShow Exclude Scale".."("..string.format("%.0f", self:GetValue()).."%)");
 					  -->
-					  Fnp_SavedScaleList.other = string.format("%.2f", self:GetValue() / 100)
+					  Fnp_SavedScaleList.small = string.format("%.2f", self:GetValue() / 100)
 					  FilteredNamePlate.isSettingChanged = true
 					  FilteredNamePlate_Frame_takeEffectBtn:Show()
 				   </OnValueChanged>

@@ -21,7 +21,7 @@ function FilteredNamePlate.printCurrentScaleList(cl, col, flag)
 end
 
 function FilteredNamePlate.printSavedScaleList(sl)
-    print("Saved other "..sl.other..(" only ")..sl.only..(" normal ")..sl.normal)
+    print("Saved normal "..sl.normal..(" small ")..sl.small)
 end
 
 function FilteredNamePlate.printATab(atab, extStr)
