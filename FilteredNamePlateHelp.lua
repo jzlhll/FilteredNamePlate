@@ -1,8 +1,20 @@
-function FilteredNamePlate.printCurrentScaleList(sl)
-	if sl.SYSTEM then
-		print("Curr SYSTEM "..sl.SYSTEM..(" normal ")..sl.normal..(" only ")..sl.only)
-		print("Curr other "..sl.other..(" orgwidht ")..sl.orgWidth..(" smallWidth ")..sl.smallWidth..(" spellInOs")..sl.spellInOs)
-	end
+function FilteredNamePlate.printCurrentScaleList(cl, col)
+    print("CurrentList = {")
+    print("SYSTEM = "..cl.SYSTEM..", normal = "..cl.normal..", small = "..cl.small..", mid = "..cl.middle)
+    print("}")
+    print("CurrentOrigList = { name = {")
+    print("SYSTEM = "..col.SYSTEM..", normal = "..col.normal..", small = "..col.small..", mid = "..col.middle)
+    print("}")
+    print(", castbar = {")
+    print("SYSTEM = "..col.castbar.SYSTEM..", normal = "..col.castbar.normal..", small = "..col.castbar.small..", mid = "..col.castbar.middle)
+    print(", SYS_SL = "..col.castbar.SYSTEM_SCALE..", normalSl = "
+            ..col.castbar.normalScale..", smallSl = "..col.castbar.smallScale..", midSl = "..col.castbar.middleScale)
+    print("}")
+    print(", healthbar = {")
+    print("SYSTEM = "..col.healthbar.SYSTEM..", normal = "..col.healthbar.normal..", small = "..col.healthbar.small..", mid = "..col.healthbar.middle)
+    print(", SYS_SL = "..col.healthbar.SYSTEM_SCALE..", normalSl = "
+            ..col.healthbar.normalScale..", smallSl = "..col.healthbar.smallScale..", midSl = "..col.healthbar.middleScale)
+    print("}")
 end
 
 function FilteredNamePlate.printSavedScaleList(sl)

@@ -73,7 +73,7 @@
                    </OnLeave>
             </Scripts>
         </Slider>
-		<Slider name="$parent_OnlyShowScale" inherits="OptionsSliderTemplate">
+		<!-- Slider name="$parent_OnlyShowScale" inherits="OptionsSliderTemplate">
                <Anchors>
                    <Anchor point="LEFT">
                       <Offset>
@@ -91,8 +91,6 @@
                    </OnLoad>
                    <OnValueChanged>
                       _G[self:GetName().."Text"]:SetText("仅显比例".."("..string.format("%.0f", self:GetValue()).."%)");
-					  <!-- FilteredNamePlate_AdvancedFrame_show_TextOnly:SetText("OnlyShow Scale".."("..string.format("%.0f", self:GetValue()).."%)");
-					  -->
 					  Fnp_SavedScaleList.only = string.format("%.2f", self:GetValue() / 100)
 					  FilteredNamePlate.isSettingChanged = true
 					  FilteredNamePlate_Frame_takeEffectBtn:Show()
@@ -105,7 +103,7 @@
                       GameTooltip:Hide();
                    </OnLeave>
                </Scripts>
-        </Slider>
+        </Slider -->
 
 		<Slider name="$parent_OnlyOtherShowScale" inherits="OptionsSliderTemplate">
                <Anchors>

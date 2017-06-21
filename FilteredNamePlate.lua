@@ -7,9 +7,9 @@ local UnitName, GetUnitName = UnitName, GetUnitName
 local string_find = string.find
 local FilterNp_EventList = FilterNp_EventList
 
-local IS_REGISGER, IsCurOnlyShowStat, currentNpFlag, isScaleListBeSet, isNullOnlyList, isNullFilterList
-local ONE_LOAD_SYSTEM_SCALE, isUITypeError
-local CurrentScaleList
+local IS_REGISGER, IsCurOnlyShowStat, currentNpFlag, isScaleListInited, isNullOnlyList, isNullFilterList
+
+local CurrentScaleList, CurrentOrigScaleList
 
 --Fnp_Mode  仅显模式 true 过滤模式 false 暂时去掉过滤模式，其实没什么用
 --Fnp_OtherNPFlag 0是默认 1是TidyPlate模式 2是Kui 3是EUI
@@ -45,8 +45,7 @@ local function printInfo()
 	end
 	print(showstr)
 	print("\124cFFF58CBA默认比例:\124r "..Fnp_SavedScaleList.normal)
-	print("\124cFFF58CBA仅显单位比例:\124r "..Fnp_SavedScaleList.only)
-	print("\124cFFF58CBA非仅显单位比例:\124r "..Fnp_SavedScaleList.other)
+	print("\124cFFF58CBA非仅显单位比例:\124r "..Fnp_SavedScaleList.small)
 	--FilteredNamePlate.printATab(Fnp_SavedScaleList)
 end
 
@@ -77,20 +76,17 @@ local function registerMyEvents(self, event, ...)
 
 	if Fnp_SavedScaleList == nil then
 		Fnp_SavedScaleList = {
-			only = 1.2,
-			other = 0.25,
-			normal = 1.0,
+			normal = 1,
+			small = 0.25,
 		}
 	end
 
-	ONE_LOAD_SYSTEM_SCALE = 0
 	isNullOnlyList = false
 	isNullFilterList = false
 	if FilteredNamePlate.getTableCount(Fnp_ONameList) == 0 then isNullOnlyList = true end
 	if FilteredNamePlate.getTableCount(Fnp_FNameList) == 0 then isNullFilterList = true end
 
-	isScaleListBeSet = false
-	isUITypeError = 0
+	isScaleListInited = false
 
 	if Fnp_Enable == true then
 		FilteredNamePlate.isSettingChanged = false
@@ -130,65 +126,106 @@ local function isMatchedNameList(tabList, tName)
 end
 
 ---------kkkkk---kkkkk---kkkkk-------------
+local function reinitScaleValues()
+	if isScaleListInited == false then return end
+	CurrentScaleList.normal = CurrentScaleList.SYSTEM * Fnp_SavedScaleList.normal
+	CurrentScaleList.small = CurrentScaleList.normal * Fnp_SavedScaleList.small
+	CurrentScaleList.middle = CurrentScaleList.normal * 0.75
+
+	CurrentOrigScaleList.name.normal = CurrentOrigScaleList.name.SYSTEM
+	CurrentOrigScaleList.name.small = CurrentOrigScaleList.name.normal * Fnp_SavedScaleList.small
+	CurrentOrigScaleList.name.middle = CurrentOrigScaleList.name.normal * 0.75
+
+	CurrentOrigScaleList.castbar.normal = CurrentOrigScaleList.castbar.SYSTEM * Fnp_SavedScaleList.normal
+	CurrentOrigScaleList.castbar.small = 50
+	CurrentOrigScaleList.castbar.middle = 80
+	CurrentOrigScaleList.castbar.normalScale = CurrentOrigScaleList.castbar.SYSTEM_SCALE * Fnp_SavedScaleList.normal
+	CurrentOrigScaleList.castbar.smallScale = CurrentOrigScaleList.castbar.normalScale * Fnp_SavedScaleList.small
+	CurrentOrigScaleList.castbar.middleScale = CurrentOrigScaleList.castbar.normalScale * 0.75
+
+	CurrentOrigScaleList.healthbar.normal = CurrentOrigScaleList.healthbar.SYSTEM * Fnp_SavedScaleList.normal
+	CurrentOrigScaleList.healthbar.small = 50
+	CurrentOrigScaleList.healthbar.middle = 80
+	CurrentOrigScaleList.healthbar.normalScale = CurrentOrigScaleList.healthbar.SYSTEM_SCALE * Fnp_SavedScaleList.normal
+	CurrentOrigScaleList.healthbar.smallScale = CurrentOrigScaleList.healthbar.normalScale * Fnp_SavedScaleList.small
+	CurrentOrigScaleList.healthbar.middleScale = CurrentOrigScaleList.healthbar.normalScale * 0.75
+end
+
+
 local function initScaleValues()
-	-- cannot use List ~= nil to if
-	print("initttScaleValuessss")
 	local indx = currentNpFlag
-	local tempSystemSc = ONE_LOAD_SYSTEM_SCALE
+
+	if isScaleListInited == true then
+		reinitScaleValues()
+		return
+	end
+
 	for _, frame in pairs(GetNamePlates()) do
 		local foundUnit = frame.namePlateUnitToken or (frame.UnitFrame and frame.UnitFrame.unit)
 		if foundUnit then
-			CurrentScaleList = {
+			CurrentScaleList = { -- 一种原始保存,三种不同状态下的scale value
 			SYSTEM = 0.78,
 			normal = 1.0,
-			only = 1.0,
-			other = 0.25,
-			orgWidth = 130,
-			smallWidth = 40,
-			orgCastWidth = 130,
-			smallCastWidth = 80,
-			spellInOs = 0.6,
+			small = 0.25,
+			middle = 0.6,
 			};
-			local tempSpellScale = 0.5
-			if tempSystemSc < 0.08 then
-				print("getScale")
-				if indx == 3 then --EUI
-					if frame.UnitFrame then
-						tempSystemSc = frame.UnitFrame:GetEffectiveScale()
-					end
-				elseif indx == 1 then --Tidy
-					if frame.carrier then
-						tempSystemSc = frame.carrier:GetEffectiveScale()
-						tempSpellScale = 0.8
-					end
-				elseif indx == 2 then -- Kui
-					if frame.kui then
-						tempSystemSc = frame.kui:GetEffectiveScale()
-					end
-				elseif indx == 0 then --Orig
-					if frame.UnitFrame then
-						tempSpellScale = 1
-						tempSystemSc = 0.8
-						CurrentScaleList.orgWidth = frame.UnitFrame:GetWidth()
-						CurrentScaleList.orgCastWidth = frame.UnitFrame.castBar:GetWidth()
-						CurrentScaleList.smallCastWidth = 80
-						CurrentScaleList.smallWidth = 40
-					end
+			CurrentOrigScaleList = {
+				name = {
+					SYSTEM = 130,
+					normal = 130,
+					small = 40,
+					middle = 80,
+				},
+				castbar = {
+					SYSTEM = 130,
+					SYSTEM_SCALE = 0.78,
+					normal = 130,
+					normalScale = 0.78,
+					small = 80,
+					smallScale = 0.5,
+					middle = 100,
+					middleScale = 0.75,
+				},
+				healthbar = {
+					SYSTEM = 130,
+					SYSTEM_SCALE = 0.78,
+					normal = 130,
+					normalScale = 0.78,
+					small = 80,
+					smallScale = 0.5,
+					middle = 100,
+					middleScale = 0.75,
+				},
+			}
+			local sys = 0
+			if indx == 3 then --EUI
+				if frame.UnitFrame then
+					sys = frame.UnitFrame:GetEffectiveScale()
+				end
+			elseif indx == 1 then --Tidy
+				if frame.carrier then
+					sys = frame.carrier:GetEffectiveScale()
+				end
+			elseif indx == 2 then -- Kui
+				if frame.kui then
+					sys = frame.kui:GetEffectiveScale()
+				end
+			elseif indx == 0 then --Orig
+				if frame.UnitFrame then
+					sys = 1
+					CurrentOrigScaleList.name.SYSTEM = frame.UnitFrame:GetWidth()
+					CurrentOrigScaleList.castbar.SYSTEM = frame.UnitFrame.castBar:GetWidth()
+					CurrentOrigScaleList.healthbar.SYSTEM = frame.UnitFrame.healthBar:GetWidth()
+					CurrentOrigScaleList.castbar.SYSTEM_SCALE = frame.UnitFrame.castBar:GetEffectiveScale()
+					CurrentOrigScaleList.healthbar.SYSTEM_SCALE = frame.UnitFrame.healthBar:GetEffectiveScale()
 				end
 			end
-			print("not delete tempSystemSc "..tempSystemSc)
-			if tempSystemSc > 0.08 then
-				ONE_LOAD_SYSTEM_SCALE = tempSystemSc
-				CurrentScaleList.SYSTEM = tempSystemSc
-				CurrentScaleList.normal = tempSystemSc * Fnp_SavedScaleList.normal
-				CurrentScaleList.only = tempSystemSc * Fnp_SavedScaleList.only
-				CurrentScaleList.other = tempSystemSc * Fnp_SavedScaleList.other
-				isScaleListBeSet = true
-				isUITypeError = 0
-
-				CurrentScaleList.spellInOs = CurrentScaleList.normal * tempSpellScale
-				print("not delete inittt")
-				FilteredNamePlate.printCurrentScaleList(CurrentScaleList)
+			if sys > 0.01 then -- it's a real info
+				CurrentScaleList.SYSTEM = sys
+				reinitScaleValues()
+				isScaleListInited = true
+				print("inittt CurrentScaleLList>>>>")
+				FilteredNamePlate.printCurrentScaleList(CurrentScaleList, CurrentOrigScaleList)
 				break
 			end
 		end
@@ -199,104 +236,82 @@ local hideSwitchSingleUnit = {
 	[0] = function(frame)
 		if frame == nil then return end
 		if frame.UnitFrame then
-			frame.UnitFrame.name:SetWidth(CurrentScaleList.smallWidth)
-			frame.UnitFrame.healthBar:Hide()
-			frame.UnitFrame.castBar:SetWidth(CurrentScaleList.smallCastWidth)
+			frame.UnitFrame.name:SetWidth(CurrentOrigScaleList.name.small)
+			-- frame.UnitFrame.healthBar:Hide()
+			frame.UnitFrame.healthBar:SetWidth(CurrentOrigScaleList.healthbar.small)
+			frame.UnitFrame.healthBar:SetScale(CurrentOrigScaleList.healthbar.smallScale)
+			frame.UnitFrame.castBar:SetWidth(CurrentOrigScaleList.castbar.small)
+			frame.UnitFrame.castBar:SetScale(CurrentOrigScaleList.castbar.smallScale)
 		end
 	end,
 	[1] = function(frame)
 		if frame == nil then return end
 		if frame.carrier then
-			frame.carrier:SetScale(CurrentScaleList.other)
+			frame.carrier:SetScale(CurrentScaleList.small)
 		end
 	end,
 	[2] = function(frame)
 		if frame == nil then return end
 		if frame.kui then
-			frame.kui:SetScale(CurrentScaleList.other)
+			frame.kui:SetScale(CurrentScaleList.small)
 		end
 	end,
 	[3] = function(frame)
 		if frame == nil then return end
 		if frame.UnitFrame then
-			frame.UnitFrame:SetScale(CurrentScaleList.other)
+			frame.UnitFrame:SetScale(CurrentScaleList.small)
 		end
 	end
 }
 
-local function showSingleUnit(frame, isOnlyShowSpellCast, isThisOnlyShow, restore)
-	FilteredNamePlate:printCurrentScaleList(CurrentScaleList)
+local function showSingleUnit(frame, isOnlyShowSpellCast, restore)
 	if frame == nil then return end
 	if currentNpFlag == 0 and frame.UnitFrame then  -- ORig
-		frame.UnitFrame.name:SetWidth(CurrentScaleList.orgWidth)
-		if isOnlyShowSpellCast == false then frame.UnitFrame.healthBar:Show() end
-		if restore then
-			frame.UnitFrame.castBar:SetWidth(CurrentScaleList.orgCastWidth)
+		if restore == true then
+			frame.UnitFrame.name:SetWidth(CurrentOrigScaleList.name.SYSTEM)
+			-- frame.UnitFrame.healthBar:Show()
+			frame.UnitFrame.healthBar:SetWidth(CurrentOrigScaleList.healthbar.SYSTEM)
+			frame.UnitFrame.healthBar:SetScale(CurrentOrigScaleList.healthbar.SYSTEM_SCALE)
+			frame.UnitFrame.castBar:SetWidth(CurrentOrigScaleList.castbar.SYSTEM)
+			frame.UnitFrame.castBar:SetScale(CurrentOrigScaleList.castbar.SYSTEM_SCALE)
+		elseif isOnlyShowSpellCast == false then
+			frame.UnitFrame.name:SetWidth(CurrentOrigScaleList.name.normal)
+			-- frame.UnitFrame.healthBar:Show()
+			frame.UnitFrame.healthBar:SetWidth(CurrentOrigScaleList.healthbar.normal)
+			frame.UnitFrame.healthBar:SetScale(CurrentOrigScaleList.healthbar.normalScale)
+			frame.UnitFrame.castBar:SetWidth(CurrentOrigScaleList.castbar.normal)
+			frame.UnitFrame.castBar:SetScale(CurrentOrigScaleList.castbar.normalScale)
 		else
-			if isOnlyShowSpellCast then
-				frame.UnitFrame.castBar:SetWidth(CurrentScaleList.smallCastWidth)
-			else
-				if isThisOnlyShow then
-					frame.UnitFrame.castBar:SetWidth(CurrentScaleList.orgCastWidth)
-				else
-					frame.UnitFrame.castBar:SetWidth(CurrentScaleList.orgCastWidth)
-				end
-			end
+			frame.UnitFrame.name:SetWidth(CurrentOrigScaleList.name.middle)
+			-- frame.UnitFrame.healthBar:Show()
+			frame.UnitFrame.healthBar:SetWidth(CurrentOrigScaleList.healthbar.middle)
+			frame.UnitFrame.healthBar:SetScale(CurrentOrigScaleList.healthbar.middleScale)
+			frame.UnitFrame.castBar:SetWidth(CurrentOrigScaleList.castbar.middle)
+			frame.UnitFrame.castBar:SetScale(CurrentOrigScaleList.castbar.middleScale)
 		end
 		return
 	end
-
-	if currentNpFlag == 3 and frame.UnitFrame then  -- EUI
-		if restore then
-			frame.UnitFrame:SetScale(CurrentScaleList.SYSTEM)
-		else
-			if isThisOnlyShow then
-				frame.UnitFrame:SetScale(CurrentScaleList.only)
-			else
-				frame.UnitFrame:SetScale(CurrentScaleList.normal)
-			end
-		end
-		return
-	end
-
+	local frameImp
 	if currentNpFlag == 1 and frame.carrier then -- Tidy
-		if restore then
-			frame.carrier:SetScale(CurrentScaleList.SYSTEM)
-		else
-			if isOnlyShowSpellCast then
-				frame.carrier:SetScale(CurrentScaleList.spellInOs)
-			else
-				if isThisOnlyShow then
-					frame.carrier:SetScale(CurrentScaleList.only)
-				else
-					frame.carrier:SetScale(CurrentScaleList.normal)
-				end
-			end
-		end
-		return
+		frameImp = frame.carrier
+	elseif currentNpFlag == 2 and frame.kui then -- kui
+		frameImp = frame.kui
+	elseif currentNpFlag == 3 and frame.UnitFrame then --EUI
+		frameImp = frame.UnitFrame
 	end
 
-	if currentNpFlag == 2 and frame.kui then  -- kui
-		if restore then
-			frame.kui:SetScale(CurrentScaleList.SYSTEM)
+	if frameImp then
+		if restore == true then
+			frameImp:SetScale(CurrentScaleList.SYSTEM)
+		elseif isOnlyShowSpellCast == false then
+			frameImp:SetScale(CurrentScaleList.normal)
 		else
-			if isOnlyShowSpellCast then
-				frame.kui:SetScale(CurrentScaleList.spellInOs)
-			else
-				if isThisOnlyShow then
-					frame.kui:SetScale(CurrentScaleList.only)
-				else
-					frame.kui:SetScale(CurrentScaleList.normal)
-				end
-			end
+			frameImp:SetScale(CurrentScaleList.middle)
 		end
-		return
 	end
 end
 
 function FilteredNamePlate.actionUnitStateAfterChanged()
-	isScaleListBeSet = false
-	isUITypeError = 0
 	initScaleValues()
 	local matched = false
 	if Fnp_Enable == true then
@@ -305,12 +320,12 @@ function FilteredNamePlate.actionUnitStateAfterChanged()
 		if FilteredNamePlate.getTableCount(Fnp_ONameList) == 0 then isNullOnlyList = true end
 		for _, frame in pairs(GetNamePlates()) do
 			if isNullOnlyList == true then
-				showSingleUnit(frame, false, true, false)
+				showSingleUnit(frame, false, false)
 			else
 				local foundUnit = frame.namePlateUnitToken or (frame.UnitFrame and frame.UnitFrame.unit)
 				matched = isMatchedNameList(Fnp_ONameList, GetUnitName(foundUnit))
 				if matched == true then
-					showSingleUnit(frame, false, true, false)
+					showSingleUnit(frame, false, false)
 				else
 					hideSwitchSingleUnit[currentNpFlag](frame)
 				end
@@ -321,14 +336,14 @@ function FilteredNamePlate.actionUnitStateAfterChanged()
 		if FilteredNamePlate.getTableCount(Fnp_FNameList) == 0 then isNullFilterList = true end
 		for _, frame in pairs(GetNamePlates()) do
 			if isNullFilterList == true then
-				showSingleUnit(frame, false, false, false)
+				showSingleUnit(frame, false, false)
 			else
 				local foundUnit = frame.namePlateUnitToken or (frame.UnitFrame and frame.UnitFrame.unit)
 				matched = isMatchedNameList(Fnp_FNameList, GetUnitName(foundUnit))
 				if matched == true then
 					hideSwitchSingleUnit[currentNpFlag](frame)
 				else
-					showSingleUnit(frame, false, false, false)
+					showSingleUnit(frame, false, false)
 				end
 			end
 		end
@@ -337,7 +352,7 @@ function FilteredNamePlate.actionUnitStateAfterChanged()
 		for _, frame in pairs(GetNamePlates()) do
 			local foundUnit = frame.namePlateUnitToken or (frame.UnitFrame and frame.UnitFrame.unit)
 			if foundUnit then
-				showSingleUnit(frame, false, false, true)
+				showSingleUnit(frame, false, true)
 				break
 			end
 		end
@@ -375,10 +390,10 @@ local function actionUnitAddedForce(unitid)
 		hideSwitchSingleUnit[currentNpFlag](frame)
 	elseif curOnlyMatch == false and IsCurOnlyShowStat == false then
 		-- 新增单位不需要仅显, 此时也没有仅显, 就不管了.现在我们将当前的效果展示出来
-		showSingleUnit(GetNamePlateForUnit(unitid), false, false, false)
+		showSingleUnit(GetNamePlateForUnit(unitid), false, false)
 	elseif curOnlyMatch == true and IsCurOnlyShowStat == true then
 		-- 新增单位是需要仅显的,而此时已经有仅显的了,于是我们什么也不用干 -- 更新，怀疑在异步调用的时候莫名奇妙被hide了这里开出来确保
-		showSingleUnit(GetNamePlateForUnit(unitid), false, true, false)
+		showSingleUnit(GetNamePlateForUnit(unitid), false, false)
 	elseif curOnlyMatch == true and IsCurOnlyShowStat == false then
 		--新增单位是需要仅显的,而此时不是仅显, 于是我们就将之前的都Hide,当前这个不用处理
 		for _, frame in pairs(GetNamePlates()) do
@@ -386,7 +401,7 @@ local function actionUnitAddedForce(unitid)
 			if foundUnit then
 				-- TODO 判断是否是正在读条
 				if (unitid == foundUnit) then
-					showSingleUnit(frame, false, true, false)
+					showSingleUnit(frame, false, false)
 				else
 					hideSwitchSingleUnit[currentNpFlag](frame)
 				end
@@ -419,7 +434,7 @@ local function actionUnitRemovedForce(unitid)
 			if foundUnit then
 				matched = isMatchedNameList(Fnp_ONameList, GetUnitName(foundUnit))
 				if matched == false then
-					showSingleUnit(frame, false, false, false)
+					showSingleUnit(frame, false, false)
 				end
 			end
 		end
@@ -429,19 +444,16 @@ end
 ---------k k k---k k k---k k k-------------
 
 local function actionUnitAdded(self, event, ...)
-	if isScaleListBeSet == false and isUITypeError == 0 then
+	if isScaleListInited == false then
 		initScaleValues()
 	end
 	
-	if isScaleListBeSet == false and isUITypeError ~= 3 then
-		isUITypeError = isUITypeError + 1
-		print("\124cFFF58CBA[/fnp]错误！您设置的UI类型可能不匹配。请设置正确并重载界面！\124r")
-	end
-
-	if isUITypeError > 0 then
+	if isScaleListInited == false then
+		print("\124cFFF58CBA[ /fnp ]错误！您设置的UI类型可能不匹配。请正确设置并重载界面！\124r")
+		print("\124cFFF58CBA[ /fnp ]错误！您设置的UI类型可能不匹配。请正确设置并重载界面！\124r")
+		print("\124cFFF58CBA[ /fnp ]错误！您设置的UI类型可能不匹配。请正确设置并重载界面！\124r")
 		return
 	end
-
 	if isNullOnlyList == true and isNullFilterList == true then
 		return
 	end
@@ -488,7 +500,7 @@ local function actionUnitSpellCastStartOnlyShowMode(...)
 	-- true的话，表明是我们要的，那么肯定是在显示了。
 	if curMatch == false then --false，而且是处于isCurrentOnlyShow
 		local frame = GetNamePlateForUnit(unitid)
-		showSingleUnit(frame, true, false, false)
+		showSingleUnit(frame, true, false)
 	end
 end
 
@@ -684,8 +696,8 @@ function FilteredNamePlate.FNP_ChangeFrameVisibility(...)
 			FilteredNamePlate_Frame_OnlyShowModeCheckBtn:SetChecked(false);
 		end --]]
 
-		FilteredNamePlate_AdvancedFrame_OnlyShowScale:SetValue(Fnp_SavedScaleList.only * 100)
-		FilteredNamePlate_AdvancedFrame_OnlyOtherShowScale:SetValue(Fnp_SavedScaleList.other * 100)
+		-- FilteredNamePlate_AdvancedFrame_OnlyShowScale:SetValue(Fnp_SavedScaleList.only * 100)
+		FilteredNamePlate_AdvancedFrame_OnlyOtherShowScale:SetValue(Fnp_SavedScaleList.small * 100)
 		FilteredNamePlate_AdvancedFrame_SystemScale:SetValue(Fnp_SavedScaleList.normal * 100)
 
 		FilteredNamePlate_Frame_OnlyShowModeEditBox:SetText(table.concat(Fnp_ONameList, ";"));
@@ -714,7 +726,7 @@ function SlashCmdList.FilteredNamePlate(msg)
 			FilteredNamePlate_Frame_EnableCheckButton:SetChecked(true)
 			FilteredNamePlate.FNP_EnableButtonChecked(FilteredNamePlate_Frame, true)
 		end
-	elseif msg == "hideSpellCast" or msg == "hsc" then
+	elseif msg == "refresh" then
 		FilteredNamePlate.actionUnitStateAfterChanged()
 	end
 end
