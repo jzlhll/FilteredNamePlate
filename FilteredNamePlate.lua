@@ -225,7 +225,7 @@ local function initScaleValues()
 				reinitScaleValues()
 				isScaleListInited = true
 				print("inittt CurrentScaleLList>>>>")
-				FilteredNamePlate.printCurrentScaleList(CurrentScaleList, CurrentOrigScaleList)
+				FilteredNamePlate.printCurrentScaleList(CurrentScaleList, CurrentOrigScaleList, currentNpFlag)
 				break
 			end
 		end

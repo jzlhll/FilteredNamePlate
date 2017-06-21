@@ -1,9 +1,12 @@
-function FilteredNamePlate.printCurrentScaleList(cl, col)
-    print("CurrentList = {")
-    print("SYSTEM = "..cl.SYSTEM..", normal = "..cl.normal..", small = "..cl.small..", mid = "..cl.middle)
-    print("}")
+function FilteredNamePlate.printCurrentScaleList(cl, col, flag)
+    if flag ~= 0 then
+        print("CurrentList = {")
+        print("SYSTEM = "..cl.SYSTEM..", normal = "..cl.normal..", small = "..cl.small..", mid = "..cl.middle)
+        print("}")
+        return
+    end
     print("CurrentOrigList = { name = {")
-    print("SYSTEM = "..col.SYSTEM..", normal = "..col.normal..", small = "..col.small..", mid = "..col.middle)
+    print("SYSTEM = "..col.name.SYSTEM..", normal = "..col.name.normal..", small = "..col.name.small..", mid = "..col.name.middle)
     print("}")
     print(", castbar = {")
     print("SYSTEM = "..col.castbar.SYSTEM..", normal = "..col.castbar.normal..", small = "..col.castbar.small..", mid = "..col.castbar.middle)
