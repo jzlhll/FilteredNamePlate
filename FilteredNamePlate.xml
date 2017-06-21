@@ -3,7 +3,7 @@
 <Script file="FilteredNamePlateHelp.lua" />
 <Frame name="FilteredNamePlate_Frame" hidden="true" parent="UIParent" toplevel="true" movable="true" frameStrata="HIGH" enableMouse="true" enableKeyboard="true">
 	<Size>
-		<AbsDimension x="380" y="440" />
+		<AbsDimension x="650" y="420" />
 	</Size>
 	<Anchors>
 		<Anchor point="CENTER" />
@@ -19,78 +19,7 @@
 			<AbsValue val="32" />
 		</EdgeSize>
 	</Backdrop>
-
 	<Frames>
-		<Button name="$parent_CloseIcon" inherits="OptionsButtonTemplate" text="X">
-			<Size>
-				<AbsDimension x="35" y="35" />
-			</Size>
-			<Anchors>
-				<Anchor point="TOPRIGTH" relativeTo="$parent">
-				<Offset>
-					<AbsDimension x="330" y="-10" />
-				</Offset>
-				</Anchor>
-			</Anchors>
-			<Scripts>
-				<OnClick>
-					FilteredNamePlate.FNP_ChangeFrameVisibility()
-				</OnClick>
-			</Scripts>
-		</Button>
-		<Button name="$parent_AdvOpenIcon" inherits="OptionsButtonTemplate" hidden="false" text="高级">
-			<Size>
-				<AbsDimension x="45" y="35" />
-			</Size>
-			<Anchors>
-				<Anchor point="BOTTOMLEFT" relativeTo="$parent_CloseIcon">
-				<Offset>
-					<AbsDimension x="-10" y="-140" />
-				</Offset>
-				</Anchor>
-			</Anchors>
-			<Scripts>
-				<OnClick>
-					FilteredNamePlate.FNP_ChangeFrameVisibility("adv")
-				</OnClick>
-			</Scripts>
-		</Button>
-		<Button name="$parent_takeEffectBtn" inherits="OptionsButtonTemplate" text="生效">
-			<Size>
-				<AbsDimension x="45" y="35" />
-			</Size>
-			<Anchors>
-				<Anchor point="BOTTOMLEFT" relativeTo="$parent_CloseIcon">
-				<Offset>
-					<AbsDimension x="-10" y="-220" />
-				</Offset>
-				</Anchor>
-			</Anchors>
-			<Scripts>
-				<OnClick>
-					FilteredNamePlate.actionUnitStateAfterChanged()
-					FilteredNamePlate.isSettingChanged = false
-					self:Hide()
-				</OnClick>
-			</Scripts>
-		</Button>
-		<Button name="$parent_reloadUIBtn" inherits="OptionsButtonTemplate" Hidden="true" text="重载生效">
-			<Size>
-				<AbsDimension x="85" y="35" />
-			</Size>
-			<Anchors>
-				<Anchor point="BOTTOMLEFT" relativeTo="$parent_CloseIcon">
-				<Offset>
-					<AbsDimension x="-48" y="-260" />
-				</Offset>
-				</Anchor>
-			</Anchors>
-			<Scripts>
-				<OnClick>
-					ReloadUI()
-				</OnClick>
-			</Scripts>
-		</Button>
 		<CheckButton name="$parent_EnableCheckButton" inherits="OptionsCheckButtonTemplate">
 			<Anchors>
 				<Anchor point="TOPLEFT" relativeTo="$parent">
@@ -324,6 +253,157 @@
                 </Scripts>
                 <FontString inherits="ChatFontNormal" />
         </EditBox>
+		<Button name="$parent_CloseIcon" inherits="OptionsButtonTemplate" text="X">
+			<Size>
+				<AbsDimension x="35" y="35" />
+			</Size>
+			<Anchors>
+				<Anchor point="RIGTH" relativeTo="$parent" relativePoint="TOPRIGHT">
+				<Offset>
+					<AbsDimension x="-45" y="-10" />
+				</Offset>
+				</Anchor>
+			</Anchors>
+			<Scripts>
+				<OnClick>
+					FilteredNamePlate.FNP_ChangeFrameVisibility()
+				</OnClick>
+			</Scripts>
+		</Button>
+		<Slider name="$parent_SystemScale" inherits="OptionsSliderTemplate">
+			<Anchors>
+				<Anchor point="RIGHT">
+				  <Offset>
+					 <AbsDimension x="-100" y="110" />
+				  </Offset>
+			   </Anchor>
+            </Anchors>
+            <Scripts>
+			   <OnLoad>
+				  _G[self:GetName().."Text"]:SetText("默认缩放比例");
+				  _G[self:GetName().."High"]:SetText("大 150%");
+				  _G[self:GetName().."Low"]:SetText("小 40%");
+				  self:SetMinMaxValues(40, 150);
+				  self:SetValueStep(1);
+			   </OnLoad>
+			   <OnValueChanged>
+				  _G[self:GetName().."Text"]:SetText("默认缩放比例".."("..string.format("%.0f", self:GetValue()).."%)");
+				  <!-- FilteredNamePlate_AdvancedFrame_show_TextOnlyOther:SetText("OnyShow Exclude Scale".."("..string.format("%.0f", self:GetValue()).."%)");
+				  -->
+				  Fnp_SavedScaleList.normal = string.format("%.2f", self:GetValue() / 100)
+				  FilteredNamePlate.isSettingChanged = true
+				  FilteredNamePlate_Frame_takeEffectBtn:Show()
+			   </OnValueChanged>
+			   <OnEnter>
+				  GameTooltip:SetOwner(self, "ANCHOR_RIGTH");
+				  GameTooltip:SetText("默认缩放姓名板大小 Default Scale");
+			   </OnEnter>
+			   <OnLeave>
+				  GameTooltip:Hide();
+			   </OnLeave>
+            </Scripts>
+        </Slider>
+		<!-- Slider name="$parent_OnlyShowScale" inherits="OptionsSliderTemplate">
+               <Anchors>
+                   <Anchor point="LEFT">
+                      <Offset>
+                         <AbsDimension x="30" y="10" />
+                      </Offset>
+                   </Anchor>
+               </Anchors>
+               <Scripts>
+                   <OnLoad>
+                      _G[self:GetName().."Text"]:SetText("仅显比例");
+                      _G[self:GetName().."High"]:SetText("高 200%");
+                      _G[self:GetName().."Low"]:SetText("低 100%");
+                      self:SetMinMaxValues(100, 200);
+                      self:SetValueStep(1);
+                   </OnLoad>
+                   <OnValueChanged>
+                      _G[self:GetName().."Text"]:SetText("仅显比例".."("..string.format("%.0f", self:GetValue()).."%)");
+					  Fnp_SavedScaleList.only = string.format("%.2f", self:GetValue() / 100)
+					  FilteredNamePlate.isSettingChanged = true
+					  FilteredNamePlate_Frame_takeEffectBtn:Show()
+                   </OnValueChanged>
+                   <OnEnter>
+                      GameTooltip:SetOwner(self, "ANCHOR_RIGTH");
+                      GameTooltip:SetText("仅显单位的姓名板比例 OnyShow Name Plate Scale");
+                   </OnEnter>
+                   <OnLeave>
+                      GameTooltip:Hide();
+                   </OnLeave>
+               </Scripts>
+        </Slider -->
+
+		<Slider name="$parent_OnlyOtherShowScale" inherits="OptionsSliderTemplate">
+		   <Anchors>
+			   <Anchor point="RIGHT">
+				  <Offset>
+					 <AbsDimension x="-100" y="0" />
+				  </Offset>
+			   </Anchor>
+		   </Anchors>
+		   <Scripts>
+			   <OnLoad>
+				  _G[self:GetName().."Text"]:SetText("非仅显的其他比例");
+				  _G[self:GetName().."High"]:SetText("高 65%");
+				  _G[self:GetName().."Low"]:SetText("低 15%");
+				  self:SetMinMaxValues(15, 65);
+				  self:SetValueStep(1);
+			   </OnLoad>
+			   <OnValueChanged>
+				  _G[self:GetName().."Text"]:SetText("非仅显的其他比例".."("..string.format("%.0f", self:GetValue()).."%)");
+				  <!-- FilteredNamePlate_AdvancedFrame_show_TextOnlyOther:SetText("OnyShow Exclude Scale".."("..string.format("%.0f", self:GetValue()).."%)");
+				  -->
+				  Fnp_SavedScaleList.small = string.format("%.2f", self:GetValue() / 100)
+				  FilteredNamePlate.isSettingChanged = true
+				  FilteredNamePlate_Frame_takeEffectBtn:Show()
+			   </OnValueChanged>
+			   <OnEnter>
+				  GameTooltip:SetOwner(self, "ANCHOR_RIGTH");
+				  GameTooltip:SetText("仅显模式下其他单位的姓名板比例 OnyShow Exclude Name Plate Scale");
+			   </OnEnter>
+			   <OnLeave>
+				  GameTooltip:Hide();
+			   </OnLeave>
+		   </Scripts>
+        </Slider>
+		<Button name="FilteredNamePlate_Frame_takeEffectBtn" inherits="OptionsButtonTemplate" text="生效">
+			<Size>
+				<AbsDimension x="45" y="35" />
+			</Size>
+			<Anchors>
+				<Anchor point="BOTTOMRIGHT" relativeTo="$parent">
+				<Offset>
+					<AbsDimension x="-30" y="60" />
+				</Offset>
+				</Anchor>
+			</Anchors>
+			<Scripts>
+				<OnClick>
+					FilteredNamePlate.actionUnitStateAfterChanged()
+					FilteredNamePlate.isSettingChanged = false
+					self:Hide()
+				</OnClick>
+			</Scripts>
+		</Button>
+		<Button name="FilteredNamePlate_Frame_reloadUIBtn" inherits="OptionsButtonTemplate" Hidden="true" text="重载生效">
+			<Size>
+				<AbsDimension x="85" y="35" />
+			</Size>
+			<Anchors>
+				<Anchor point="TOPLEFT" relativeTo="FilteredNamePlate_Frame_takeEffectBtn">
+				<Offset>
+					<AbsDimension x="-130" y="0" />
+				</Offset>
+				</Anchor>
+			</Anchors>
+			<Scripts>
+				<OnClick>
+					ReloadUI()
+				</OnClick>
+			</Scripts>
+		</Button>
 	</Frames>
 	<Layers>
 		<Layer>
@@ -379,7 +459,7 @@
 				<Anchors>
 					<Anchor point="BOTTOMLEFT" relativeTo="$parent">
 						<Offset>
-							<AbsDimension x="20" y="50" />
+							<AbsDimension x="20" y="63" />
 						</Offset>
 					</Anchor>
 				</Anchors>
@@ -388,7 +468,7 @@
 				<Anchors>
 					<Anchor point="TOPLEFT" relativeTo="$parent_note" relativePoint="BOTTOMLEFT">
 						<Offset>
-							<AbsDimension x="0" y="0" />
+							<AbsDimension x="0" y="-8" />
 						</Offset>
 					</Anchor>
 				</Anchors>
@@ -397,7 +477,25 @@
 				<Anchors>
 					<Anchor point="TOPLEFT" relativeTo="$parent_AuthorText" relativePoint="BOTTOMLEFT">
 						<Offset>
-							<AbsDimension x="0" y="0" />
+							<AbsDimension x="0" y="-12" />
+						</Offset>
+					</Anchor>
+				</Anchors>
+			</FontString>
+			<FontString name="$parent_show_TextOnly" inherits="GameFontNormal" text="隐藏和显示血条,即可生效">
+				<Anchors>
+					<Anchor point="BOTTOMRIGHT" relativeTo="$parent">
+						<Offset>
+							<AbsDimension x="-10" y="20" />
+						</Offset>
+					</Anchor>
+				</Anchors>
+			</FontString>
+			<FontString name="$parent_show_TextOnlyOther" inherits="GameFontNormal" text="如果效果不佳,来回切换">
+				<Anchors>
+					<Anchor point="BOTTOMRIGHT" relativeTo="$parent_show_TextOnly">
+						<Offset>
+							<AbsDimension x="0" y="20" />
 						</Offset>
 					</Anchor>
 				</Anchors>
@@ -406,11 +504,22 @@
 	</Layers>
 	<Scripts>
 		<OnLoad>
+			self:RegisterForDrag("LeftButton");
 			FilteredNamePlate_OnLoad(self);
 		</OnLoad>
 		<OnEvent>
 			FilteredNamePlate_OnEvent(self,event,...);
 		</OnEvent>
+		<OnMouseDown>
+			if button == "LeftButton" then
+				FilteredNamePlate_Frame:StartMoving();
+			end
+		</OnMouseDown>
+		<OnMouseUp>
+			if button == "LeftButton" then
+				FilteredNamePlate_Frame:StopMovingOrSizing();
+			end
+		</OnMouseUp>
 	</Scripts>
 </Frame>
 </Ui>

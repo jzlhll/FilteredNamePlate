@@ -9,4 +9,3 @@
 ## LoadOnDemand: 0
 ## SavedVariables: Fnp_Enable, Fnp_FNameList, Fnp_ONameList, Fnp_OtherNPFlag, Fnp_SavedScaleList
 FilteredNamePlate.xml
-AdvFilteredNamePlate.xml

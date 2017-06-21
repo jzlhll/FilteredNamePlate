@@ -7,7 +7,7 @@ local UnitName, GetUnitName = UnitName, GetUnitName
 local string_find = string.find
 local FilterNp_EventList = FilterNp_EventList
 
-local IS_REGISGER, IsCurOnlyShowStat, currentNpFlag, isScaleListInited, isNullOnlyList, isNullFilterList
+local IS_REGISGER, IsCurOnlyShowStat, currentNpFlag, isScaleListInited, isUIErrorInOneLoad, isNullOnlyList, isNullFilterList
 
 local CurrentScaleList, CurrentOrigScaleList
 
@@ -358,7 +358,6 @@ function FilteredNamePlate.actionUnitStateAfterChanged()
 		end
 		unRegisterMyEvents(FilteredNamePlate_Frame)
 	end
-	print("\124cFFF58CBA如果效果不对，请尝试来回按隐藏和显示血条的快捷键，就能生效！\124r")
 end
 
 local function getNamePlateFromPlatesById(unitid)
@@ -449,9 +448,12 @@ local function actionUnitAdded(self, event, ...)
 	end
 	
 	if isScaleListInited == false then
-		print("\124cFFF58CBA[ /fnp ]错误！您设置的UI类型可能不匹配。请正确设置并重载界面！\124r")
-		print("\124cFFF58CBA[ /fnp ]错误！您设置的UI类型可能不匹配。请正确设置并重载界面！\124r")
-		print("\124cFFF58CBA[ /fnp ]错误！您设置的UI类型可能不匹配。请正确设置并重载界面！\124r")
+		if isUIErrorInOneLoad == false then
+			isUIErrorInOneLoad = true
+			print("\124cFFF58CBA[ /fnp ]错误！您设置的UI类型可能不匹配。请正确设置并重载界面！\124r")
+			print("\124cFFF58CBA[ /fnp ]错误！您设置的UI类型可能不匹配。请正确设置并重载界面！\124r")
+			print("\124cFFF58CBA[ /fnp ]错误！您设置的UI类型可能不匹配。请正确设置并重载界面！\124r")
+		end
 		return
 	end
 	if isNullOnlyList == true and isNullFilterList == true then
@@ -558,7 +560,9 @@ function FilteredNamePlate_OnEvent(self, event, ...)
 end
 
 function FilteredNamePlate_OnLoad(self)
+	print("ONLOADDDD")
 	IS_REGISGER = false
+	isUIErrorInOneLoad = false
 	self:RegisterEvent("PLAYER_ENTERING_WORLD")
 end
 
@@ -639,25 +643,13 @@ function FilteredNamePlate.FNP_ModeEditBoxWriten(mode, inputStr)
 end
 
 function FilteredNamePlate.FNP_ChangeFrameVisibility(...)
-
-	local advanced = ...
-	if advanced then
-		if FilteredNamePlate_AdvancedFrame:IsVisible() then
-			FilteredNamePlate_AdvancedFrame:Hide()
-		else
-			FilteredNamePlate_AdvancedFrame:Show()
-		end
-		return
-	end
-
 	if FilteredNamePlate_Frame:IsVisible() then
 		FilteredNamePlate_Frame:Hide()
-		FilteredNamePlate_AdvancedFrame:Hide()
-		--printInfo()
+		FilteredNamePlate_Frame:Hide()
 	else
 		local oldChange = FilteredNamePlate.isSettingChanged
 		FilteredNamePlate_Frame:Show()
-		FilteredNamePlate_AdvancedFrame:Show()
+		FilteredNamePlate_Frame:Show()
 
 		if Fnp_Enable == true then
 			FilteredNamePlate_Frame_EnableCheckButton:SetChecked(true);
@@ -697,9 +689,9 @@ function FilteredNamePlate.FNP_ChangeFrameVisibility(...)
 			FilteredNamePlate_Frame_OnlyShowModeCheckBtn:SetChecked(false);
 		end --]]
 
-		-- FilteredNamePlate_AdvancedFrame_OnlyShowScale:SetValue(Fnp_SavedScaleList.only * 100)
-		FilteredNamePlate_AdvancedFrame_OnlyOtherShowScale:SetValue(Fnp_SavedScaleList.small * 100)
-		FilteredNamePlate_AdvancedFrame_SystemScale:SetValue(Fnp_SavedScaleList.normal * 100)
+		-- FilteredNamePlate_Frame_OnlyShowScale:SetValue(Fnp_SavedScaleList.only * 100)
+		FilteredNamePlate_Frame_OnlyOtherShowScale:SetValue(Fnp_SavedScaleList.small * 100)
+		FilteredNamePlate_Frame_SystemScale:SetValue(Fnp_SavedScaleList.normal * 100)
 
 		FilteredNamePlate_Frame_OnlyShowModeEditBox:SetText(table.concat(Fnp_ONameList, ";"));
 		FilteredNamePlate_Frame_FilteredModeEditBox:SetText(table.concat(Fnp_FNameList, ";"));
