@@ -25,11 +25,30 @@ function FilteredNamePlate.printSavedScaleList(sl)
     print("Saved normal "..sl.normal..(" small ")..sl.small)
 end
 
-function FilteredNamePlate.printATab(atab)
-	local str = ""
-    for pos, name in ipairs(atab) do
-        str = str..pos..(" ")..name..(", ")
-    end
+function FilteredNamePlate.printTable(table , level, key)
+  level = level or 1
+  local indent = ""
+  for i = 1, level do
+    indent = indent.."  "
+  end
+  if key and key ~= "" then
+    print(indent..key.." ".."=".." ".."{")
+  else
+    print(indent .. "{")
+  end
+
+  key = ""
+  for k,v in pairs(table) do
+     if type(v) == "table" then
+        key = k
+		print("key>>"..key)
+        -- FilteredNamePlate.printTable(v, level + 1, key)
+     else
+        local content = string.format("%s%s = %s", indent .. "  ",tostring(k), tostring(v))
+      print(content)
+      end
+  end
+  print(indent .. "}")
 end
 
 function FilteredNamePlate.getTableCount(atab)
