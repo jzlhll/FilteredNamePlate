@@ -11,6 +11,14 @@ local IS_REGISGER, IsCurOnlyShowStat, currentNpFlag, isScaleListInited, isUIErro
 
 local CurrentScaleList, CurrentOrigScaleList
 
+local function getTableCount(atab)
+	local count = 0
+    for pos, name in ipairs(atab) do
+        count = count + 1
+    end
+	return count
+end
+
 --Fnp_Mode  仅显模式 true 过滤模式 false 暂时去掉过滤模式，其实没什么用
 --Fnp_OtherNPFlag 0是默认 1是TidyPlate模式 2是Kui 3是EUI 4是NDUI
 
@@ -42,14 +50,14 @@ local function registerMyEvents(self, event, ...)
 	if Fnp_SavedScaleList == nil then
 		Fnp_SavedScaleList = {
 			normal = 1,
-			small = 0.25,
+			small = 0.20,
 		}
 	end
 
 	isNullOnlyList = false
 	isNullFilterList = false
-	if FilteredNamePlate.getTableCount(Fnp_ONameList) == 0 then isNullOnlyList = true end
-	if FilteredNamePlate.getTableCount(Fnp_FNameList) == 0 then isNullFilterList = true end
+	if getTableCount(Fnp_ONameList) == 0 then isNullOnlyList = true end
+	if getTableCount(Fnp_FNameList) == 0 then isNullFilterList = true end
 
 	isScaleListInited = false
 
@@ -98,20 +106,20 @@ local function reinitScaleValues()
 
 	CurrentOrigScaleList.name.normal = CurrentOrigScaleList.name.SYSTEM
 	CurrentOrigScaleList.name.small = CurrentOrigScaleList.name.normal * Fnp_SavedScaleList.small
-	if CurrentOrigScaleList.name.small < 60 then CurrentOrigScaleList.name.small = 60 end
+	if CurrentOrigScaleList.name.small < 30 then CurrentOrigScaleList.name.small = 30 end
 	CurrentOrigScaleList.name.middle = CurrentOrigScaleList.name.normal * 0.75
-	if CurrentOrigScaleList.name.middle < 80 then CurrentOrigScaleList.name.middle = 80 end
+	if CurrentOrigScaleList.name.middle < 60 then CurrentOrigScaleList.name.middle = 60 end
 
 	CurrentOrigScaleList.castbar.normal = CurrentOrigScaleList.castbar.SYSTEM * Fnp_SavedScaleList.normal
-	CurrentOrigScaleList.castbar.small = 50
-	CurrentOrigScaleList.castbar.middle = 80
+	CurrentOrigScaleList.castbar.small = 40
+	CurrentOrigScaleList.castbar.middle = 70
 	CurrentOrigScaleList.castbar.normalScale = CurrentOrigScaleList.castbar.SYSTEM_SCALE * Fnp_SavedScaleList.normal
 	CurrentOrigScaleList.castbar.smallScale = CurrentOrigScaleList.castbar.normalScale * Fnp_SavedScaleList.small
 	CurrentOrigScaleList.castbar.middleScale = CurrentOrigScaleList.castbar.normalScale * 0.75
 
 	CurrentOrigScaleList.healthbar.normal = CurrentOrigScaleList.healthbar.SYSTEM * Fnp_SavedScaleList.normal
-	CurrentOrigScaleList.healthbar.small = 50
-	CurrentOrigScaleList.healthbar.middle = 80
+	CurrentOrigScaleList.healthbar.small = 40
+	CurrentOrigScaleList.healthbar.middle = 70
 	CurrentOrigScaleList.healthbar.normalScale = CurrentOrigScaleList.healthbar.SYSTEM_SCALE * Fnp_SavedScaleList.normal
 	CurrentOrigScaleList.healthbar.smallScale = CurrentOrigScaleList.healthbar.normalScale * Fnp_SavedScaleList.small
 	CurrentOrigScaleList.healthbar.middleScale = CurrentOrigScaleList.healthbar.normalScale * 0.75
@@ -133,7 +141,7 @@ local function initScaleValues()
 			CurrentScaleList = { -- 一种原始保存,三种不同状态下的scale value
 			SYSTEM = 0.78,
 			normal = 1.0,
-			small = 0.25,
+			small = 0.20,
 			middle = 0.6,
 			};
 			CurrentOrigScaleList = {
@@ -141,16 +149,16 @@ local function initScaleValues()
 					SYSTEM = 130,
 					normal = 130,
 					small = 40,
-					middle = 80,
+					middle = 70,
 				},
 				castbar = {
 					SYSTEM = 130,
 					SYSTEM_SCALE = 0.78,
 					normal = 130,
 					normalScale = 0.78,
-					small = 80,
+					small = 40,
 					smallScale = 0.5,
-					middle = 100,
+					middle = 70,
 					middleScale = 0.75,
 				},
 				healthbar = {
@@ -158,9 +166,9 @@ local function initScaleValues()
 					SYSTEM_SCALE = 0.78,
 					normal = 130,
 					normalScale = 0.78,
-					small = 80,
+					small = 40,
 					smallScale = 0.5,
-					middle = 100,
+					middle = 70,
 					middleScale = 0.75,
 				},
 			}
@@ -352,10 +360,10 @@ function FilteredNamePlate.actionUnitStateAfterChanged()
 		IsCurOnlyShowStat = false
 		--仅显
 		isNullOnlyList = false
-		if FilteredNamePlate.getTableCount(Fnp_ONameList) == 0 then isNullOnlyList = true end
+		if getTableCount(Fnp_ONameList) == 0 then isNullOnlyList = true end
 		--过滤
 		isNullFilterList = false
-		if FilteredNamePlate.getTableCount(Fnp_FNameList) == 0 then isNullFilterList = true end
+		if getTableCount(Fnp_FNameList) == 0 then isNullFilterList = true end
 		local isHide = false
 		for _, frame in pairs(GetNamePlates()) do
 			if isNullOnlyList == true then

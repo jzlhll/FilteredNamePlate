@@ -51,14 +51,6 @@ function FilteredNamePlate.printTable(table , level, key)
   print(indent .. "}")
 end
 
-function FilteredNamePlate.getTableCount(atab)
-	local count = 0
-    for pos, name in ipairs(atab) do
-        count = count + 1
-    end
-	return count
-end
-
 function FilteredNamePlate.insertATabValue(tab, value)
     local isExist = false;
     for pos, name in ipairs(tab) do
