@@ -13,42 +13,7 @@ local CurrentScaleList, CurrentOrigScaleList
 
 --Fnp_Mode  仅显模式 true 过滤模式 false 暂时去掉过滤模式，其实没什么用
 --Fnp_OtherNPFlag 0是默认 1是TidyPlate模式 2是Kui 3是EUI 4是NDUI
---[[
-local function printInfo()
-	print("\124cFFF58CBA>>>>>>[过滤姓名板]\124r")
-	local showstr = ""
-	local isEnable = "不"
-	if Fnp_Enable == true then
-		isEnable = "是"
-	end
-	showstr = "\124cFFF58CBA启用状态:\124r "..isEnable.."， "
-	local supportUIName = "原生/EUI"
-	if Fnp_OtherNPFlag == 1 then
-		supportUIName = "TidyPlate"
-	elseif Fnp_OtherNPFlag == 2 then
-		supportUIName = "Kui_NamePlates"
-	end
-	showstr = showstr.."\124cFFF58CBAUI类型:\124r "..supportUIName
-	print(showstr)
-	showstr = ""
-	if Fnp_ONameList ~= nil and FilteredNamePlate.getTableCount(Fnp_ONameList) > 0 then
-		showstr = showstr.."\124cFFF58CBA仅显列表：\124r"..table.concat(Fnp_ONameList, ";")
-	else
-		showstr = showstr.."\124cFFF58CBA仅显列表：\124r空"
-	end
-	print(showstr)
-	showstr = ""
-	if Fnp_FNameList ~= nil and FilteredNamePlate.getTableCount(Fnp_FNameList) > 0 then
-		showstr = showstr.."\124cFFF58CBA过滤列表：\124r"..table.concat(Fnp_FNameList, ";")
-	else
-		showstr = showstr.."\124cFFF58CBA过滤列表：\124r空"
-	end
-	print(showstr)
-	print("\124cFFF58CBA默认比例:\124r "..Fnp_SavedScaleList.normal)
-	print("\124cFFF58CBA非仅显单位比例:\124r "..Fnp_SavedScaleList.small)
-	-- FilteredNamePlate.printATab(Fnp_SavedScaleList)
-end
---]]
+
 local function registerMyEvents(self, event, ...)
 	if IS_REGISGER == true then return end
 	if Fnp_Enable == nil then
@@ -369,6 +334,10 @@ function FilteredNamePlate.actionUnitStateAfterChanged()
 				end
 			end
 			IsCurOnlyShowStat = true
+		else
+			for _, frame in pairs(GetNamePlates()) do
+				showSingleUnit(frame, false, false)
+			end	
 		end
 		-- registerMyEvents(FilteredNamePlate_Frame, "", "")
 	else -- 已经关闭功能就全部显示
