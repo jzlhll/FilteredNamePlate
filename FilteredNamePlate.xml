@@ -3,7 +3,7 @@
 <Script file="FilteredNamePlateHelp.lua" />
 <Frame name="FilteredNamePlate_Frame" hidden="true" parent="UIParent" toplevel="true" movable="true" frameStrata="HIGH" enableMouse="true" enableKeyboard="true">
 	<Size>
-		<AbsDimension x="621" y="420" />
+		<AbsDimension x="621" y="450" />
 	</Size>
 	<Anchors>
 		<Anchor point="CENTER" />
@@ -115,9 +115,9 @@
 		</CheckButton>
 		<CheckButton name="$parent_EUIRayBtn" inherits="OptionsCheckButtonTemplate">
 			<Anchors>
-				<Anchor point="TOPLEFT" relativeTo="$parent_OrgCheckBtn" relativePoint="TOPRIGHT">
+				<Anchor point="TOPLEFT" relativeTo="$parent_tidyCheckBtn" relativePoint="BOTTOMLEFT">
 				<Offset>
-					<AbsDimension x="50" y="0" />
+					<AbsDimension x="0" y="-30" />
 				</Offset>
 				</Anchor>
 			</Anchors>
@@ -132,6 +132,31 @@
 				<OnEnter>
 					GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
 					GameTooltip:SetText("EUI, RayUI勾选此项。EUI or RayUI。");
+				</OnEnter>
+				<OnLeave>
+					GameTooltip:Hide();
+				</OnLeave>
+			</Scripts>
+		</CheckButton>
+		<CheckButton name="$parent_NDUIBtn" inherits="OptionsCheckButtonTemplate">
+			<Anchors>
+				<Anchor point="TOPLEFT" relativeTo="$parent_EUIRayBtn" relativePoint="TOPRIGHT">
+				<Offset>
+					<AbsDimension x="80" y="0" />
+				</Offset>
+				</Anchor>
+			</Anchors>
+			<Scripts>
+				<OnLoad>
+				_G[self:GetName().."Text"]:SetText("NDUI");
+				</OnLoad>
+				<OnClick>
+				FilteredNamePlate.FNP_UITypeChanged(self, self:GetChecked(), 4)
+				FilteredNamePlate_Frame_reloadUIBtn:Show()
+				</OnClick>
+				<OnEnter>
+					GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
+					GameTooltip:SetText("如果你使用NDUI勾选此项。NDUI。");
 				</OnEnter>
 				<OnLeave>
 					GameTooltip:Hide();
@@ -175,7 +200,7 @@
                     <AbsDimension x="200" y="60" />
                 </Size>
                 <Anchors>
-                    <Anchor point="TOPLEFT" relativeTo="$parent_tidyCheckBtn" relativePoint="BOTTOMLEFT">
+                    <Anchor point="TOPLEFT" relativeTo="$parent_EUIRayBtn" relativePoint="BOTTOMLEFT">
                         <Offset>
                             <AbsDimension x="0" y="-50" />
                         </Offset>
@@ -482,7 +507,7 @@
 					</Anchor>
 				</Anchors>
 			</FontString>
-			<!-- FontString name="$parent_show_TextOnly" inherits="GameFontNormal" text="来回切换隐藏和显示血条,即刻生效">
+			<FontString name="$parent_show_TextOnly" inherits="GameFontNormal" text="来回切换隐藏和显示血条,即可">
 				<Anchors>
 					<Anchor point="BOTTOMRIGHT" relativeTo="$parent">
 						<Offset>
@@ -491,7 +516,7 @@
 					</Anchor>
 				</Anchors>
 			</FontString>
-			<FontString name="$parent_show_TextOnlyOther" inherits="GameFontNormal" text="点击生效按钮以后,">
+			<FontString name="$parent_show_TextOnlyOther" inherits="GameFontNormal" text="点击生效按钮以后,如果未生效,">
 				<Anchors>
 					<Anchor point="BOTTOMRIGHT" relativeTo="$parent_show_TextOnly">
 						<Offset>
@@ -499,7 +524,7 @@
 						</Offset>
 					</Anchor>
 				</Anchors>
-			</FontString -->
+			</FontString>
 		</Layer>
 	</Layers>
 	<Scripts>

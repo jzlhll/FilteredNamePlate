@@ -12,7 +12,7 @@ local IS_REGISGER, IsCurOnlyShowStat, currentNpFlag, isScaleListInited, isUIErro
 local CurrentScaleList, CurrentOrigScaleList
 
 --Fnp_Mode  仅显模式 true 过滤模式 false 暂时去掉过滤模式，其实没什么用
---Fnp_OtherNPFlag 0是默认 1是TidyPlate模式 2是Kui 3是EUI
+--Fnp_OtherNPFlag 0是默认 1是TidyPlate模式 2是Kui 3是EUI 4是NDUI
 --[[
 local function printInfo()
 	print("\124cFFF58CBA>>>>>>[过滤姓名板]\124r")
@@ -200,7 +200,11 @@ local function initScaleValues()
 				},
 			}
 			local sys = 0
-			if indx == 3 then --EUI
+			if indx == 4 then
+				if frame.unitFrame then
+					sys = frame.unitFrame:GetEffectiveScale()
+				end
+			elseif indx == 3 then --EUI
 				if frame.UnitFrame then
 					sys = frame.UnitFrame:GetEffectiveScale()
 				end
@@ -261,6 +265,12 @@ local hideSwitchSingleUnit = {
 		if frame.UnitFrame then
 			frame.UnitFrame:SetScale(CurrentScaleList.small)
 		end
+	end,
+	[4] = function(frame)
+		if frame == nil then return end
+		if frame.unitFrame then
+			frame.unitFrame:SetScale(CurrentScaleList.small)
+		end
 	end
 }
 
@@ -298,6 +308,8 @@ local function showSingleUnit(frame, isOnlyShowSpellCast, restore)
 		frameImp = frame.kui
 	elseif currentNpFlag == 3 and frame.UnitFrame then --EUI
 		frameImp = frame.UnitFrame
+	elseif currentNpFlag == 4 and frame.unitFrame then --NDUI
+		frameImp = frame.unitFrame
 	end
 
 	if frameImp then
@@ -580,26 +592,21 @@ end
 function FilteredNamePlate.FNP_UITypeChanged(checkbtn, checked, flag)
 	if checked then
 		Fnp_OtherNPFlag = flag
+		FilteredNamePlate_Frame_tidyCheckBtn:SetChecked(false)
+		FilteredNamePlate_Frame_KuiCheckBtn:SetChecked(false)
+		FilteredNamePlate_Frame_OrgCheckBtn:SetChecked(false)
+		FilteredNamePlate_Frame_EUIRayBtn:SetChecked(false)
+		FilteredNamePlate_Frame_NDUIBtn:SetChecked(false)
 		if flag == 0 then
-			FilteredNamePlate_Frame_tidyCheckBtn:SetChecked(false)
-			FilteredNamePlate_Frame_KuiCheckBtn:SetChecked(false)
 			FilteredNamePlate_Frame_OrgCheckBtn:SetChecked(true)
-			FilteredNamePlate_Frame_EUIRayBtn:SetChecked(false)
 		elseif flag == 1 then
 			FilteredNamePlate_Frame_tidyCheckBtn:SetChecked(true)
-			FilteredNamePlate_Frame_KuiCheckBtn:SetChecked(false)
-			FilteredNamePlate_Frame_OrgCheckBtn:SetChecked(false)
-			FilteredNamePlate_Frame_EUIRayBtn:SetChecked(false)
 		elseif flag == 2 then
-			FilteredNamePlate_Frame_tidyCheckBtn:SetChecked(false)
 			FilteredNamePlate_Frame_KuiCheckBtn:SetChecked(true)
-			FilteredNamePlate_Frame_OrgCheckBtn:SetChecked(false)
-			FilteredNamePlate_Frame_EUIRayBtn:SetChecked(false)
 		elseif flag == 3 then
-			FilteredNamePlate_Frame_tidyCheckBtn:SetChecked(false)
-			FilteredNamePlate_Frame_KuiCheckBtn:SetChecked(false)
-			FilteredNamePlate_Frame_OrgCheckBtn:SetChecked(false)
 			FilteredNamePlate_Frame_EUIRayBtn:SetChecked(true)
+		elseif flag == 4 then
+			FilteredNamePlate_Frame_NDUIBtn:SetChecked(true)
 		end
 	else
 		checkbtn:SetChecked(true)
@@ -689,7 +696,11 @@ function FilteredNamePlate.FNP_ChangeFrameVisibility(...)
 		else
 			FilteredNamePlate_Frame_EUIRayBtn:SetChecked(false);
 		end
-
+		if Fnp_OtherNPFlag == 4 then
+			FilteredNamePlate_Frame_NDUIBtn:SetChecked(true);
+		else
+			FilteredNamePlate_Frame_NDUIBtn:SetChecked(false);
+		end
 		--[[
 		if Fnp_Mode ~= nil and Fnp_Mode == true then
 			FilteredNamePlate_Frame_FilteredModeCheckBtn:SetChecked(false);
