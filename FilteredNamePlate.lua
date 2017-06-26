@@ -239,6 +239,60 @@ local hideSwitchSingleUnit = {
 	end
 }
 
+local function showCustomSingleUnit(customFrame,isOnlyShowSpellCast,restore)
+	if customFrame then
+		if restore == true then
+			customFrame:SetScale(CurrentScaleList.SYSTEM)
+		elseif isOnlyShowSpellCast == false then
+			customFrame:SetScale(CurrentScaleList.normal)
+		else
+			customFrame:SetScale(CurrentScaleList.middle)
+		end
+	end
+end
+
+local showSwitchSingleUnit = {
+	[0] = function(frame, isOnlyShowSpellCast, restore)
+		if frame.UnitFrame then
+			if restore == true then
+				frame.UnitFrame.name:SetWidth(CurrentOrigScaleList.name.SYSTEM)
+				frame.UnitFrame.healthBar:Show()
+				--frame.UnitFrame.healthBar:SetWidth(CurrentOrigScaleList.healthbar.SYSTEM)
+				--frame.UnitFrame.healthBar:SetScale(CurrentOrigScaleList.healthbar.SYSTEM_SCALE)
+				--frame.UnitFrame.castBar:SetWidth(CurrentOrigScaleList.castbar.SYSTEM)
+				--frame.UnitFrame.castBar:SetScale(CurrentOrigScaleList.castbar.SYSTEM_SCALE)
+			elseif isOnlyShowSpellCast == false then
+				frame.UnitFrame.name:SetWidth(CurrentOrigScaleList.name.normal)
+				frame.UnitFrame.healthBar:Show()
+				--frame.UnitFrame.healthBar:SetWidth(CurrentOrigScaleList.healthbar.normal)
+				--frame.UnitFrame.healthBar:SetScale(CurrentOrigScaleList.healthbar.normalScale)
+				--frame.UnitFrame.castBar:SetWidth(CurrentOrigScaleList.castbar.normal)
+				--frame.UnitFrame.castBar:SetScale(CurrentOrigScaleList.castbar.normalScale)
+			else
+				frame.UnitFrame.name:SetWidth(CurrentOrigScaleList.name.middle)
+				frame.UnitFrame.healthBar:Show()
+				--frame.UnitFrame.healthBar:SetWidth(CurrentOrigScaleList.healthbar.middle)
+				--frame.UnitFrame.healthBar:SetScale(CurrentOrigScaleList.healthbar.middleScale)
+				--frame.UnitFrame.castBar:SetWidth(CurrentOrigScaleList.castbar.middle)
+				--frame.UnitFrame.castBar:SetScale(CurrentOrigScaleList.castbar.middleScale)
+			end
+		end
+	end,
+	[1] = function(frame, isOnlyShowSpellCast, restore)
+		showCustomSingleUnit(frame.carrier,isOnlyShowSpellCast,restore)
+	end,
+	[2] = function(frame, isOnlyShowSpellCast, restore)
+		showCustomSingleUnit(frame.kui,isOnlyShowSpellCast,restore)
+	end,
+	[3] = function(frame, isOnlyShowSpellCast, restore)
+		showCustomSingleUnit(frame.UnitFrame,isOnlyShowSpellCast,restore)
+	end,
+	[4] = function(frame, isOnlyShowSpellCast, restore)
+		showCustomSingleUnit(frame.unitFrame,isOnlyShowSpellCast,restore)
+	end
+}
+
+--[[
 local function showSingleUnit(frame, isOnlyShowSpellCast, restore)
 	if frame == nil then return end
 	if currentNpFlag == 0 and frame.UnitFrame then  -- ORig
@@ -287,6 +341,7 @@ local function showSingleUnit(frame, isOnlyShowSpellCast, restore)
 		end
 	end
 end
+--]]
 
 function FilteredNamePlate.actionUnitStateAfterChanged()
     --FilteredNamePlate.printSavedScaleList(Fnp_SavedScaleList)
@@ -312,7 +367,8 @@ function FilteredNamePlate.actionUnitStateAfterChanged()
 				if matched2 == true then
 					hideSwitchSingleUnit[currentNpFlag](frame)
 				else
-					showSingleUnit(frame, false, false)
+					--showSingleUnit(frame, false, false)
+					showSwitchSingleUnit[currentNpFlag](frame, false, false)
 				end
 			else
 				local foundUnit = frame.namePlateUnitToken or (frame.UnitFrame and frame.UnitFrame.unit)
@@ -328,7 +384,8 @@ function FilteredNamePlate.actionUnitStateAfterChanged()
 				local foundUnit = frame.namePlateUnitToken or (frame.UnitFrame and frame.UnitFrame.unit)
 				matched = isMatchedNameList(Fnp_ONameList, GetUnitName(foundUnit))
 				if matched == true then
-					showSingleUnit(frame, false, false)
+					--showSingleUnit(frame, false, false)
+					showSwitchSingleUnit[currentNpFlag](frame, false, false)
 				else
 					hideSwitchSingleUnit[currentNpFlag](frame)
 				end
@@ -336,7 +393,8 @@ function FilteredNamePlate.actionUnitStateAfterChanged()
 			IsCurOnlyShowStat = true
 		else
 			for _, frame in pairs(GetNamePlates()) do
-				showSingleUnit(frame, false, false)
+				--showSingleUnit(frame, false, false)
+				showSwitchSingleUnit[currentNpFlag](frame, false, false)
 			end	
 		end
 		-- registerMyEvents(FilteredNamePlate_Frame, "", "")
@@ -344,7 +402,8 @@ function FilteredNamePlate.actionUnitStateAfterChanged()
 		for _, frame in pairs(GetNamePlates()) do
 			local foundUnit = frame.namePlateUnitToken or (frame.UnitFrame and frame.UnitFrame.unit)
 			if foundUnit then
-				showSingleUnit(frame, false, true)
+				--showSingleUnit(frame, false, true)
+				showSwitchSingleUnit[currentNpFlag](frame, false, true)
 			end
 		end
 		IsCurOnlyShowStat = false
@@ -381,10 +440,12 @@ local function actionUnitAddedForce(unitid)
 		hideSwitchSingleUnit[currentNpFlag](frame)
 	elseif curOnlyMatch == false and IsCurOnlyShowStat == false then
 		-- 新增单位不需要仅显, 此时也没有仅显, 就不管了.现在我们将当前的效果展示出来
-		showSingleUnit(GetNamePlateForUnit(unitid), false, false)
+		--showSingleUnit(GetNamePlateForUnit(unitid), false, false)
+		showSwitchSingleUnit[currentNpFlag](GetNamePlateForUnit(unitid), false, false)
 	elseif curOnlyMatch == true and IsCurOnlyShowStat == true then
 		-- 新增单位是需要仅显的,而此时已经有仅显的了,于是我们什么也不用干 -- 更新，怀疑在异步调用的时候莫名奇妙被hide了这里开出来确保
-		showSingleUnit(GetNamePlateForUnit(unitid), false, false)
+		--showSingleUnit(GetNamePlateForUnit(unitid), false, false)
+		showSwitchSingleUnit[currentNpFlag](GetNamePlateForUnit(unitid), false, false)
 	elseif curOnlyMatch == true and IsCurOnlyShowStat == false then
 		--新增单位是需要仅显的,而此时不是仅显, 于是我们就将之前的都Hide,当前这个不用处理
 		for _, frame in pairs(GetNamePlates()) do
@@ -392,7 +453,8 @@ local function actionUnitAddedForce(unitid)
 			if foundUnit then
 				-- TODO 判断是否是正在读条
 				if (unitid == foundUnit) then
-					showSingleUnit(frame, false, false)
+					--showSingleUnit(frame, false, false)
+					showSwitchSingleUnit[currentNpFlag](frame, false, false)
 				else
 					hideSwitchSingleUnit[currentNpFlag](frame)
 				end
@@ -425,7 +487,8 @@ local function actionUnitRemovedForce(unitid)
 			if foundUnit then
 				matched = isMatchedNameList(Fnp_ONameList, GetUnitName(foundUnit))
 				if matched == false then
-					showSingleUnit(frame, false, false)
+					--showSingleUnit(frame, false, false)
+					showSwitchSingleUnit[currentNpFlag](frame, false, false)
 				end
 			end
 		end
@@ -495,7 +558,8 @@ local function actionUnitSpellCastStartOnlyShowMode(...)
 	-- true的话，表明是我们要的，那么肯定是在显示了。
 	if curMatch == false then --false，而且是处于isCurrentOnlyShow
 		local frame = GetNamePlateForUnit(unitid)
-		showSingleUnit(frame, true, false)
+		-- showSingleUnit(frame, true, false)
+		showSwitchSingleUnit[currentNpFlag](frame, true, false)
 	end
 end
 
