@@ -10,9 +10,11 @@ FNP_LOCALE_TEXT.FNP_TOOLTIP_EUI_RAYUI = "Using with ElvUI or RayUI, check this";
 FNP_LOCALE_TEXT.FNP_TOOLTIP_NDUI = "Using with NDUI, check this";
 
 FNP_LOCALE_TEXT.FNP_DEFAULT_SCALE_TXT = "Default Scale";
-FNP_LOCALE_TEXT.FNP_DEFAULT_SCALE_TOOLTIP = "Scale the normal unit or OnlyShow Unit";
-FNP_LOCALE_TEXT.FNP_ONLYSHOW_SCALE_TXT = "Non-OnlyShow Scale";
-FNP_LOCALE_TEXT.FNP_DEFAULT_SCALE_TOOLTIP = "Scale the non-OnlyShow unit";
+FNP_LOCALE_TEXT.FNP_DEFAULT_SCALE_TOOLTIP = "Scale the normal unit Unit";
+FNP_LOCALE_TEXT.FNP_ONLYSHOW_OTHER_SCALE_TXT = "Non-OnlyShow Scale";
+FNP_LOCALE_TEXT.FNP_ONLYSHOW_OTHER_SCALE_TOOLTIP = "Scale the non-OnlyShow unit when only show works";
+FNP_LOCALE_TEXT.FNP_ONLYSHOW_SCALE_TXT = "Scale the OnlyShow unit";
+FNP_LOCALE_TEXT.FNP_ONLYSHOW_SCALE_TOOLTIP = "Scale the OnlyShow unit when only show works";
 
 FNP_LOCALE_TEXT.FNP_TAKEEFFECT_BTN = "Active";
 FNP_LOCALE_TEXT.FNP_RELOAD_BTN = "ReloadUI";
