@@ -28,6 +28,18 @@ end
 --Fnp_Mode  仅显模式 true 过滤模式 false 暂时去掉过滤模式，其实没什么用
 --Fnp_OtherNPFlag 0是默认 1是TidyPlate模式 2是Kui 3是EUI 4是NDUI
 
+local function initFnp_SavedScaleList_only(curFlag)
+	if curFlag == 0 then
+		Fnp_SavedScaleList.only = 1.4
+	elseif curFlag == 1 then
+		Fnp_SavedScaleList.only = 1.35
+	elseif curFlag == 2 then
+		Fnp_SavedScaleList.only = 1.5
+	else
+		Fnp_SavedScaleList.only = 1.45
+	end
+end
+
 local function registerMyEvents(self, event, ...)
 	if IS_REGISGER == true then return end
 	if Fnp_Enable == nil then
@@ -59,8 +71,9 @@ local function registerMyEvents(self, event, ...)
 			small = 0.20,
 			only = 1.45,
 		}
+		initFnp_SavedScaleList_only(currentNpFlag)
 	else -- V4 update to V5
-		if Fnp_SavedScaleList.only == nil then Fnp_SavedScaleList.only = 1.45 end
+		if Fnp_SavedScaleList.only == nil then initFnp_SavedScaleList_only(currentNpFlag) end
 	end
 
 	isNullOnlyList = false
@@ -122,6 +135,7 @@ local function reinitScaleValues()
 		CurrentOrigScaleList.name.middle = 30
 	end
 	CurrentOrigScaleList.bars.heal_onlyHeight = CurrentOrigScaleList.bars.HEAL_SYS_HEIGHT * Fnp_SavedScaleList.only;
+	CurrentOrigScaleList.bars.cast_midHeight = CurrentOrigScaleList.bars.CAST_SYS_HEIGHT * 0.6;
 end
 
 
@@ -153,6 +167,8 @@ local function initScaleValues()
 				bars = {
 					HEAL_SYS_HEIGHT = 10.8,
 					heal_onlyHeight = 15.0,
+					CAST_SYS_HEIGHT = 10.8,
+					cast_midHeight = 5.4
 				}
 			}
 			local sys = 0
@@ -177,6 +193,7 @@ local function initScaleValues()
 					sys = 1
 					CurrentOrigScaleList.name.SYSTEM = frame.UnitFrame:GetWidth()
 					CurrentOrigScaleList.bars.HEAL_SYS_HEIGHT = frame.UnitFrame.healthBar:GetHeight()
+					CurrentOrigScaleList.bars.CAST_SYS_HEIGHT = frame.UnitFrame.castBar:GetHeight()
 				end
 			end
 			if sys > 0.01 then -- it's a real info
@@ -195,6 +212,7 @@ local hideSwitchSingleUnit = {
 		if frame.UnitFrame then
 			frame.UnitFrame.name:SetWidth(CurrentOrigScaleList.name.small)
 			frame.UnitFrame.healthBar:Hide()
+			frame.UnitFrame.castBar:SetHeight(CurrentOrigScaleList.bars.cast_midHeight)
 		end
 	end,
 	[1] = function(frame)
@@ -246,10 +264,12 @@ local showSwitchSingleUnit = {
 			if restore == true then
 				frame.UnitFrame.name:SetWidth(CurrentOrigScaleList.name.SYSTEM)
 				frame.UnitFrame.healthBar:Show()
-				frame.UnitFrame.healthBar:SetHeight(CurrentOrigScaleList.bars.normal)
+				frame.UnitFrame.healthBar:SetHeight(CurrentOrigScaleList.bars.HEAL_SYS_HEIGH)
+				frame.UnitFrame.castBar:SetHeight(CurrentOrigScaleList.bars.CAST_SYS_HEIGHT)
 			elseif isOnlyShowSpellCast == false then
 				frame.UnitFrame.name:SetWidth(CurrentOrigScaleList.name.normal)
 				frame.UnitFrame.healthBar:Show()
+				frame.UnitFrame.castBar:SetHeight(CurrentOrigScaleList.bars.CAST_SYS_HEIGHT)
 				if isOnlyUnit then
 					frame.UnitFrame.healthBar:SetHeight(CurrentOrigScaleList.bars.heal_onlyHeight)
 				else
@@ -257,6 +277,7 @@ local showSwitchSingleUnit = {
 				end
 			else
 				frame.UnitFrame.name:SetWidth(CurrentOrigScaleList.name.middle)
+				frame.UnitFrame.castBar:SetHeight(CurrentOrigScaleList.bars.cast_midHeight)
 				--frame.UnitFrame.healthBar:Show()
 			end
 		end
@@ -553,7 +574,12 @@ end
 
 function FilteredNamePlate.FNP_UITypeChanged(checkbtn, checked, flag)
 	if checked then
+		if Fnp_OtherNPFlag == flag then
+			return
+		end
 		Fnp_OtherNPFlag = flag
+		initFnp_SavedScaleList_only(flag)
+		FilteredNamePlate_Frame_OnlyShowScale:SetValue(Fnp_SavedScaleList.only * 100)
 		FilteredNamePlate_Frame_tidyCheckBtn:SetChecked(false)
 		FilteredNamePlate_Frame_KuiCheckBtn:SetChecked(false)
 		FilteredNamePlate_Frame_OrgCheckBtn:SetChecked(false)
@@ -572,6 +598,9 @@ function FilteredNamePlate.FNP_UITypeChanged(checkbtn, checked, flag)
 		end
 	else
 		checkbtn:SetChecked(true)
+		if Fnp_OtherNPFlag == flag then
+			return
+		end
 	end
 	print(L.FNP_PRINT_UITYPE_CHANGED)
 end
