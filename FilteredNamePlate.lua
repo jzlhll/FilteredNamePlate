@@ -1,5 +1,9 @@
+local _
+local _G = _G
 FilteredNamePlate = {}
+local L = FNP_LOCALE_TEXT
 local FilteredNamePlate = FilteredNamePlate
+
 SLASH_FilteredNamePlate1 = "/fnp"
 local GetNamePlateForUnit = C_NamePlate.GetNamePlateForUnit
 local GetNamePlates = C_NamePlate.GetNamePlates
@@ -513,9 +517,9 @@ local function actionUnitAdded(self, event, ...)
 	if isScaleListInited == false then
 		if isUIErrorInOneLoad == false then
 			isUIErrorInOneLoad = true
-			print("\124cFFF58CBA[ /fnp ]错误！您设置的UI类型可能不匹配。请正确设置并重载界面！\124r")
-			print("\124cFFF58CBA[ /fnp ]错误！您设置的UI类型可能不匹配。请正确设置并重载界面！\124r")
-			print("\124cFFF58CBA[ /fnp ]错误！您设置的UI类型可能不匹配。请正确设置并重载界面！\124r")
+			print(L.FNP_PRINT_ERROR_UITYPE)
+			print(L.FNP_PRINT_ERROR_UITYPE)
+			print(L.FNP_PRINT_ERROR_UITYPE)
 		end
 		return
 	end
@@ -652,7 +656,7 @@ function FilteredNamePlate.FNP_UITypeChanged(checkbtn, checked, flag)
 	else
 		checkbtn:SetChecked(true)
 	end
-	print("\124cFFF58CBA修改了插件类型，请重载/reload或者/rl !!!\124r")
+	print(L.FNP_PRINT_UITYPE_CHANGED)
 end
 
 function FilteredNamePlate.FNP_EnableButtonChecked(self, checked)
@@ -767,10 +771,10 @@ end
 function SlashCmdList.FilteredNamePlate(msg)
 	local lastTarget = GetBindingKey("TARGETNEARESTENEMY");
 	if msg == "" then
-		print("\124cFFF58CBA[过滤姓名板]\124r")
-		print("\124cFFF58CBA/fnp options 或 /fnp opt \124r打开菜单")
-		print("\124cFFF58CBA/fnp change 或 /fnp ch \124r快速切换开关")
-		print("\124cFFF58CBA/fnp refresh \124r快速隐藏正在施法的怪")
+		print(L.FNP_PRINT_HELP0)
+		print(L.FNP_PRINT_HELP1)
+		print(L.FNP_PRINT_HELP2)
+		print(L.FNP_PRINT_HELP3)
 	elseif msg == "options" or msg == "opt" then
 		FilteredNamePlate.FNP_ChangeFrameVisibility()
 	elseif msg == "change" or msg == "ch" then
