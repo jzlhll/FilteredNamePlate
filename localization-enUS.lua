@@ -29,7 +29,7 @@ FNP_LOCALE_TEXT.FNP_STRING_NOTE = "using ; to add a name";
 
 FNP_LOCALE_TEXT.FNP_STRING_TEXTONLYOTHER = "If it not take effect after active btn is clicked,";
 FNP_LOCALE_TEXT.FNP_STRING_TEXTONLY = "you can switch the shortcut key(hide or show nameplates)";
-FNP_LOCALE_TEXT.FNP_STRING_AUTHOR_VER = "Author:Allan version:7.2.5.20170629 V4";
+FNP_LOCALE_TEXT.FNP_STRING_AUTHOR_VER = "Author:Allan version:7.2.5.20170630 V5";
 
 FNP_LOCALE_TEXT.FNP_PRINT_ERROR_UITYPE = "\124cFFF58CBA[ /fnp ]Error！Your UI type does not match, please check the UI type correctly and reloadUI!！\124r";
 FNP_LOCALE_TEXT.FNP_PRINT_UITYPE_CHANGED = "\124cFFF58CBAUI type is changed，please reloadUI !\124r";

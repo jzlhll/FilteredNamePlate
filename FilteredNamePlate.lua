@@ -135,7 +135,7 @@ local function reinitScaleValues()
 		CurrentOrigScaleList.name.middle = 30
 	end
 	CurrentOrigScaleList.bars.heal_onlyHeight = CurrentOrigScaleList.bars.HEAL_SYS_HEIGHT * Fnp_SavedScaleList.only;
-	CurrentOrigScaleList.bars.cast_midHeight = CurrentOrigScaleList.bars.CAST_SYS_HEIGHT * 0.6;
+	CurrentOrigScaleList.bars.cast_midHeight = CurrentOrigScaleList.bars.CAST_SYS_HEIGHT * 0.5;
 end
 
 
@@ -707,7 +707,7 @@ function FilteredNamePlate.FNP_ChangeFrameVisibility(...)
 
 		FilteredNamePlate_Frame_OnlyShowModeEditBox:SetText(table.concat(Fnp_ONameList, ";"));
 		FilteredNamePlate_Frame_FilteredModeEditBox:SetText(table.concat(Fnp_FNameList, ";"));
-		
+
 		if oldChange == false then
 			FilteredNamePlate_Frame_takeEffectBtn:Hide()
 		end
@@ -733,10 +733,10 @@ function SlashCmdList.FilteredNamePlate(msg)
 		end
 	elseif msg == "refresh" then
 		FilteredNamePlate.actionUnitStateAfterChanged()
-	elseif msg == "spellcast1" then
-		spellcastScale = 0.5
+	elseif msg == "spellcast_small" then
+		spellcastScale = 0.35
 		FilteredNamePlate.actionUnitStateAfterChanged()
-	elseif msg == "spellcast2" then
+	elseif msg == "spellcast_big" then
 		spellcastScale = 0.7
 		FilteredNamePlate.actionUnitStateAfterChanged()
 	end
