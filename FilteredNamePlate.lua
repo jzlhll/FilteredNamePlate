@@ -650,11 +650,6 @@ function FilteredNamePlate.FNP_ModeEditBoxWriten(mode, inputStr)
 	end
 end
 
-function FilteredNamePlate.FNP_printHelp(...)
-	print(FNP_LOCALE_TEXT.FNP_STRING_TEXTONLYOTHER);
-	print(FNP_LOCALE_TEXT.FNP_STRING_TEXTONLY);
-end
-
 function FilteredNamePlate.FNP_ChangeFrameVisibility(...)
 	if FilteredNamePlate_Frame:IsVisible() then
 		FilteredNamePlate_Frame:Hide()

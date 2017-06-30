@@ -253,7 +253,7 @@
 			<Anchors>
 				<Anchor point="RIGTH" relativeTo="$parent" relativePoint="BOTTOMRIGHT">
 				<Offset>
-					<AbsDimension x="-50" y="45" />
+					<AbsDimension x="-55" y="48" />
 				</Offset>
 				</Anchor>
 			</Anchors>
@@ -262,7 +262,7 @@
 				_G[self:GetName().."Text"]:SetText(FNP_LOCALE_TEXT.FNP_TEXT_HELP);
 				</OnLoad>
 				<OnClick>
-					FilteredNamePlate.FNP_printHelp("a")
+					print(FNP_LOCALE_TEXT.FNP_TEXT_INFO0)
 				</OnClick>
 			</Scripts>
 		</Button>
