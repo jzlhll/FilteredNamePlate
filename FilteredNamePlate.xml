@@ -246,6 +246,26 @@
 				</OnClick>
 			</Scripts>
 		</Button>
+		<Button name="$parent_HelpIcon" inherits="OptionsButtonTemplate" text="">
+			<Size>
+				<AbsDimension x="45" y="35" />
+			</Size>
+			<Anchors>
+				<Anchor point="RIGTH" relativeTo="$parent" relativePoint="BOTTOMRIGHT">
+				<Offset>
+					<AbsDimension x="-50" y="45" />
+				</Offset>
+				</Anchor>
+			</Anchors>
+			<Scripts>
+				<OnLoad>
+				_G[self:GetName().."Text"]:SetText(FNP_LOCALE_TEXT.FNP_TEXT_HELP);
+				</OnLoad>
+				<OnClick>
+					FilteredNamePlate.FNP_printHelp("a")
+				</OnClick>
+			</Scripts>
+		</Button>
 		<Slider name="$parent_SystemScale" inherits="OptionsSliderTemplate">
 			<Anchors>
 				<Anchor point="RIGHT">
@@ -465,7 +485,7 @@
 					</Anchor>
 				</Anchors>
 			</FontString>
-			<FontString name="$parent_show_TextOnly" inherits="GameFontNormal" text="">
+			<!--FontString name="$parent_show_TextOnly" inherits="GameFontNormal" text="">
 				<Anchors>
 					<Anchor point="BOTTOMRIGHT" relativeTo="$parent">
 						<Offset>
@@ -482,15 +502,13 @@
 						</Offset>
 					</Anchor>
 				</Anchors>
-			</FontString>
+			</FontString -->
 		</Layer>
 	</Layers>
 	<Scripts>
 		<OnLoad>
 			self:RegisterForDrag("LeftButton");
 			FilteredNamePlate_OnLoad(self);
-			FilteredNamePlate_Frame_show_TextOnlyOther:SetText(FNP_LOCALE_TEXT.FNP_STRING_TEXTONLYOTHER);
-			FilteredNamePlate_Frame_show_TextOnly:SetText(FNP_LOCALE_TEXT.FNP_STRING_TEXTONLY);
 			FilteredNamePlate_Frame_webText:SetText(FNP_LOCALE_TEXT.FNP_STRING_WEBSITE);
 			FilteredNamePlate_Frame_AuthorText:SetText(FNP_LOCALE_TEXT.FNP_STRING_AUTHOR_VER);
 			FilteredNamePlate_Frame_OnlyShows_Text:SetText(FNP_LOCALE_TEXT.FNP_ONLYSHOW_LIST_TXT);

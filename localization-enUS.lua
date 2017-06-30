@@ -27,8 +27,6 @@ FNP_LOCALE_TEXT.FNP_FILTER_LIST_TXT = "Filter List";
 FNP_LOCALE_TEXT.FNP_STRING_UI_TYPE = "UI Type(reload after changed)";
 FNP_LOCALE_TEXT.FNP_STRING_NOTE = "using ; to add a name";
 
-FNP_LOCALE_TEXT.FNP_STRING_TEXTONLYOTHER = "If it not take effect after active btn is clicked,";
-FNP_LOCALE_TEXT.FNP_STRING_TEXTONLY = "you can switch the shortcut key(hide or show nameplates)";
 FNP_LOCALE_TEXT.FNP_STRING_AUTHOR_VER = "Author:Allan version:7.2.5.20170630 V5";
 
 FNP_LOCALE_TEXT.FNP_PRINT_ERROR_UITYPE = "\124cFFF58CBA[ /fnp ]Error！Your UI type does not match, please check the UI type correctly and reloadUI!！\124r";
@@ -37,4 +35,8 @@ FNP_LOCALE_TEXT.FNP_PRINT_HELP0 = "\124cFFF58CBA[FilteredNamePlates]\124r";
 FNP_LOCALE_TEXT.FNP_PRINT_HELP1 = "\124cFFF58CBA/fnp options or /fnp opt \124r open the setting menu";
 FNP_LOCALE_TEXT.FNP_PRINT_HELP2 = "\124cFFF58CBA/fnp change or /fnp ch \124r quickly to enable or disable";
 FNP_LOCALE_TEXT.FNP_PRINT_HELP3 = "\124cFFF58CBA/fnp refresh \124rquickly to hide the casting units";
+
+FNP_LOCALE_TEXT.FNP_TEXT_HELP = "Help>";
+
+FNP_LOCALE_TEXT.FNP_TEXT_INFO0 = "If the setting does not take effect, you can switch the shortcut key to display and hide healthbar(nameplates). If you still have some flaws, try Reload";
 end

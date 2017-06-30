@@ -30,8 +30,6 @@ FNP_LOCALE_TEXT.FNP_FILTER_LIST_TXT = "过滤列表";
 FNP_LOCALE_TEXT.FNP_STRING_UI_TYPE = "UI类型(改变需重载/rl /reload)";
 FNP_LOCALE_TEXT.FNP_STRING_NOTE = "列表框用英文的分号';'追加名字";
 
-FNP_LOCALE_TEXT.FNP_STRING_TEXTONLYOTHER = "点击生效按钮以后,如果未生效,";
-FNP_LOCALE_TEXT.FNP_STRING_TEXTONLY = "来回切换隐藏和显示血条,即可";
 FNP_LOCALE_TEXT.FNP_STRING_AUTHOR_VER = "作者:Allan 版本:7.2.5.20170630 V5";
 
 FNP_LOCALE_TEXT.FNP_PRINT_ERROR_UITYPE = "\124cFFF58CBA[ /fnp ]错误！您设置的UI类型可能不匹配。请正确设置并重载界面！\124r";
@@ -40,4 +38,7 @@ FNP_LOCALE_TEXT.FNP_PRINT_HELP0 = "\124cFFF58CBA[过滤姓名板]\124r";
 FNP_LOCALE_TEXT.FNP_PRINT_HELP1 = "\124cFFF58CBA/fnp options 或 /fnp opt \124r打开菜单";
 FNP_LOCALE_TEXT.FNP_PRINT_HELP2 = "\124cFFF58CBA/fnp change 或 /fnp ch \124r快速切换开关";
 FNP_LOCALE_TEXT.FNP_PRINT_HELP3 = "\124cFFF58CBA/fnp refresh \124r快速隐藏正在施法的怪";
+
+FNP_LOCALE_TEXT.FNP_TEXT_HELP = "帮助>";
+FNP_LOCALE_TEXT.FNP_TEXT_INFO0 = "如果设置后没有生效, 来回切换显示和隐藏的快捷键即可生效. 如果仍然有一些瑕疵, 尝试重载界面.";
 end

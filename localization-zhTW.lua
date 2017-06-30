@@ -27,8 +27,6 @@ FNP_LOCALE_TEXT.FNP_FILTER_LIST_TXT = "過濾列表";
 FNP_LOCALE_TEXT.FNP_STRING_UI_TYPE = "UI類型(改變需重載/rl /reload)";
 FNP_LOCALE_TEXT.FNP_STRING_NOTE = "列表框用英文的';'追加名字";
 
-FNP_LOCALE_TEXT.FNP_STRING_TEXTONLYOTHER = "點擊生效按鈕后,如果未生效,";
-FNP_LOCALE_TEXT.FNP_STRING_TEXTONLY = "來回切換隱藏和顯示血條的快捷鍵, 即可";
 FNP_LOCALE_TEXT.FNP_STRING_AUTHOR_VER = "作者:Allan 版本:7.2.5.20170630 V5";
 
 FNP_LOCALE_TEXT.FNP_PRINT_ERROR_UITYPE = "\124cFFF58CBA[ /fnp ]錯誤！你設置的UI類型可能不匹配。請正確設置并重載界面！\124r";
@@ -37,4 +35,7 @@ FNP_LOCALE_TEXT.FNP_PRINT_HELP0 = "\124cFFF58CBA[過濾姓名板]\124r";
 FNP_LOCALE_TEXT.FNP_PRINT_HELP1 = "\124cFFF58CBA/fnp options 或 /fnp opt \124r打開菜單";
 FNP_LOCALE_TEXT.FNP_PRINT_HELP2 = "\124cFFF58CBA/fnp change 或 /fnp ch \124r快速切換開關";
 FNP_LOCALE_TEXT.FNP_PRINT_HELP3 = "\124cFFF58CBA/fnp refresh \124r快速隱藏當前施法的單位";
+
+FNP_LOCALE_TEXT.FNP_TEXT_HELP = "幫助>";
+FNP_LOCALE_TEXT.FNP_TEXT_INFO0 = "如果設置后沒有生效, 來回切換血條顯示和隱藏的快捷鍵即可生效.如果任何有一些瑕疵,嘗試重載界面.";
 end
