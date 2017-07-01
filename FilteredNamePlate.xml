@@ -66,9 +66,9 @@
 		</CheckButton>
 		<CheckButton name="$parent_KuiCheckBtn" inherits="OptionsCheckButtonTemplate">
 			<Anchors>
-				<Anchor point="TOPRIGHT" relativeTo="$parent_tidyCheckBtn" relativePoint="TOPRIGHT">
+				<Anchor point="CENTER" relativeTo="$parent_tidyCheckBtn" relativePoint="RIGHT">
 				<Offset>
-					<AbsDimension x="100" y="0" />
+					<AbsDimension x="90" y="0" />
 				</Offset>
 				</Anchor>
 			</Anchors>
@@ -92,9 +92,9 @@
 		</CheckButton>
 		<CheckButton name="$parent_OrgCheckBtn" inherits="OptionsCheckButtonTemplate">
 			<Anchors>
-				<Anchor point="TOPLEFT" relativeTo="$parent_KuiCheckBtn" relativePoint="TOPRIGHT">
+				<Anchor point="CENTER" relativeTo="$parent_KuiCheckBtn" relativePoint="RIGHT">
 				<Offset>
-					<AbsDimension x="50" y="0" />
+					<AbsDimension x="90" y="0" />
 				</Offset>
 				</Anchor>
 			</Anchors>
