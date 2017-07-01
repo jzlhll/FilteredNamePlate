@@ -32,13 +32,15 @@ FNP_LOCALE_TEXT.FNP_STRING_NOTE = "列表框用英文的分号';'追加名字";
 
 FNP_LOCALE_TEXT.FNP_STRING_AUTHOR_VER = "作者:Allan 版本:7.2.5.20170630 V5";
 
-FNP_LOCALE_TEXT.FNP_PRINT_ERROR_UITYPE = "\124cFFF58CBA[ /fnp ]错误！您设置的UI类型可能不匹配。请正确设置并重载界面！\124r";
-FNP_LOCALE_TEXT.FNP_PRINT_UITYPE_CHANGED = "\124cFFF58CBA你修改了插件类型，请重载/reload或者/rl !\124r";
-FNP_LOCALE_TEXT.FNP_PRINT_HELP0 = "\124cFFF58CBA[过滤姓名板]\124r";
-FNP_LOCALE_TEXT.FNP_PRINT_HELP1 = "\124cFFF58CBA/fnp options 或 /fnp opt \124r打开菜单";
-FNP_LOCALE_TEXT.FNP_PRINT_HELP2 = "\124cFFF58CBA/fnp change 或 /fnp ch \124r快速切换开关";
-FNP_LOCALE_TEXT.FNP_PRINT_HELP3 = "\124cFFF58CBA/fnp refresh \124r快速隐藏正在施法的怪";
+FNP_LOCALE_TEXT.FNP_PRINT_ERROR_UITYPE = "\124cFFFFC1C1[ /fnp ]错误！您设置的UI类型可能不匹配。请正确设置并重载界面！\124r";
+FNP_LOCALE_TEXT.FNP_PRINT_UITYPE_CHANGED = "\124cFFFFC1C1你修改了插件类型，请确保你勾选的是正确的，否则血条异常！";
+FNP_LOCALE_TEXT.FNP_PRINT_HELP0 = "\124cFFFFC1C1>>>FilteredNamePlates<<<\124r";
+FNP_LOCALE_TEXT.FNP_PRINT_HELP1 = "\124cFFFFC1C1/fnp options 或 /fnp opt \124r打开菜单";
+FNP_LOCALE_TEXT.FNP_PRINT_HELP2 = "\124cFFFFC1C1/fnp change 或 /fnp ch \124r快速切换开关";
+FNP_LOCALE_TEXT.FNP_PRINT_HELP3 = "\124cFFFFC1C1/fnp refresh \124r快速隐藏正在施法的怪";
 
-FNP_LOCALE_TEXT.FNP_TEXT_HELP = "帮助>";
-FNP_LOCALE_TEXT.FNP_TEXT_INFO0 = "如果设置后没有生效, 来回切换显示和隐藏的快捷键即可生效. 如果仍然有一些瑕疵, 尝试重载界面.";
+FNP_LOCALE_TEXT.FNP_TEXT_HELP = "帮助";
+FNP_LOCALE_TEXT.FNP_TEXT_SHARE = "队伍分享";
+--FNP_LOCALE_TEXT.FNP_TEXT_SHARE2 = "公会分享";
+FNP_LOCALE_TEXT.FNP_TEXT_INFO0 = "\124cFFFFC1C1如果设置没有生效, 来回切换显示和隐藏的快捷键即可。如果改动过多或者仍然有一些不正常, 尝试重载界面。\124r";
 end

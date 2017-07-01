@@ -134,6 +134,7 @@ local function reinitScaleValues()
 		CurrentOrigScaleList.name.small = 30
 		CurrentOrigScaleList.name.middle = 30
 	end
+	CurrentOrigScaleList.bars.heal_normalHeight = CurrentOrigScaleList.bars.HEAL_SYS_HEIGHT * Fnp_SavedScaleList.normal;
 	CurrentOrigScaleList.bars.heal_onlyHeight = CurrentOrigScaleList.bars.HEAL_SYS_HEIGHT * Fnp_SavedScaleList.only;
 	CurrentOrigScaleList.bars.cast_midHeight = CurrentOrigScaleList.bars.CAST_SYS_HEIGHT * 0.5;
 end
@@ -166,6 +167,7 @@ local function initScaleValues()
 				},
 				bars = {
 					HEAL_SYS_HEIGHT = 10.8,
+					heal_normalHeight = 10.8,
 					heal_onlyHeight = 15.0,
 					CAST_SYS_HEIGHT = 10.8,
 					cast_midHeight = 5.4
@@ -273,7 +275,7 @@ local showSwitchSingleUnit = {
 				if isOnlyUnit then
 					frame.UnitFrame.healthBar:SetHeight(CurrentOrigScaleList.bars.heal_onlyHeight)
 				else
-					frame.UnitFrame.healthBar:SetHeight(CurrentOrigScaleList.bars.HEAL_SYS_HEIGHT)
+					frame.UnitFrame.healthBar:SetHeight(CurrentOrigScaleList.bars.heal_normalHeight)
 				end
 			else
 				frame.UnitFrame.name:SetWidth(CurrentOrigScaleList.name.middle)
@@ -298,6 +300,10 @@ local showSwitchSingleUnit = {
 
 function FilteredNamePlate.actionUnitStateAfterChanged()
     --FilteredNamePlate.printSavedScaleList(Fnp_SavedScaleList)
+	if Fnp_Enable == false then
+		return
+	end
+	currentNpFlag = Fnp_OtherNPFlag
 	initScaleValues()
 	local matched = false
 	local matched2 = false
@@ -657,8 +663,7 @@ function FilteredNamePlate.FNP_ChangeFrameVisibility(...)
 	else
 		local oldChange = FilteredNamePlate.isSettingChanged
 		FilteredNamePlate_Frame:Show()
-		FilteredNamePlate_Frame:Show()
-
+		FilteredNamePlate_Frame_reloadUIBtn:Hide()
 		if Fnp_Enable == true then
 			FilteredNamePlate_Frame_EnableCheckButton:SetChecked(true);
 		else

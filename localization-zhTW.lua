@@ -29,13 +29,15 @@ FNP_LOCALE_TEXT.FNP_STRING_NOTE = "列表框用英文的';'追加名字";
 
 FNP_LOCALE_TEXT.FNP_STRING_AUTHOR_VER = "作者:Allan 版本:7.2.5.20170630 V5";
 
-FNP_LOCALE_TEXT.FNP_PRINT_ERROR_UITYPE = "\124cFFF58CBA[ /fnp ]錯誤！你設置的UI類型可能不匹配。請正確設置并重載界面！\124r";
-FNP_LOCALE_TEXT.FNP_PRINT_UITYPE_CHANGED = "\124cFFF58CBA你修改了UI類型，請重載/reload或/rl !\124r";
-FNP_LOCALE_TEXT.FNP_PRINT_HELP0 = "\124cFFF58CBA[過濾姓名板]\124r";
-FNP_LOCALE_TEXT.FNP_PRINT_HELP1 = "\124cFFF58CBA/fnp options 或 /fnp opt \124r打開菜單";
-FNP_LOCALE_TEXT.FNP_PRINT_HELP2 = "\124cFFF58CBA/fnp change 或 /fnp ch \124r快速切換開關";
-FNP_LOCALE_TEXT.FNP_PRINT_HELP3 = "\124cFFF58CBA/fnp refresh \124r快速隱藏當前施法的單位";
+FNP_LOCALE_TEXT.FNP_PRINT_ERROR_UITYPE = "\124cFFFFC1C1[ /fnp ]錯誤！你設置的UI類型可能不匹配。請正確設置并重載界面！\124r";
+FNP_LOCALE_TEXT.FNP_PRINT_UITYPE_CHANGED = "\124cFFFFC1C1你修改了UI類型，請重載/reload或/rl !\124r";
+FNP_LOCALE_TEXT.FNP_PRINT_HELP0 = "\124cFFFFC1C1>>>FilteredNamePlates<<<\124r";
+FNP_LOCALE_TEXT.FNP_PRINT_HELP1 = "\124cFFFFC1C1/fnp options 或 /fnp opt \124r打開菜單";
+FNP_LOCALE_TEXT.FNP_PRINT_HELP2 = "\124cFFFFC1C1/fnp change 或 /fnp ch \124r快速切換開關";
+FNP_LOCALE_TEXT.FNP_PRINT_HELP3 = "\124cFFFFC1C1/fnp refresh \124r快速隱藏當前施法的單位";
 
-FNP_LOCALE_TEXT.FNP_TEXT_HELP = "幫助>";
-FNP_LOCALE_TEXT.FNP_TEXT_INFO0 = "如果設置后沒有生效, 來回切換血條顯示和隱藏的快捷鍵即可生效.如果任何有一些瑕疵,嘗試重載界面.";
+FNP_LOCALE_TEXT.FNP_TEXT_HELP = "幫助";
+FNP_LOCALE_TEXT.FNP_TEXT_SHARE = "隊伍分享";
+--FNP_LOCALE_TEXT.FNP_TEXT_SHARE2 = "公會分享";
+FNP_LOCALE_TEXT.FNP_TEXT_INFO0 = "\124cFFFFC1C1如果設置后沒有生效, 來回切換血條顯示和隱藏的快捷鍵即可生效。如果仍然有一些不正常，嘗試重載界面\124r";
 end
