@@ -266,7 +266,7 @@ local showSwitchSingleUnit = {
 			if restore == true then
 				frame.UnitFrame.name:SetWidth(CurrentOrigScaleList.name.SYSTEM)
 				frame.UnitFrame.healthBar:Show()
-				frame.UnitFrame.healthBar:SetHeight(CurrentOrigScaleList.bars.HEAL_SYS_HEIGH)
+				frame.UnitFrame.healthBar:SetHeight(CurrentOrigScaleList.bars.HEAL_SYS_HEIGHT)
 				frame.UnitFrame.castBar:SetHeight(CurrentOrigScaleList.bars.CAST_SYS_HEIGHT)
 			elseif isOnlyShowSpellCast == false then
 				frame.UnitFrame.name:SetWidth(CurrentOrigScaleList.name.normal)
@@ -300,9 +300,6 @@ local showSwitchSingleUnit = {
 
 function FilteredNamePlate.actionUnitStateAfterChanged()
     --FilteredNamePlate.printSavedScaleList(Fnp_SavedScaleList)
-	if Fnp_Enable == false then
-		return
-	end
 	currentNpFlag = Fnp_OtherNPFlag
 	initScaleValues()
 	local matched = false
