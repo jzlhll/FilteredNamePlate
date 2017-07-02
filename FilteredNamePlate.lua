@@ -262,7 +262,7 @@ end
 --isOnlyShowSpellCast 的情况下，就代表是仅显模式。并且该怪是非仅显目标而且施法了！
 local showSwitchSingleUnit = {
 	[0] = function(frame, isOnlyShowSpellCast, restore, isOnlyUnit)
-		if frame.UnitFrame then
+		if frame and frame.UnitFrame then
 			if restore == true then
 				frame.UnitFrame.name:SetWidth(CurrentOrigScaleList.name.SYSTEM)
 				frame.UnitFrame.healthBar:Show()
@@ -285,16 +285,16 @@ local showSwitchSingleUnit = {
 		end
 	end,
 	[1] = function(frame, isOnlyShowSpellCast, restore, isOnlyUnit)
-		showCustomSingleUnit(frame.carrier,isOnlyShowSpellCast,restore, isOnlyUnit)
+		if frame then showCustomSingleUnit(frame.carrier,isOnlyShowSpellCast,restore, isOnlyUnit) end
 	end,
 	[2] = function(frame, isOnlyShowSpellCast, restore, isOnlyUnit)
-		showCustomSingleUnit(frame.kui,isOnlyShowSpellCast,restore, isOnlyUnit)
+		if frame then showCustomSingleUnit(frame.kui,isOnlyShowSpellCast,restore, isOnlyUnit) end
 	end,
 	[3] = function(frame, isOnlyShowSpellCast, restore, isOnlyUnit)
-		showCustomSingleUnit(frame.UnitFrame,isOnlyShowSpellCast,restore, isOnlyUnit)
+		if frame then showCustomSingleUnit(frame.UnitFrame,isOnlyShowSpellCast,restore, isOnlyUnit) end
 	end,
 	[4] = function(frame, isOnlyShowSpellCast, restore, isOnlyUnit)
-		showCustomSingleUnit(frame.unitFrame,isOnlyShowSpellCast,restore, isOnlyUnit)
+		if frame then showCustomSingleUnit(frame.unitFrame,isOnlyShowSpellCast,restore, isOnlyUnit) end
 	end,
 }
 
@@ -342,7 +342,7 @@ function FilteredNamePlate.actionUnitStateAfterChanged()
 					-- 仅显模式仅显的怪
 					showSwitchSingleUnit[currentNpFlag](frame, false, false, true)
 				else
-					hideSwitchSingleUnit[currentNpFlag](frame)
+					if UnitIsPlayer(foundUnit) == false then hideSwitchSingleUnit[currentNpFlag](frame) end
 				end
 			end
 			IsCurOnlyShowStat = true
@@ -392,10 +392,13 @@ local function actionUnitAddedForce(unitid)
 		--新增单位不需要仅显,但是目前处于仅显情况下, 那么,就将当前这个Hide TODO 这里改成直接用自己,而不是用GetNamePlates
 		-- local frame = getNamePlateFromPlatesById(unitid)
 		local frame = GetNamePlateForUnit(unitid)
-		hideSwitchSingleUnit[currentNpFlag](frame)
+		local foundUnit = frame.namePlateUnitToken or (frame.UnitFrame and frame.UnitFrame.unit)
+		if UnitIsPlayer(foundUnit) == false then hideSwitchSingleUnit[currentNpFlag](frame) end
 	elseif curOnlyMatch == false and IsCurOnlyShowStat == false then
 		-- 新增单位不需要仅显, 此时也没有仅显, 就不管了.现在我们将当前的效果展示出来
-		showSwitchSingleUnit[currentNpFlag](GetNamePlateForUnit(unitid), false, false, false)
+		local frame = GetNamePlateForUnit(unitid)
+		local foundUnit = frame.namePlateUnitToken or (frame.UnitFrame and frame.UnitFrame.unit)
+		if UnitIsPlayer(foundUnit) == false then showSwitchSingleUnit[currentNpFlag](GetNamePlateForUnit(unitid), false, false, false) end
 	elseif curOnlyMatch == true and IsCurOnlyShowStat == true then
 		-- 新增单位是需要仅显的,而此时已经有仅显的了,于是我们什么也不用干 -- 更新，怀疑在异步调用的时候莫名奇妙被hide了这里开出来确保
 		showSwitchSingleUnit[currentNpFlag](GetNamePlateForUnit(unitid), false, false, true)
@@ -409,7 +412,7 @@ local function actionUnitAddedForce(unitid)
 					-- 刚刚进入仅显模式！这个是仅显单位，那么将他变大一些
 					showSwitchSingleUnit[currentNpFlag](frame, false, false, true)
 				else
-					hideSwitchSingleUnit[currentNpFlag](frame)
+					if UnitIsPlayer(foundUnit) == false then hideSwitchSingleUnit[currentNpFlag](frame) end
 				end
 			end
 		end
@@ -441,7 +444,7 @@ local function actionUnitRemovedForce(unitid)
 				matched = isMatchedNameList(Fnp_ONameList, GetUnitName(foundUnit))
 				if matched == false then
 					-- 退出仅显模式， 说明这些都是普通
-					showSwitchSingleUnit[currentNpFlag](frame, false, false, false)
+					if UnitIsPlayer(foundUnit) == false then showSwitchSingleUnit[currentNpFlag](frame, false, false, false) end
 				end
 			end
 		end
@@ -531,7 +534,6 @@ local function actionUnitSpellCastStopOnlyShowMode(...)
 	-- true的话，表明是我们要的，那么肯定是在显示了。
 	if curMatch == false then --false，而且是处于isCurrentOnlyShow
 		local frame = GetNamePlateForUnit(unitid)
-		-- hideSingleUnit(frame)
 		hideSwitchSingleUnit[currentNpFlag](frame)
 	end
 end
@@ -544,9 +546,10 @@ local function actionUnitSpellCastStop(self, event, ...)
 	actionUnitSpellCastStopOnlyShowMode(...)
 end
 
+--[[
 local function actionAreaChanged(self, event)
 	-- print("areaChanged> "..event)
-end
+end --]]
 
 FilterNp_EventList = {
 	["NAME_PLATE_UNIT_ADDED"]         = actionUnitAdded,
@@ -655,7 +658,6 @@ end
 
 function FilteredNamePlate.FNP_ChangeFrameVisibility(...)
 	if FilteredNamePlate_Frame:IsVisible() then
-		FilteredNamePlate_Frame:Hide()
 		FilteredNamePlate_Frame:Hide()
 	else
 		local oldChange = FilteredNamePlate.isSettingChanged
