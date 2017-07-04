@@ -8,6 +8,7 @@ FNP_LOCALE_TEXT.FNP_ORIG_TITLE = "Original";
 FNP_LOCALE_TEXT.FNP_TOOLTIP_ORIG = "Using with original UI, check this";
 FNP_LOCALE_TEXT.FNP_TOOLTIP_EUI_RAYUI = "Using with ElvUI or RayUI, check this";
 FNP_LOCALE_TEXT.FNP_TOOLTIP_NDUI = "Using with NDUI, check this";
+FNP_LOCALE_TEXT.FNP_TOOLTIP_EK = "Using with EkPlates, check this";
 
 FNP_LOCALE_TEXT.FNP_DEFAULT_SCALE_TXT = "Default Scale";
 FNP_LOCALE_TEXT.FNP_DEFAULT_SCALE_TOOLTIP = "Scale the normal unit Unit";

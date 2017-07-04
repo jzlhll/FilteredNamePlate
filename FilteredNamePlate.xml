@@ -168,6 +168,32 @@
 				</OnLeave>
 			</Scripts>
 		</CheckButton>
+		<CheckButton name="$parent_EKBtn" inherits="OptionsCheckButtonTemplate">
+			<Anchors>
+				<Anchor point="TOPLEFT" relativeTo="$parent_NDUIBtn" relativePoint="TOPRIGHT">
+				<Offset>
+					<AbsDimension x="80" y="0" />
+				</Offset>
+				</Anchor>
+			</Anchors>
+			<Scripts>
+				<OnLoad>
+				_G[self:GetName().."Text"]:SetText("EKPlates");
+				</OnLoad>
+				<OnClick>
+				FilteredNamePlate.FNP_UITypeChanged(self, self:GetChecked(), 5)
+				FilteredNamePlate.isSettingChanged = true
+				FilteredNamePlate_Frame_takeEffectBtn:Show()
+				</OnClick>
+				<OnEnter>
+					GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
+					GameTooltip:SetText(FNP_LOCALE_TEXT.FNP_TOOLTIP_EK);
+				</OnEnter>
+				<OnLeave>
+					GameTooltip:Hide();
+				</OnLeave>
+			</Scripts>
+		</CheckButton>
 	<!-- UIType end-->
         <EditBox name="$parent_OnlyShowModeEditBox" letters="300" autoFocus="false" multiLine="true">
                 <Layers>
