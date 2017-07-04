@@ -11,16 +11,32 @@ local UnitName, GetUnitName = UnitName, GetUnitName
 local string_find = string.find
 local FilterNp_EventList = FilterNp_EventList
 
-local isRegistered, inOnlyShowSt, curNpFlag, isScaleInited, isErrInLoad, isNullOnlyList, isNullFilterList, curFrameType
+local isRegistered, inOnlyShowSt, isScaleInited, isErrInLoad, isNullOnlyList, isNullFilterList
 
 local curScaleList, curOrigScaleList
 
 local SPELL_SCALE = 0.5
 
-local FRAME_NAME_TIDY = "carrier"
-local FRAME_NAME_KUI = "kui"
-local FRAME_NAME_EUI_RayUI = "UnitFrame"
-local FRAME_NAME_NDUI = "unitFrame"
+local curNpFlag, curNpFlag1Type
+local SIMPLE_SCALE_NAME = {
+	TIDY = "carrier",
+	KUI = "kui",
+	EUI_RAYUI = "UnitFrame",
+    NDUI = "unitFrame",
+}
+
+local function getCurFrameTypeByFlag(flag)
+	if flag == 1 then
+		return SIMPLE_SCALE_NAME.TIDY
+	elseif flag == 2 then
+		return SIMPLE_SCALE_NAME.KUI
+	elseif flag == 3 then
+		return SIMPLE_SCALE_NAME.EUI_RAYUI
+	elseif flag == 4 then
+		return SIMPLE_SCALE_NAME.NDUI
+	end
+	return "UnitFrame"
+end
 
 local function getTableCount(atab)
 	local count = 0
@@ -55,7 +71,14 @@ local function registerMyEvents(self, event, ...)
 		Fnp_OtherNPFlag = 0
 	end
 
-	curNpFlag = Fnp_OtherNPFlag
+	--curNpFlag = Fnp_OtherNPFlag
+	if Fnp_OtherNPFlag == 0 then
+		curNpFlag = 0
+	else
+		curNpFlag = 1
+	end
+
+	curNpFlag1Type = getCurFrameTypeByFlag(Fnp_OtherNPFlag)
 
 	if Fnp_ONameList == nil then
 		Fnp_ONameList = {}
@@ -76,9 +99,9 @@ local function registerMyEvents(self, event, ...)
 			small = 0.20,
 			only = 1.45,
 		}
-		initFnp_SavedScaleList_only(curNpFlag)
+		initFnp_SavedScaleList_only(Fnp_OtherNPFlag)
 	else -- V4 update to V5
-		if Fnp_SavedScaleList.only == nil then initFnp_SavedScaleList_only(curNpFlag) end
+		if Fnp_SavedScaleList.only == nil then initFnp_SavedScaleList_only(Fnp_OtherNPFlag) end
 	end
 
 	isNullOnlyList = false
@@ -146,8 +169,6 @@ end
 
 
 local function initScaleValues()
-	local indx = curNpFlag
-
 	if isScaleInited == true then
 		reinitScaleValues()
 		return
@@ -179,28 +200,20 @@ local function initScaleValues()
 				}
 			}
 			local sys = 0
-			if indx == 4 then
-				if frame[FRAME_NAME_NDUI] then
-					sys = frame[FRAME_NAME_NDUI]:GetEffectiveScale()
-				end
-			elseif indx == 3 then --EUI
-				if frame[FRAME_NAME_EUI_RayUI] then
-					sys = frame[FRAME_NAME_EUI_RayUI]:GetEffectiveScale()
-				end
-			elseif indx == 1 then --Tidy
-				if frame[FRAME_NAME_TIDY] then
-					sys = frame[FRAME_NAME_TIDY]:GetEffectiveScale()
-				end
-			elseif indx == 2 then -- Kui
-				if frame[FRAME_NAME_KUI] then
-					sys = frame[FRAME_NAME_KUI]:GetEffectiveScale()
-				end
-			elseif indx == 0 then --Orig
+			if curNpFlag == 0 then --Orig
 				if frame.UnitFrame then
 					sys = 1
 					curOrigScaleList.name.SYSTEM = frame.UnitFrame:GetWidth()
-					curOrigScaleList.bars.HEAL_SYS_HEIGHT = frame.UnitFrame.healthBar:GetHeight()
-					curOrigScaleList.bars.CAST_SYS_HEIGHT = frame.UnitFrame.castBar:GetHeight()
+					if frame.UnitFrame.healthBar then
+						curOrigScaleList.bars.HEAL_SYS_HEIGHT = frame.UnitFrame.healthBar:GetHeight()
+					end
+					if frame.UnitFrame.castBar then
+						curOrigScaleList.bars.CAST_SYS_HEIGHT = frame.UnitFrame.castBar:GetHeight()
+					end
+				end
+			else -- 1~4
+				if frame[curNpFlag1Type] then
+					sys = frame[curNpFlag1Type]:GetEffectiveScale()
 				end
 			end
 			if sys > 0.01 then -- it's a real info
@@ -218,51 +231,17 @@ local hideSwitchSingleUnit = {
 		if frame == nil then return end
 		if frame.UnitFrame then
 			frame.UnitFrame.name:SetWidth(curOrigScaleList.name.small)
-			frame.UnitFrame.healthBar:Hide()
+			if frame.UnitFrame.healthBar then frame.UnitFrame.healthBar:Hide() end
 			frame.UnitFrame.castBar:SetHeight(curOrigScaleList.bars.cast_midHeight)
 		end
 	end,
 	[1] = function(frame)
 		if frame == nil then return end
-		if frame[FRAME_NAME_TIDY] then
-			frame[FRAME_NAME_TIDY]:SetScale(curScaleList.small)
+		if frame[curNpFlag1Type] then
+			frame[curNpFlag1Type]:SetScale(curScaleList.small)
 		end
 	end,
-	[2] = function(frame)
-		if frame == nil then return end
-		if frame[FRAME_NAME_KUI] then
-			frame[FRAME_NAME_KUI]:SetScale(curScaleList.small)
-		end
-	end,
-	[3] = function(frame)
-		if frame == nil then return end
-		if frame[FRAME_NAME_EUI_RayUI] then
-			frame[FRAME_NAME_EUI_RayUI]:SetScale(curScaleList.small)
-		end
-	end,
-	[4] = function(frame)
-		if frame == nil then return end
-		if frame[FRAME_NAME_NDUI] then
-			frame[FRAME_NAME_NDUI]:SetScale(curScaleList.small)
-		end
-	end
 }
-
-local function showCustomSingleUnit(customFrame,isOnlyShowSpellCast,restore, isOnlyUnit)
-	if customFrame then
-		if restore == true then
-			customFrame:SetScale(curScaleList.SYSTEM)
-		elseif isOnlyShowSpellCast == false then
-			if isOnlyUnit == true then
-				customFrame:SetScale(curScaleList.only)
-			else
-				customFrame:SetScale(curScaleList.normal)
-			end
-		else
-			customFrame:SetScale(curScaleList.middle)
-		end
-	end
-end
 
 --isOnlyShowSpellCast 的情况下，就代表是仅显模式。并且该怪是非仅显目标而且施法了！
 local showSwitchSingleUnit = {
@@ -270,18 +249,23 @@ local showSwitchSingleUnit = {
 		if frame and frame.UnitFrame then
 			if restore == true then
 				frame.UnitFrame.name:SetWidth(curOrigScaleList.name.SYSTEM)
-				frame.UnitFrame.healthBar:Show()
-				frame.UnitFrame.healthBar:SetHeight(curOrigScaleList.bars.HEAL_SYS_HEIGHT)
+				if frame.UnitFrame.healthBar then
+					frame.UnitFrame.healthBar:Show()
+					frame.UnitFrame.healthBar:SetHeight(curOrigScaleList.bars.HEAL_SYS_HEIGHT)
+				end
 				frame.UnitFrame.castBar:SetHeight(curOrigScaleList.bars.CAST_SYS_HEIGHT)
 			elseif isOnlyShowSpellCast == false then
 				frame.UnitFrame.name:SetWidth(curOrigScaleList.name.normal)
-				frame.UnitFrame.healthBar:Show()
-				frame.UnitFrame.castBar:SetHeight(curOrigScaleList.bars.CAST_SYS_HEIGHT)
-				if isOnlyUnit then
-					frame.UnitFrame.healthBar:SetHeight(curOrigScaleList.bars.heal_onlyHeight)
-				else
-					frame.UnitFrame.healthBar:SetHeight(curOrigScaleList.bars.heal_normalHeight)
+				if frame.UnitFrame.healthBar then
+					frame.UnitFrame.healthBar:Show()
+					if isOnlyUnit then
+						frame.UnitFrame.healthBar:SetHeight(curOrigScaleList.bars.heal_onlyHeight)
+					else
+						frame.UnitFrame.healthBar:SetHeight(curOrigScaleList.bars.heal_normalHeight)
+					end
 				end
+				frame.UnitFrame.castBar:SetHeight(curOrigScaleList.bars.CAST_SYS_HEIGHT)
+				
 			else
 				frame.UnitFrame.name:SetWidth(curOrigScaleList.name.middle)
 				frame.UnitFrame.castBar:SetHeight(curOrigScaleList.bars.cast_midHeight)
@@ -290,22 +274,32 @@ local showSwitchSingleUnit = {
 		end
 	end,
 	[1] = function(frame, isOnlyShowSpellCast, restore, isOnlyUnit)
-		if frame then showCustomSingleUnit(frame[FRAME_NAME_TIDY], isOnlyShowSpellCast,restore, isOnlyUnit) end
-	end,
-	[2] = function(frame, isOnlyShowSpellCast, restore, isOnlyUnit)
-		if frame then showCustomSingleUnit(frame[FRAME_NAME_KUI], isOnlyShowSpellCast,restore, isOnlyUnit) end
-	end,
-	[3] = function(frame, isOnlyShowSpellCast, restore, isOnlyUnit)
-		if frame then showCustomSingleUnit(frame[FRAME_NAME_EUI_RayUI], isOnlyShowSpellCast,restore, isOnlyUnit) end
-	end,
-	[4] = function(frame, isOnlyShowSpellCast, restore, isOnlyUnit)
-		if frame then showCustomSingleUnit(frame[FRAME_NAME_NDUI], isOnlyShowSpellCast,restore, isOnlyUnit) end
+		if frame and frame[curNpFlag1Type] then
+			if restore == true then
+				frame[curNpFlag1Type]:SetScale(curScaleList.SYSTEM)
+			elseif isOnlyShowSpellCast == false then
+				if isOnlyUnit == true then
+					frame[curNpFlag1Type]:SetScale(curScaleList.only)
+				else
+					frame[curNpFlag1Type]:SetScale(curScaleList.normal)
+				end
+			else
+				frame[curNpFlag1Type]:SetScale(curScaleList.middle)
+			end
+		end
 	end,
 }
 
 function FilteredNamePlate.actionUnitStateAfterChanged()
     --FilteredNamePlate.printSavedScaleList(Fnp_SavedScaleList)
-	curNpFlag = Fnp_OtherNPFlag
+	--curNpFlag = Fnp_OtherNPFlag
+	if Fnp_OtherNPFlag == 0 then
+		curNpFlag = 0
+	else
+		curNpFlag = 1
+	end
+	curNpFlag1Type = getCurFrameTypeByFlag(Fnp_OtherNPFlag)
+
 	initScaleValues()
 	local matched = false
 	local matched2 = false
