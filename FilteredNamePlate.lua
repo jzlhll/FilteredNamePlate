@@ -168,11 +168,12 @@ local function reinitScaleValues()
 		end
 		curOrigScaleList.bars.heal_normalHeight = curOrigScaleList.bars.HEAL_SYS_HEIGHT * Fnp_SavedScaleList.normal;
 		curOrigScaleList.bars.heal_onlyHeight = curOrigScaleList.bars.HEAL_SYS_HEIGHT * Fnp_SavedScaleList.only;
-		curOrigScaleList.bars.cast_midHeight = curOrigScaleList.bars.CAST_SYS_HEIGHT * 0.5;
+		curOrigScaleList.bars.cast_midHeight = curOrigScaleList.bars.CAST_SYS_HEIGHT * SPELL_SCALE;
 	elseif curNpFlag == 2 then
 		curEkScaleList.normal_perc_font = curEkScaleList.PERC_FONT * Fnp_SavedScaleList.normal
 		curEkScaleList.only_perc_font = curEkScaleList.PERC_FONT * Fnp_SavedScaleList.only
-		curEkScaleList.mid_perc_font = curEkScaleList.PERC_FONT * 0.6
+		curEkScaleList.mid_perc_font = curEkScaleList.normal_perc_font * SPELL_SCALE
+		curEkScaleList.small_perc_font = curEkScaleList.normal_perc_font * Fnp_SavedScaleList.small
 	end
 end
 
@@ -186,43 +187,40 @@ local function initScaleValues()
 	for _, frame in pairs(GetNamePlates()) do
 		local foundUnit = frame.namePlateUnitToken or (frame.UnitFrame and frame.UnitFrame.unit)
 		if foundUnit then
-			if curNpFlag == 1 then
-				curScaleList = { -- 一种原始保存,三种不同状态下的scale value
-				SYSTEM = 0.78,
-				normal = 1.0,
-				small = 0.20,
-				middle = SPELL_SCALE,
-				only = 1.45,
-				};
-			elseif curNpFlag == 2 then
-				curOrigScaleList = {
-					name = {
-						SYSTEM = 130,
-						normal = 130,
-						small = 40,
-						middle = 40,
-					},
-					bars = {
-						HEAL_SYS_HEIGHT = 10.8,
-						heal_normalHeight = 10.8,
-						heal_onlyHeight = 15.0,
-						CAST_SYS_HEIGHT = 10.8,
-						cast_midHeight = 5.4
-					}
+			curScaleList = { -- 一种原始保存,三种不同状态下的scale value
+			SYSTEM = 0.78,
+			normal = 1.0,
+			small = 0.20,
+			middle = SPELL_SCALE,
+			only = 1.45,
+			};
+			curOrigScaleList = {
+				name = {
+					SYSTEM = 130,
+					normal = 130,
+					small = 40,
+					middle = 40,
+				},
+				bars = {
+					HEAL_SYS_HEIGHT = 10.8,
+					heal_normalHeight = 10.8,
+					heal_onlyHeight = 15.0,
+					CAST_SYS_HEIGHT = 10.8,
+					cast_midHeight = 5.4
 				}
-			elseif curNpFlag == 2 then
-				curEkScaleList = {
-					SYSTEMW = 130,
-					SMALLW = 40,
-					SYSTEMH = 100,
-					SMALLH = 40,
+			}
+			curEkScaleList = {
+				SYSTEMW = 130,
+				SMALLW = 40,
+				SYSTEMH = 100,
+				SMALLH = 20,
 
-					PERC_FONT = 18,
-					normal_perc_font = 18,
-					only_perc_font = 10,
-					mid_perc_font = 15,
-				}
-			end
+				PERC_FONT = 18,
+				normal_perc_font = 18,
+				only_perc_font = 10,
+				mid_perc_font = 15,
+				small_perc_font = 8,
+			}
 			local sys = 0
 			if curNpFlag == 0 then --Orig
 				if frame.UnitFrame then
@@ -282,7 +280,7 @@ local hideSwitchSingleUnit = {
 			frame.UnitFrame.name:SetHeight(curEkScaleList.SMALLH)
 			if frame.UnitFrame.healthperc then
 				local face, size, flag = frame.UnitFrame.healthperc:GetFont()
-				frame.UnitFrame.healthperc:SetFont(face, curEkScaleList.only_perc_font, flag)
+				frame.UnitFrame.healthperc:SetFont(face, curEkScaleList.small_perc_font, flag)
 			end
 		end
 	end,
@@ -334,15 +332,6 @@ local showSwitchSingleUnit = {
 		end
 	end,
 	[2] = function(frame, isOnlyShowSpellCast, restore, isOnlyUnit)
-
-	frame.UnitFrame.name:SetWidth(curEkScaleList.SMALLW)
-			frame.UnitFrame.name:SetHeight(curEkScaleList.SMALLH)
-			if frame.UnitFrame.healthperc then
-				local face, size, flag = frame.UnitFrame.healthperc:GetFont()
-				frame.UnitFrame.healthperc:SetFont(face, curEkScaleList.only_perc_font, flag)
-			end
-
-
 		if frame and frame.UnitFrame then
 			if restore == true then
 				frame.UnitFrame.name:SetWidth(curEkScaleList.SYSTEMW)
