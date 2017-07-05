@@ -390,7 +390,7 @@ function FilteredNamePlate.actionUnitStateAfterChanged()
 				matched2 = false
 				if isNullFilterList == false then
 					local foundUnit = frame.namePlateUnitToken or (frame.UnitFrame and frame.UnitFrame.unit)
-					matched2 = isMatchedNameList(Fnp_FNameList, GetUnitName(foundUnit))
+					if foundUnit then matched2 = isMatchedNameList(Fnp_FNameList, GetUnitName(foundUnit)) end
 				end
 				if matched2 == true then
 					hideSwitchSingleUnit[curNpFlag](frame)
@@ -399,7 +399,8 @@ function FilteredNamePlate.actionUnitStateAfterChanged()
 				end
 			else
 				local foundUnit = frame.namePlateUnitToken or (frame.UnitFrame and frame.UnitFrame.unit)
-				matched = isMatchedNameList(Fnp_ONameList, GetUnitName(foundUnit))
+				matched = false
+				if foundUnit then matched = isMatchedNameList(Fnp_ONameList, GetUnitName(foundUnit)) end
 				if matched == true then
 					isHide = true
 					break
@@ -409,7 +410,8 @@ function FilteredNamePlate.actionUnitStateAfterChanged()
 		if isHide == true then
 			for _, frame in pairs(GetNamePlates()) do
 				local foundUnit = frame.namePlateUnitToken or (frame.UnitFrame and frame.UnitFrame.unit)
-				matched = isMatchedNameList(Fnp_ONameList, GetUnitName(foundUnit))
+				matched = false
+				if foundUnit then matched = isMatchedNameList(Fnp_ONameList, GetUnitName(foundUnit)) end
 				if matched == true then
 					-- 仅显模式仅显的怪
 					showSwitchSingleUnit[curNpFlag](frame, false, false, true)
