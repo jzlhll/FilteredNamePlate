@@ -178,7 +178,7 @@
 			</Anchors>
 			<Scripts>
 				<OnLoad>
-				_G[self:GetName().."Text"]:SetText("EKPlates");
+				_G[self:GetName().."Text"]:SetText(FNP_LOCALE_TEXT.FNP_EKNUM_TITLE);
 				</OnLoad>
 				<OnClick>
 				FilteredNamePlate.FNP_UITypeChanged(self, self:GetChecked(), 5)
