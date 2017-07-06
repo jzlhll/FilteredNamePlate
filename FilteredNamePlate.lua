@@ -96,6 +96,10 @@ local function registerMyEvents(self, event, ...)
 		inOnlyShowSt = false
 	end
 
+	if Fnp_IsAutoFit == nil then
+		Fnp_IsAutoFit = false
+	end
+
 	if Fnp_SavedScaleList == nil then
 		Fnp_SavedScaleList = {
 			normal = 1,
@@ -688,6 +692,67 @@ function FilteredNamePlate.FNP_UITypeChanged(checkbtn, checked, flag)
 	print(L.FNP_PRINT_UITYPE_CHANGED)
 end
 
+function FilteredNamePlate.AvailabilityDropDown_OnShow(isInit, frame)
+	local uitypes = {
+		[0] = FNP_LOCALE_TEXT.FNP_ORIG_TITLE,
+		[1] = "TidyPlates",
+		[2] = "Kui_NamePlates",
+		[3] = "EUI/RayUI",
+		[4] = "NDUI",
+		[5] = FNP_LOCALE_TEXT.FNP_EKNUM_TITLE,
+	}
+	if isInit then
+		local function DropDown_OnClick(val)
+			UIDropDownMenu_SetSelectedValue(FilteredNamePlate_Frame_DropDownUIType, val)
+			UIDropDownMenu_SetText(FilteredNamePlate_Frame_DropDownUIType, uitypes[val])
+			if Fnp_OtherNPFlag == val then return end
+			Fnp_OtherNPFlag = val
+			initFnp_SavedScaleList_only(val)
+			FilteredNamePlate_Frame_OnlyShowScale:SetValue(Fnp_SavedScaleList.only * 100)
+			FilteredNamePlate.isSettingChanged = true
+			FilteredNamePlate_Frame_reloadUIBtn:Show()
+			FilteredNamePlate_Frame_takeEffectBtn:Show()
+			print(L.FNP_PRINT_UITYPE_CHANGED)
+		end
+
+		local function initWithDropDown()
+			local self = FilteredNamePlate
+			local info = {}
+
+			local uitypesChecked = {
+				[0] = false,
+				[1] = false,
+				[2] = false,
+				[3] = false,
+				[4] = false,
+				[5] = false,
+			}
+			uitypesChecked[Fnp_OtherNPFlag] = true
+
+			for i,n in pairs(uitypes) do
+				info.text = n
+				info.value = i
+				info.checked = uitypesChecked[i]
+				info.keepShownOnClick = false     
+				info.func = function(_, self, val) DropDown_OnClick(val) end
+				info.arg1 = self
+				info.arg2 = i
+				UIDropDownMenu_AddButton(info) 
+			end
+		end
+		UIDropDownMenu_Initialize(frame, initWithDropDown)
+	end
+	UIDropDownMenu_SetText(frame, uitypes[Fnp_OtherNPFlag])
+end
+
+function FilteredNamePlate.FNp_AutoFitBtnChecked(checkBtn, checked)
+	if checked then
+		print("a")
+	else
+		print("b")
+	end
+end
+
 function FilteredNamePlate.FNP_EnableButtonChecked(self, checked)
 	if (checked) then
 		Fnp_Enable = true;
@@ -746,46 +811,11 @@ function FilteredNamePlate.FNP_ChangeFrameVisibility(...)
 			FilteredNamePlate_Frame_EnableCheckButton:SetChecked(false);
 		end
 
-		if Fnp_OtherNPFlag == 0 then
-			FilteredNamePlate_Frame_OrgCheckBtn:SetChecked(true);
+		if Fnp_IsAutoFit then
+			FilteredNamePlate_Frame_autoFiteBtn:SetChecked(true)
 		else
-			FilteredNamePlate_Frame_OrgCheckBtn:SetChecked(false);
+			FilteredNamePlate_Frame_autoFiteBtn:SetChecked(false)
 		end
-		if Fnp_OtherNPFlag == 1 then
-			FilteredNamePlate_Frame_tidyCheckBtn:SetChecked(true);
-		else
-			FilteredNamePlate_Frame_tidyCheckBtn:SetChecked(false);
-		end
-
-		if Fnp_OtherNPFlag == 2 then
-			FilteredNamePlate_Frame_KuiCheckBtn:SetChecked(true);
-		else
-			FilteredNamePlate_Frame_KuiCheckBtn:SetChecked(false);
-		end
-
-		if Fnp_OtherNPFlag == 3 then
-			FilteredNamePlate_Frame_EUIRayBtn:SetChecked(true);
-		else
-			FilteredNamePlate_Frame_EUIRayBtn:SetChecked(false);
-		end
-		if Fnp_OtherNPFlag == 4 then
-			FilteredNamePlate_Frame_NDUIBtn:SetChecked(true);
-		else
-			FilteredNamePlate_Frame_NDUIBtn:SetChecked(false);
-		end
-		if Fnp_OtherNPFlag == 5 then
-			FilteredNamePlate_Frame_EKBtn:SetChecked(true);
-		else
-			FilteredNamePlate_Frame_EKBtn:SetChecked(false);
-		end
-		--[[
-		if Fnp_Mode ~= nil and Fnp_Mode == true then
-			FilteredNamePlate_Frame_FilteredModeCheckBtn:SetChecked(false);
-			FilteredNamePlate_Frame_OnlyShowModeCheckBtn:SetChecked(true);
-		else
-			FilteredNamePlate_Frame_FilteredModeCheckBtn:SetChecked(true);
-			FilteredNamePlate_Frame_OnlyShowModeCheckBtn:SetChecked(false);
-		end --]]
 
 		FilteredNamePlate_Frame_OnlyShowScale:SetValue(Fnp_SavedScaleList.only * 100)
 		FilteredNamePlate_Frame_OnlyOtherShowScale:SetValue(Fnp_SavedScaleList.small * 100)

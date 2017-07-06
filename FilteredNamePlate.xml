@@ -38,156 +38,43 @@
 			</Scripts>
 		</CheckButton>
 		<!-- UIType start -->
-		<CheckButton name="$parent_tidyCheckBtn" inherits="OptionsCheckButtonTemplate">
+		<Frame name="$parent_DropDownUIType" inherits="UIDropDownMenuTemplate" id="1">
 			<Anchors>
 				<Anchor point="CENTER" relativeTo="$parent_EnableCheckButton" relativePoint="BOTTOMLEFT">
-				<Offset>
-					<AbsDimension x="0" y="-50" />
-				</Offset>
+					<Offset>
+						<AbsDimension x="70" y="-70"/>
+					</Offset>
 				</Anchor>
 			</Anchors>
 			<Scripts>
 				<OnLoad>
-				_G[self:GetName().."Text"]:SetText("TidyPlate");
+					 UIDropDownMenu_SetWidth(self, 120)
+					 UIDropDownMenu_SetText(self, "test")
+					 FilteredNamePlate.AvailabilityDropDown_OnShow(true, self)
 				</OnLoad>
-				<OnClick>
-				FilteredNamePlate.FNP_UITypeChanged(self, self:GetChecked(), 1)
-				FilteredNamePlate.isSettingChanged = true
-				FilteredNamePlate_Frame_takeEffectBtn:Show()
-				</OnClick>
-				<OnEnter>
-					GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
-					GameTooltip:SetText(FNP_LOCALE_TEXT.FNP_TOOLTIP_TIDY);
-				</OnEnter>
-				<OnLeave>
-					GameTooltip:Hide();
-				</OnLeave>
+				<OnShow>
+					FilteredNamePlate.AvailabilityDropDown_OnShow(false, self)
+				</OnShow>
 			</Scripts>
-		</CheckButton>
-		<CheckButton name="$parent_KuiCheckBtn" inherits="OptionsCheckButtonTemplate">
+		</Frame>
+		<CheckButton name="$parent_autoFiteBtn" inherits="OptionsCheckButtonTemplate">
 			<Anchors>
-				<Anchor point="CENTER" relativeTo="$parent_tidyCheckBtn" relativePoint="RIGHT">
+				<Anchor point="CENTER" relativeTo="$parent_DropDownUIType" relativePoint="RIGHT">
 				<Offset>
-					<AbsDimension x="90" y="0" />
+					<AbsDimension x="20" y="4" />
 				</Offset>
 				</Anchor>
 			</Anchors>
 			<Scripts>
 				<OnLoad>
-				_G[self:GetName().."Text"]:SetText("Kui");
+				_G[self:GetName().."Text"]:SetText("Auto Fit");
 				</OnLoad>
 				<OnClick>
-				FilteredNamePlate.FNP_UITypeChanged(self, self:GetChecked(), 2)
-				FilteredNamePlate.isSettingChanged = true
-				FilteredNamePlate_Frame_takeEffectBtn:Show()
+					FilteredNamePlate.FNp_AutoFitBtnChecked(self, self:GetChecked())
 				</OnClick>
 				<OnEnter>
 					GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
-					GameTooltip:SetText(FNP_LOCALE_TEXT.FNP_TOOLTIP_KUI);
-				</OnEnter>
-				<OnLeave>
-					GameTooltip:Hide();
-				</OnLeave>
-			</Scripts>
-		</CheckButton>
-		<CheckButton name="$parent_OrgCheckBtn" inherits="OptionsCheckButtonTemplate">
-			<Anchors>
-				<Anchor point="CENTER" relativeTo="$parent_KuiCheckBtn" relativePoint="RIGHT">
-				<Offset>
-					<AbsDimension x="90" y="0" />
-				</Offset>
-				</Anchor>
-			</Anchors>
-			<Scripts>
-				<OnLoad>
-				_G[self:GetName().."Text"]:SetText(FNP_LOCALE_TEXT.FNP_ORIG_TITLE);
-				</OnLoad>
-				<OnClick>
-				FilteredNamePlate.FNP_UITypeChanged(self, self:GetChecked(), 0)
-				FilteredNamePlate.isSettingChanged = true
-				FilteredNamePlate_Frame_takeEffectBtn:Show()
-				</OnClick>
-				<OnEnter>
-					GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
-					GameTooltip:SetText(FNP_LOCALE_TEXT.FNP_TOOLTIP_ORIG);
-				</OnEnter>
-				<OnLeave>
-					GameTooltip:Hide();
-				</OnLeave>
-			</Scripts>
-		</CheckButton>
-		<CheckButton name="$parent_EUIRayBtn" inherits="OptionsCheckButtonTemplate">
-			<Anchors>
-				<Anchor point="TOPLEFT" relativeTo="$parent_tidyCheckBtn" relativePoint="BOTTOMLEFT">
-				<Offset>
-					<AbsDimension x="0" y="-30" />
-				</Offset>
-				</Anchor>
-			</Anchors>
-			<Scripts>
-				<OnLoad>
-				_G[self:GetName().."Text"]:SetText("EUI/RayUI");
-				</OnLoad>
-				<OnClick>
-				FilteredNamePlate.FNP_UITypeChanged(self, self:GetChecked(), 3)
-				FilteredNamePlate.isSettingChanged = true
-				FilteredNamePlate_Frame_takeEffectBtn:Show()
-				</OnClick>
-				<OnEnter>
-					GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
-					GameTooltip:SetText(FNP_LOCALE_TEXT.FNP_TOOLTIP_EUI_RAYUI);
-				</OnEnter>
-				<OnLeave>
-					GameTooltip:Hide();
-				</OnLeave>
-			</Scripts>
-		</CheckButton>
-		<CheckButton name="$parent_NDUIBtn" inherits="OptionsCheckButtonTemplate">
-			<Anchors>
-				<Anchor point="TOPLEFT" relativeTo="$parent_EUIRayBtn" relativePoint="TOPRIGHT">
-				<Offset>
-					<AbsDimension x="80" y="0" />
-				</Offset>
-				</Anchor>
-			</Anchors>
-			<Scripts>
-				<OnLoad>
-				_G[self:GetName().."Text"]:SetText("NDUI");
-				</OnLoad>
-				<OnClick>
-				FilteredNamePlate.FNP_UITypeChanged(self, self:GetChecked(), 4)
-				FilteredNamePlate.isSettingChanged = true
-				FilteredNamePlate_Frame_takeEffectBtn:Show()
-				</OnClick>
-				<OnEnter>
-					GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
-					GameTooltip:SetText(FNP_LOCALE_TEXT.FNP_TOOLTIP_NDUI);
-				</OnEnter>
-				<OnLeave>
-					GameTooltip:Hide();
-				</OnLeave>
-			</Scripts>
-		</CheckButton>
-		<CheckButton name="$parent_EKBtn" inherits="OptionsCheckButtonTemplate">
-			<Anchors>
-				<Anchor point="TOPLEFT" relativeTo="$parent_NDUIBtn" relativePoint="TOPRIGHT">
-				<Offset>
-					<AbsDimension x="80" y="0" />
-				</Offset>
-				</Anchor>
-			</Anchors>
-			<Scripts>
-				<OnLoad>
-				_G[self:GetName().."Text"]:SetText(FNP_LOCALE_TEXT.FNP_EKNUM_TITLE);
-				</OnLoad>
-				<OnClick>
-				FilteredNamePlate.FNP_UITypeChanged(self, self:GetChecked(), 5)
-				FilteredNamePlate.isSettingChanged = true
-				FilteredNamePlate_Frame_takeEffectBtn:Show()
-				</OnClick>
-				<OnEnter>
-					GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
-					GameTooltip:SetText(FNP_LOCALE_TEXT.FNP_TOOLTIP_EK);
+					GameTooltip:SetText("自动适配UI类型, 可能不准确. 你可以取消勾选手动选择.");
 				</OnEnter>
 				<OnLeave>
 					GameTooltip:Hide();
@@ -503,9 +390,9 @@
 			</FontString>
 			<FontString name="$parent_uitype" inherits="GameFontNormal" text="">
 				<Anchors>
-					<Anchor point="BOTTOMLEFT" relativeTo="$parent_tidyCheckBtn">
+					<Anchor point="BOTTOMLEFT" relativeTo="$parent_EnableCheckButton">
 						<Offset>
-							<AbsDimension x="10" y="28" />
+							<AbsDimension x="10" y="-35" />
 						</Offset>
 					</Anchor>
 				</Anchors>
