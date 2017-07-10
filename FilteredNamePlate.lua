@@ -21,33 +21,27 @@ local SPELL_SCALE = 0.5
 
 local curNpFlag, curNpFlag1Type
 
-local SysCvarNPTab = {
-	["beRead"] = false,
-	["nameplateShowEnemies"] = 1,
-	["nameplateShowEnemyMinions"] = 1,
-	["nameplateShowEnemyMinus"] = 1,
-	["nameplateShowAll"] = 1 --alway show all plate
-}
-
 local function setCVarValues(isNotReset)
 	if isNotReset then
-		if SysCvarNPTab["beRead"] then
-			SysCvarNPTab["nameplateShowEnemies"] = GetCVar("nameplateShowEnemies")
-			SysCvarNPTab["nameplateShowEnemyMinions"] = GetCVar("nameplateShowEnemyMinions")
-			SysCvarNPTab["nameplateShowEnemyMinus"] = GetCVar("nameplateShowEnemyMinus")
-			SysCvarNPTab["nameplateShowAll"] = GetCVar("nameplateShowAll")
+		if Fnp_SysCvarNPTab["beRead"] == false then
+			Fnp_SysCvarNPTab["nameplateShowEnemies"] = GetCVar("nameplateShowEnemies")
+			Fnp_SysCvarNPTab["nameplateShowEnemyMinions"] = GetCVar("nameplateShowEnemyMinions")
+			Fnp_SysCvarNPTab["nameplateShowEnemyMinus"] = GetCVar("nameplateShowEnemyMinus")
+			Fnp_SysCvarNPTab["nameplateShowAll"] = GetCVar("nameplateShowAll")
+			print("1a "..Fnp_SysCvarNPTab["nameplateShowEnemies"].." b "..Fnp_SysCvarNPTab["nameplateShowEnemyMinions"].." c "..Fnp_SysCvarNPTab["nameplateShowEnemyMinus"].." d "..Fnp_SysCvarNPTab["nameplateShowAll"])
 		end
-		SysCvarNPTab["beRead"] = true
+		Fnp_SysCvarNPTab["beRead"] = true
 		SetCVar("nameplateShowEnemies", 1)
 		SetCVar("nameplateShowEnemyMinions", 1)
 		SetCVar("nameplateShowEnemyMinus", 1)
 		SetCVar("nameplateShowAll", 1)
 	else
-		SysCvarNPTab["beRead"] = false
-		SetCVar("nameplateShowEnemies", SysCvarNPTab["nameplateShowEnemies"])
-		SetCVar("nameplateShowEnemyMinions", SysCvarNPTab["nameplateShowEnemyMinions"])
-		SetCVar("nameplateShowEnemyMinus", SysCvarNPTab["nameplateShowEnemyMinus"])
-		SetCVar("nameplateShowAll", SysCvarNPTab["nameplateShowAll"])
+		Fnp_SysCvarNPTab["beRead"] = false
+		SetCVar("nameplateShowEnemies", Fnp_SysCvarNPTab["nameplateShowEnemies"])
+		SetCVar("nameplateShowEnemyMinions", Fnp_SysCvarNPTab["nameplateShowEnemyMinions"])
+		SetCVar("nameplateShowEnemyMinus", Fnp_SysCvarNPTab["nameplateShowEnemyMinus"])
+		SetCVar("nameplateShowAll", Fnp_SysCvarNPTab["nameplateShowAll"])
+		print("2a "..Fnp_SysCvarNPTab["nameplateShowEnemies"].." b "..Fnp_SysCvarNPTab["nameplateShowEnemyMinions"].." c "..Fnp_SysCvarNPTab["nameplateShowEnemyMinus"].." d "..Fnp_SysCvarNPTab["nameplateShowAll"])
 	end
 end
 
@@ -82,6 +76,16 @@ local function registerMyEvents(self, event, ...)
 		Fnp_OtherNPFlag = 0
 	end
 
+	if Fnp_SysCvarNPTab == nil then
+		Fnp_SysCvarNPTab = {
+			["beRead"] = false,
+			["nameplateShowEnemies"] = 1,
+			["nameplateShowEnemyMinions"] = 1,
+			["nameplateShowEnemyMinus"] = 1,
+			["nameplateShowAll"] = 1 --alway show all plate
+		}
+	end
+
 	if Fnp_OtherNPFlag == 0 or Fnp_OtherNPFlag == 1 then
 		curNpFlag = 0
 	elseif Fnp_OtherNPFlag == 6 then
@@ -103,10 +107,6 @@ local function registerMyEvents(self, event, ...)
 
 	if isInOnlySt == nil then
 		isInOnlySt = false
-	end
-
-	if Fnp_IsAutoFit == nil then
-		Fnp_IsAutoFit = false
 	end
 
 	if Fnp_SavedScaleList == nil then
@@ -723,15 +723,6 @@ function FilteredNamePlate.AvailabilityDropDown_OnShow(frame)
 	UIDropDownMenu_SetText(frame, uitypes[Fnp_OtherNPFlag])
 end
 
-function FilteredNamePlate.FNp_AutoFitBtnChecked(checkBtn, checked)
-	Fnp_IsAutoFit = checked
-	if checked then
-		FilteredNamePlate_Frame_DropDownUIType:EnableMouse(false)
-	else
-		FilteredNamePlate_Frame_DropDownUIType:EnableMouse(true)
-	end
-end
-
 function FilteredNamePlate.FNP_EnableButtonChecked(self, checked)
 	if (checked) then
 		Fnp_Enable = true;
@@ -790,12 +781,6 @@ function FilteredNamePlate.FNP_ChangeFrameVisibility(...)
 			FilteredNamePlate_Frame_EnableCheckButton:SetChecked(false);
 		end
 
-		if Fnp_IsAutoFit then
-			FilteredNamePlate_Frame_autoFiteBtn:SetChecked(true)
-		else
-			FilteredNamePlate_Frame_autoFiteBtn:SetChecked(false)
-		end
-
 		FilteredNamePlate_Frame_OnlyShowScale:SetValue(Fnp_SavedScaleList.only * 100)
 		FilteredNamePlate_Frame_OnlyOtherShowScale:SetValue(Fnp_SavedScaleList.small * 100)
 		FilteredNamePlate_Frame_SystemScale:SetValue(Fnp_SavedScaleList.normal * 100)
@@ -827,9 +812,5 @@ function SlashCmdList.FilteredNamePlate(msg)
 		end
 	elseif msg == "refresh" then
 		FilteredNamePlate.actionUnitStateAfterChanged()
-	elseif msg == "sysCvar" then
-		setCVarValues(true)
-	elseif msg == "resetCvar" then
-		setCVarValues(false)
 	end
 end

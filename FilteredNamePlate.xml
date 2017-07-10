@@ -3,7 +3,7 @@
 <!--Script file="FilteredNamePlateHelp.lua" / -->
 <Frame name="FilteredNamePlate_Frame" hidden="true" parent="UIParent" toplevel="true" movable="true" frameStrata="HIGH" enableMouse="true" enableKeyboard="true">
 	<Size>
-		<AbsDimension x="540" y="450" />
+		<AbsDimension x="460" y="450" />
 	</Size>
 	<Anchors>
 		<Anchor point="CENTER" />
@@ -56,30 +56,6 @@
 				</OnShow>
 			</Scripts>
 		</Frame>
-		<CheckButton name="$parent_autoFiteBtn" inherits="OptionsCheckButtonTemplate">
-			<Anchors>
-				<Anchor point="CENTER" relativeTo="$parent_DropDownUIType" relativePoint="RIGHT">
-				<Offset>
-					<AbsDimension x="10" y="4" />
-				</Offset>
-				</Anchor>
-			</Anchors>
-			<Scripts>
-				<OnLoad>
-				_G[self:GetName().."Text"]:SetText(FNP_LOCALE_TEXT.FNP_AUTO_FIT);
-				</OnLoad>
-				<OnClick>
-					FilteredNamePlate.FNp_AutoFitBtnChecked(self, self:GetChecked())
-				</OnClick>
-				<OnEnter>
-					GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
-					GameTooltip:SetText(FNP_LOCALE_TEXT.FNP_AUTO_FITTOOLTIP);
-				</OnEnter>
-				<OnLeave>
-					GameTooltip:Hide();
-				</OnLeave>
-			</Scripts>
-		</CheckButton>
 	<!-- UIType end-->
         <EditBox name="$parent_OnlyShowModeEditBox" letters="300" autoFocus="false" multiLine="true">
                 <Layers>
@@ -449,6 +425,8 @@
 				FilteredNamePlate_Frame:StopMovingOrSizing();
 			end
 		</OnMouseUp>
+		<OnLeave>
+		</OnLeave>
 	</Scripts>
 </Frame>
 </Ui>
