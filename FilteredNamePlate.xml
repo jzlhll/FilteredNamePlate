@@ -48,8 +48,8 @@
 			</Anchors>
 			<Scripts>
 				<OnLoad>
-					 UIDropDownMenu_SetWidth(self, 150)
-					 UIDropDownMenu_SetText(self, "test")
+					 UIDropDownMenu_SetWidth(self, 130)
+					 UIDropDownMenu_SetText(self, "UI")
 				</OnLoad>
 				<OnShow>
 					FilteredNamePlate.AvailabilityDropDown_OnShow(self)
@@ -66,14 +66,14 @@
 			</Anchors>
 			<Scripts>
 				<OnLoad>
-				_G[self:GetName().."Text"]:SetText("Auto Fit");
+				_G[self:GetName().."Text"]:SetText(FNP_LOCALE_TEXT.FNP_AUTO_FIT);
 				</OnLoad>
 				<OnClick>
 					FilteredNamePlate.FNp_AutoFitBtnChecked(self, self:GetChecked())
 				</OnClick>
 				<OnEnter>
 					GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
-					GameTooltip:SetText("自动适配UI类型, 可能不准确. 你可以取消勾选手动选择.");
+					GameTooltip:SetText(FNP_LOCALE_TEXT.FNP_AUTO_FITTOOLTIP);
 				</OnEnter>
 				<OnLeave>
 					GameTooltip:Hide();

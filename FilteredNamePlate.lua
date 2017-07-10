@@ -5,13 +5,12 @@ local L = FNP_LOCALE_TEXT
 local FilteredNamePlate = FilteredNamePlate
 
 SLASH_FilteredNamePlate1 = "/fnp"
-local GetNamePlateForUnit = C_NamePlate.GetNamePlateForUnit
-local GetNamePlates = C_NamePlate.GetNamePlates
+local GetNamePlateForUnit , GetNamePlates = C_NamePlate.GetNamePlateForUnit, C_NamePlate.GetNamePlates
 local UnitName, GetUnitName = UnitName, GetUnitName
 local string_find = string.find
 local FilterNp_EventList = FilterNp_EventList
 
-local isRegistered, inOnlyShowSt, isScaleInited, isErrInLoad, isNullOnlyList, isNullFilterList, isInitedDrop
+local isRegistered, isInOnlySt, isScaleInited, isErrInLoad, isNullOnlyList, isNullFilterList, isInitedDrop
 
 local curScaleList, curOrigScaleList, curEkScaleList
 
@@ -19,23 +18,48 @@ local SPELL_SCALE = 0.5
 
 --Fnnp_OtherNPFlag 0是默认 1是TidyPlate模式 2是Kui 3是EUI 4是NDUI. 5 EKPlate.
 --curNNpFlag标记当前采用哪种缩放模式.1表SIMPLE_SCALE模式.2表示EK.0表示原生.
+
 local curNpFlag, curNpFlag1Type
-local SIMPLE_SCALE_NAME = {
-	TIDY = "carrier",
-	KUI = "kui",
-	EUI_RAYUI = "UnitFrame",
-    NDUI = "unitFrame",
+
+local SysCvarNPTab = {
+	["beRead"] = false,
+	["nameplateShowEnemies"] = 1,
+	["nameplateShowEnemyMinions"] = 1,
+	["nameplateShowEnemyMinus"] = 1,
+	["nameplateShowAll"] = 1 --alway show all plate
 }
+
+local function setCVarValues(isNotReset)
+	if isNotReset then
+		if SysCvarNPTab["beRead"] then
+			SysCvarNPTab["nameplateShowEnemies"] = GetCVar("nameplateShowEnemies")
+			SysCvarNPTab["nameplateShowEnemyMinions"] = GetCVar("nameplateShowEnemyMinions")
+			SysCvarNPTab["nameplateShowEnemyMinus"] = GetCVar("nameplateShowEnemyMinus")
+			SysCvarNPTab["nameplateShowAll"] = GetCVar("nameplateShowAll")
+		end
+		SysCvarNPTab["beRead"] = true
+		SetCVar("nameplateShowEnemies", 1)
+		SetCVar("nameplateShowEnemyMinions", 1)
+		SetCVar("nameplateShowEnemyMinus", 1)
+		SetCVar("nameplateShowAll", 1)
+	else
+		SysCvarNPTab["beRead"] = false
+		SetCVar("nameplateShowEnemies", SysCvarNPTab["nameplateShowEnemies"])
+		SetCVar("nameplateShowEnemyMinions", SysCvarNPTab["nameplateShowEnemyMinions"])
+		SetCVar("nameplateShowEnemyMinus", SysCvarNPTab["nameplateShowEnemyMinus"])
+		SetCVar("nameplateShowAll", SysCvarNPTab["nameplateShowAll"])
+	end
+end
 
 local function getCurFrameTypeByFlag(flag)
 	if flag == 2 then
-		return SIMPLE_SCALE_NAME.TIDY
+		return "carrier"
 	elseif flag == 3 then
-		return SIMPLE_SCALE_NAME.KUI
+		return "kui"
 	elseif flag == 4 then
-		return SIMPLE_SCALE_NAME.EUI_RAYUI
+		return "UnitFrame"
 	elseif flag == 5 then
-		return SIMPLE_SCALE_NAME.NDUI
+		return "unitFrame"
 	end
 	return "UnitFrame"
 end
@@ -48,8 +72,6 @@ local function getTableCount(atab)
 	return count
 end
 
---Fnp_Mode  仅显模式 true 过滤模式 false 暂时去掉过滤模式，其实没什么用
-
 local function registerMyEvents(self, event, ...)
 	if isRegistered == true then return end
 	if Fnp_Enable == nil then
@@ -59,7 +81,7 @@ local function registerMyEvents(self, event, ...)
 	if Fnp_OtherNPFlag == nil then
 		Fnp_OtherNPFlag = 0
 	end
-	--curNpFlag = Fnp_OtherNPFlag
+
 	if Fnp_OtherNPFlag == 0 or Fnp_OtherNPFlag == 1 then
 		curNpFlag = 0
 	elseif Fnp_OtherNPFlag == 6 then
@@ -79,8 +101,8 @@ local function registerMyEvents(self, event, ...)
 		Fnp_FNameList = {}
 	end
 
-	if inOnlyShowSt == nil then
-		inOnlyShowSt = false
+	if isInOnlySt == nil then
+		isInOnlySt = false
 	end
 
 	if Fnp_IsAutoFit == nil then
@@ -165,6 +187,7 @@ local function reinitScaleValues()
 		curEkScaleList.mid_perc_font = curEkScaleList.normal_perc_font * SPELL_SCALE
 		curEkScaleList.small_perc_font = curEkScaleList.normal_perc_font * Fnp_SavedScaleList.small
 	end
+	setCVarValues(true)
 end
 
 
@@ -177,7 +200,7 @@ local function initScaleValues()
 	for _, frame in pairs(GetNamePlates()) do
 		local foundUnit = frame.namePlateUnitToken or (frame.UnitFrame and frame.UnitFrame.unit)
 		if foundUnit then
-			curScaleList = { -- 一种原始保存,三种不同状态下的scale value
+			curScaleList = {
 			SYSTEM = 0.78,
 			normal = 1.0,
 			small = 0.20,
@@ -366,8 +389,9 @@ function FilteredNamePlate.actionUnitStateAfterChanged()
 	initScaleValues()
 	local matched = false
 	local matched2 = false
+	setCVarValues(Fnp_Enable)
 	if Fnp_Enable == true then
-		inOnlyShowSt = false
+		isInOnlySt = false
 		--仅显
 		isNullOnlyList = false
 		if getTableCount(Fnp_ONameList) == 0 then isNullOnlyList = true end
@@ -409,7 +433,7 @@ function FilteredNamePlate.actionUnitStateAfterChanged()
 					if UnitIsPlayer(foundUnit) == false then hideSwitchSingleUnit[curNpFlag](frame) end
 				end
 			end
-			inOnlyShowSt = true
+			isInOnlySt = true
 		else
 			for _, frame in pairs(GetNamePlates()) do
 				-- 普通模式
@@ -425,7 +449,7 @@ function FilteredNamePlate.actionUnitStateAfterChanged()
 				showSwitchSingleUnit[curNpFlag](frame, false, true, false)
 			end
 		end
-		inOnlyShowSt = false
+		isInOnlySt = false
 		-- unRegisterMyEvents(FilteredNamePlate_Frame)
 	end
 end
@@ -452,21 +476,21 @@ local function actionUnitAddedForce(unitid)
 	end
 	-- 1. 当前add的单位名,是否match
 	local curOnlyMatch = isMatchedNameList(Fnp_ONameList, addedname)
-	if curOnlyMatch == false and inOnlyShowSt == true then
+	if curOnlyMatch == false and isInOnlySt == true then
 		--新增单位不需要仅显,但是目前处于仅显情况下, 那么,就将当前这个Hide TODO 这里改成直接用自己,而不是用GetNamePlates
 		-- local frame = getNamePlateFromPlatesById(unitid)
 		local frame = GetNamePlateForUnit(unitid)
 		local foundUnit = frame.namePlateUnitToken or (frame.UnitFrame and frame.UnitFrame.unit)
 		if UnitIsPlayer(foundUnit) == false then hideSwitchSingleUnit[curNpFlag](frame) end
-	elseif curOnlyMatch == false and inOnlyShowSt == false then
+	elseif curOnlyMatch == false and isInOnlySt == false then
 		-- 新增单位不需要仅显, 此时也没有仅显, 就不管了.现在我们将当前的效果展示出来
 		local frame = GetNamePlateForUnit(unitid)
 		local foundUnit = frame.namePlateUnitToken or (frame.UnitFrame and frame.UnitFrame.unit)
 		if UnitIsPlayer(foundUnit) == false then showSwitchSingleUnit[curNpFlag](GetNamePlateForUnit(unitid), false, false, false) end
-	elseif curOnlyMatch == true and inOnlyShowSt == true then
+	elseif curOnlyMatch == true and isInOnlySt == true then
 		-- 新增单位是需要仅显的,而此时已经有仅显的了,于是我们什么也不用干 -- 更新，怀疑在异步调用的时候莫名奇妙被hide了这里开出来确保
 		showSwitchSingleUnit[curNpFlag](GetNamePlateForUnit(unitid), false, false, true)
-	elseif curOnlyMatch == true and inOnlyShowSt == false then
+	elseif curOnlyMatch == true and isInOnlySt == false then
 		--新增单位是需要仅显的,而此时不是仅显, 于是我们就将之前的都Hide,当前这个不用处理
 		for _, frame in pairs(GetNamePlates()) do
 			local foundUnit = frame.namePlateUnitToken or (frame.UnitFrame and frame.UnitFrame.unit)
@@ -480,7 +504,7 @@ local function actionUnitAddedForce(unitid)
 				end
 			end
 		end
-		inOnlyShowSt = true
+		isInOnlySt = true
 	end
 end
 
@@ -512,7 +536,7 @@ local function actionUnitRemovedForce(unitid)
 				end
 			end
 		end
-		inOnlyShowSt = false
+		isInOnlySt = false
 	end
 end
 ---------k k k---k k k---k k k-------------
@@ -548,7 +572,7 @@ local function actionUnitRemoved(self, event, ...)
 	-- if isNullOnlyList == true and isNullFilterList == true then
 	--	return
 	-- end
-	if inOnlyShowSt == false then
+	if isInOnlySt == false then
 		-- 当前处于没有仅显模式,表明所有血条都开着的
 		return
 	end
@@ -564,7 +588,7 @@ end
 --]]
 
 local function actionUnitSpellCastStartOnlyShowMode(...)
-	if inOnlyShowSt == false then
+	if isInOnlySt == false then
 		-- 当前处于没有仅显模式,表明所有血条都开着的
 		return
 	end
@@ -584,7 +608,7 @@ local function actionUnitSpellCastStartOnlyShowMode(...)
 end
 
 local function actionUnitSpellCastStopOnlyShowMode(...)
-	if inOnlyShowSt == false then
+	if isInOnlySt == false then
 		-- 当前处于没有仅显模式,表明所有血条都开着的
 		return
 	end
@@ -700,10 +724,11 @@ function FilteredNamePlate.AvailabilityDropDown_OnShow(frame)
 end
 
 function FilteredNamePlate.FNp_AutoFitBtnChecked(checkBtn, checked)
+	Fnp_IsAutoFit = checked
 	if checked then
-		print("a")
+		FilteredNamePlate_Frame_DropDownUIType:EnableMouse(false)
 	else
-		print("b")
+		FilteredNamePlate_Frame_DropDownUIType:EnableMouse(true)
 	end
 end
 
@@ -802,5 +827,9 @@ function SlashCmdList.FilteredNamePlate(msg)
 		end
 	elseif msg == "refresh" then
 		FilteredNamePlate.actionUnitStateAfterChanged()
+	elseif msg == "sysCvar" then
+		setCVarValues(true)
+	elseif msg == "resetCvar" then
+		setCVarValues(false)
 	end
 end

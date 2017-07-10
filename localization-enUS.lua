@@ -2,6 +2,8 @@
 if GetLocale() == "enUS" then
 FNP_LOCALE_TEXT.FNP_ENABLE_TXT = "Enable";
 FNP_LOCALE_TEXT.FNP_STRING_WEBSITE = "http://bbs.nga.cn/read.php?tid=11817959";
+FNP_LOCALE_TEXT.FNP_AUTO_FIT = "Auto Fit"
+FNP_LOCALE_TEXT.FNP_AUTO_FITTOOLTIP = "Auto Fit UIType but may be wrong, you can manually choose it"
 
 FNP_LOCALE_TEXT.FNP_TOOLTIP_TIDY = "Using with TidyPlate, check this.";
 FNP_LOCALE_TEXT.FNP_TOOLTIP_KUI = "Using with Kui_namePlates, check this";

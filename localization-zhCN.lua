@@ -1,10 +1,10 @@
 ﻿-- Prevent tainting global _.
 FNP_LOCALE_TEXT = {}
-
-
 if GetLocale() == "zhCN" then
 FNP_LOCALE_TEXT.FNP_ENABLE_TXT = "启用";
 FNP_LOCALE_TEXT.FNP_STRING_WEBSITE = "http://bbs.nga.cn/read.php?tid=11817959";
+FNP_LOCALE_TEXT.FNP_AUTO_FIT = "自动适配"
+FNP_LOCALE_TEXT.FNP_AUTO_FITTOOLTIP = "自动适配UI类型,但是可能会匹配错误,你可以自行修改"
 
 FNP_LOCALE_TEXT.FNP_TOOLTIP_TIDY = "如果你使用了TidyPlate，请勾选该项。";
 FNP_LOCALE_TEXT.FNP_TOOLTIP_KUI = "如果你使用了Kui_NamePlate，请勾选该项。";

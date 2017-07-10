@@ -2,6 +2,8 @@
 if GetLocale() == "zhTW" then
 FNP_LOCALE_TEXT.FNP_ENABLE_TXT = "啟動";
 FNP_LOCALE_TEXT.FNP_STRING_WEBSITE = "http://bbs.nga.cn/read.php?tid=11817959";
+FNP_LOCALE_TEXT.FNP_AUTO_FIT = "自動適配"
+FNP_LOCALE_TEXT.FNP_AUTO_FITTOOLTIP = "自動適配UI類型,但是可能會匹配錯誤,你可以自行修改"
 
 FNP_LOCALE_TEXT.FNP_TOOLTIP_TIDY = "如果你使用了TidyPlate, 請勾選此項。";
 FNP_LOCALE_TEXT.FNP_TOOLTIP_KUI = "如果你使用了Kui_NamePlate，請勾選此項。";
