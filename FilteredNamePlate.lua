@@ -183,10 +183,10 @@ end
 
 
 local function initScaleValues()
-	-- if isScaleInited == true then 尝试注释掉这里 TODO
-	--	reinitScaleValues()
-	--	return
-	-- end
+	if isScaleInited == true then
+		reinitScaleValues()
+		return
+	end
 
 	for _, frame in pairs(GetNamePlates()) do
 		local foundUnit = frame.namePlateUnitToken or (frame.UnitFrame and frame.UnitFrame.unit)
@@ -656,42 +656,6 @@ function FilteredNamePlate_OnLoad(self)
 	self:RegisterEvent("PLAYER_ENTERING_WORLD")
 end
 
-function FilteredNamePlate.FNP_UITypeChanged(checkbtn, checked, flag)
-	if checked then
-		if Fnp_OtherNPFlag == flag then
-			return
-		end
-		Fnp_OtherNPFlag = flag
-		initFnp_SavedScaleList_only(flag)
-		FilteredNamePlate_Frame_OnlyShowScale:SetValue(Fnp_SavedScaleList.only * 100)
-		FilteredNamePlate_Frame_tidyCheckBtn:SetChecked(false)
-		FilteredNamePlate_Frame_KuiCheckBtn:SetChecked(false)
-		FilteredNamePlate_Frame_OrgCheckBtn:SetChecked(false)
-		FilteredNamePlate_Frame_EUIRayBtn:SetChecked(false)
-		FilteredNamePlate_Frame_NDUIBtn:SetChecked(false)
-		FilteredNamePlate_Frame_EKBtn:SetChecked(false)
-		if flag == 0 then
-			FilteredNamePlate_Frame_OrgCheckBtn:SetChecked(true)
-		elseif flag == 1 then
-			FilteredNamePlate_Frame_tidyCheckBtn:SetChecked(true)
-		elseif flag == 2 then
-			FilteredNamePlate_Frame_KuiCheckBtn:SetChecked(true)
-		elseif flag == 3 then
-			FilteredNamePlate_Frame_EUIRayBtn:SetChecked(true)
-		elseif flag == 4 then
-			FilteredNamePlate_Frame_NDUIBtn:SetChecked(true)
-		elseif flag == 5 then
-			FilteredNamePlate_Frame_EKBtn:SetChecked(true)
-		end
-	else
-		checkbtn:SetChecked(true)
-		if Fnp_OtherNPFlag == flag then
-			return
-		end
-	end
-	print(L.FNP_PRINT_UITYPE_CHANGED)
-end
-
 function FilteredNamePlate.AvailabilityDropDown_OnShow(isInit, frame)
 	local uitypes = {
 		[0] = FNP_LOCALE_TEXT.FNP_ORIG_TITLE,
@@ -733,11 +697,11 @@ function FilteredNamePlate.AvailabilityDropDown_OnShow(isInit, frame)
 				info.text = n
 				info.value = i
 				info.checked = uitypesChecked[i]
-				info.keepShownOnClick = false     
+				info.keepShownOnClick = false
 				info.func = function(_, self, val) DropDown_OnClick(val) end
 				info.arg1 = self
 				info.arg2 = i
-				UIDropDownMenu_AddButton(info) 
+				UIDropDownMenu_AddButton(info)
 			end
 		end
 		UIDropDownMenu_Initialize(frame, initWithDropDown)
