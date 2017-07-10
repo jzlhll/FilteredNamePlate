@@ -1,10 +1,12 @@
 ﻿-- Prevent tainting global _.
 if GetLocale() == "zhTW" then
 FNP_LOCALE_TEXT.FNP_ENABLE_TXT = "啟動";
+FNP_LOCALE_TEXT.FNP_STRING_WEBSITE = "http://bbs.nga.cn/read.php?tid=11817959";
 
 FNP_LOCALE_TEXT.FNP_TOOLTIP_TIDY = "如果你使用了TidyPlate, 請勾選此項。";
 FNP_LOCALE_TEXT.FNP_TOOLTIP_KUI = "如果你使用了Kui_NamePlate，請勾選此項。";
-FNP_LOCALE_TEXT.FNP_ORIG_TITLE = "源生/EK條形/有愛/大腳/老農...";
+FNP_LOCALE_TEXT.FNP_ORIG_TITLE = "源生/有愛/大腳";
+FNP_LOCALE_TEXT.FNP_ORIG_TITLE2 = "EK條形/老農/魔盒";
 FNP_LOCALE_TEXT.FNP_EKNUM_TITLE = "EK數字";
 FNP_LOCALE_TEXT.FNP_TOOLTIP_ORIG = "如果你使用原生, 如大腳,有愛等, 請勾選此項。";
 FNP_LOCALE_TEXT.FNP_TOOLTIP_EUI_RAYUI = "如果你使用了EUI或RayUI, 請勾選此項。";
@@ -29,17 +31,17 @@ FNP_LOCALE_TEXT.FNP_FILTER_LIST_TXT = "過濾列表";
 FNP_LOCALE_TEXT.FNP_STRING_UI_TYPE = "UI類型(改變需重載/rl /reload)";
 FNP_LOCALE_TEXT.FNP_STRING_NOTE = "列表框用英文的';'追加名字";
 
-FNP_LOCALE_TEXT.FNP_STRING_AUTHOR_VER = "作者:Allan 版本:7.2.5.20170702 V6";
+FNP_LOCALE_TEXT.FNP_STRING_AUTHOR_VER = "作者:Allan 版本:7.2.5.20170710 V6";
 
-FNP_LOCALE_TEXT.FNP_PRINT_ERROR_UITYPE = "\124cFFFFC1C1[ /fnp ]錯誤！你設置的UI類型可能不匹配。請正確設置并重載界面！\124r";
-FNP_LOCALE_TEXT.FNP_PRINT_UITYPE_CHANGED = "\124cFFFFC1C1你修改了UI類型，請重載/reload或/rl !\124r";
-FNP_LOCALE_TEXT.FNP_PRINT_HELP0 = "\124cFFFFC1C1>>>FilteredNamePlates<<<\124r";
-FNP_LOCALE_TEXT.FNP_PRINT_HELP1 = "\124cFFFFC1C1/fnp options 或 /fnp opt \124r打開菜單";
-FNP_LOCALE_TEXT.FNP_PRINT_HELP2 = "\124cFFFFC1C1/fnp change 或 /fnp ch \124r快速切換開關";
-FNP_LOCALE_TEXT.FNP_PRINT_HELP3 = "\124cFFFFC1C1/fnp refresh \124r快速隱藏當前施法的單位";
+FNP_LOCALE_TEXT.FNP_PRINT_ERROR_UITYPE = "\124cFF00CD00[ /fnp ]錯誤！你設置的UI類型可能不匹配。請正確設置并重載界面！\124r";
+FNP_LOCALE_TEXT.FNP_PRINT_UITYPE_CHANGED = "\124cFF00CD00你修改了UI類型，請重載/reload或/rl !\124r";
+FNP_LOCALE_TEXT.FNP_PRINT_HELP0 = "\124cFF00CD00>>>FilteredNamePlates<<<\124r";
+FNP_LOCALE_TEXT.FNP_PRINT_HELP1 = "\124cFF00CD00/fnp options 或 /fnp opt \124r打開菜單";
+FNP_LOCALE_TEXT.FNP_PRINT_HELP2 = "\124cFF00CD00/fnp change 或 /fnp ch \124r快速切換開關";
+FNP_LOCALE_TEXT.FNP_PRINT_HELP3 = "\124cFF00CD00/fnp refresh \124r快速隱藏當前施法的單位";
 
 FNP_LOCALE_TEXT.FNP_TEXT_HELP = "幫助";
 FNP_LOCALE_TEXT.FNP_TEXT_SHARE = "隊伍分享";
 --FNP_LOCALE_TEXT.FNP_TEXT_SHARE2 = "公會分享";
-FNP_LOCALE_TEXT.FNP_TEXT_INFO0 = "\124cFFFFC1C1如果設置后沒有生效, 來回切換血條顯示和隱藏的快捷鍵即可生效。如果仍然有一些不正常，嘗試重載界面\124r";
+FNP_LOCALE_TEXT.FNP_TEXT_INFO0 = "\124cFF00CD00如果設置后沒有生效, 來回切換血條顯示和隱藏的快捷鍵即可生效。如果仍然有一些不正常，嘗試重載界面\124r";
 end

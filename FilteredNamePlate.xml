@@ -3,7 +3,7 @@
 <!--Script file="FilteredNamePlateHelp.lua" / -->
 <Frame name="FilteredNamePlate_Frame" hidden="true" parent="UIParent" toplevel="true" movable="true" frameStrata="HIGH" enableMouse="true" enableKeyboard="true">
 	<Size>
-		<AbsDimension x="621" y="450" />
+		<AbsDimension x="540" y="450" />
 	</Size>
 	<Anchors>
 		<Anchor point="CENTER" />
@@ -48,12 +48,11 @@
 			</Anchors>
 			<Scripts>
 				<OnLoad>
-					 UIDropDownMenu_SetWidth(self, 120)
+					 UIDropDownMenu_SetWidth(self, 150)
 					 UIDropDownMenu_SetText(self, "test")
-					 FilteredNamePlate.AvailabilityDropDown_OnShow(true, self)
 				</OnLoad>
 				<OnShow>
-					FilteredNamePlate.AvailabilityDropDown_OnShow(false, self)
+					FilteredNamePlate.AvailabilityDropDown_OnShow(self)
 				</OnShow>
 			</Scripts>
 		</Frame>
@@ -61,7 +60,7 @@
 			<Anchors>
 				<Anchor point="CENTER" relativeTo="$parent_DropDownUIType" relativePoint="RIGHT">
 				<Offset>
-					<AbsDimension x="20" y="4" />
+					<AbsDimension x="10" y="4" />
 				</Offset>
 				</Anchor>
 			</Anchors>
@@ -94,9 +93,9 @@
                     <AbsDimension x="200" y="60" />
                 </Size>
                 <Anchors>
-                    <Anchor point="TOPLEFT" relativeTo="$parent_EUIRayBtn" relativePoint="BOTTOMLEFT">
+                    <Anchor point="TOPLEFT" relativeTo="$parent_DropDownUIType" relativePoint="BOTTOMLEFT">
                         <Offset>
-                            <AbsDimension x="0" y="-50" />
+                            <AbsDimension x="20" y="-50" />
                         </Offset>
                     </Anchor>
                 </Anchors>
@@ -424,24 +423,6 @@
 					</Anchor>
 				</Anchors>
 			</FontString>
-			<!--FontString name="$parent_show_TextOnly" inherits="GameFontNormal" text="">
-				<Anchors>
-					<Anchor point="BOTTOMRIGHT" relativeTo="$parent">
-						<Offset>
-							<AbsDimension x="-10" y="20" />
-						</Offset>
-					</Anchor>
-				</Anchors>
-			</FontString>
-			<FontString name="$parent_show_TextOnlyOther" inherits="GameFontNormal" text="">
-				<Anchors>
-					<Anchor point="BOTTOMRIGHT" relativeTo="$parent_show_TextOnly">
-						<Offset>
-							<AbsDimension x="0" y="20" />
-						</Offset>
-					</Anchor>
-				</Anchors>
-			</FontString -->
 		</Layer>
 	</Layers>
 	<Scripts>

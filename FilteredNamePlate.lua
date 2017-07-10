@@ -11,7 +11,7 @@ local UnitName, GetUnitName = UnitName, GetUnitName
 local string_find = string.find
 local FilterNp_EventList = FilterNp_EventList
 
-local isRegistered, inOnlyShowSt, isScaleInited, isErrInLoad, isNullOnlyList, isNullFilterList
+local isRegistered, inOnlyShowSt, isScaleInited, isErrInLoad, isNullOnlyList, isNullFilterList, isInitedDrop
 
 local curScaleList, curOrigScaleList, curEkScaleList
 
@@ -28,13 +28,13 @@ local SIMPLE_SCALE_NAME = {
 }
 
 local function getCurFrameTypeByFlag(flag)
-	if flag == 1 then
+	if flag == 2 then
 		return SIMPLE_SCALE_NAME.TIDY
-	elseif flag == 2 then
-		return SIMPLE_SCALE_NAME.KUI
 	elseif flag == 3 then
-		return SIMPLE_SCALE_NAME.EUI_RAYUI
+		return SIMPLE_SCALE_NAME.KUI
 	elseif flag == 4 then
+		return SIMPLE_SCALE_NAME.EUI_RAYUI
+	elseif flag == 5 then
 		return SIMPLE_SCALE_NAME.NDUI
 	end
 	return "UnitFrame"
@@ -50,18 +50,6 @@ end
 
 --Fnp_Mode  仅显模式 true 过滤模式 false 暂时去掉过滤模式，其实没什么用
 
-local function initFnp_SavedScaleList_only(curFlag)
-	if curFlag == 0 then
-		Fnp_SavedScaleList.only = 1.4
-	elseif curFlag == 1 then
-		Fnp_SavedScaleList.only = 1.35
-	elseif curFlag == 2 then
-		Fnp_SavedScaleList.only = 1.5
-	else
-		Fnp_SavedScaleList.only = 1.45
-	end
-end
-
 local function registerMyEvents(self, event, ...)
 	if isRegistered == true then return end
 	if Fnp_Enable == nil then
@@ -71,11 +59,10 @@ local function registerMyEvents(self, event, ...)
 	if Fnp_OtherNPFlag == nil then
 		Fnp_OtherNPFlag = 0
 	end
-
 	--curNpFlag = Fnp_OtherNPFlag
-	if Fnp_OtherNPFlag == 0 then
+	if Fnp_OtherNPFlag == 0 or Fnp_OtherNPFlag == 1 then
 		curNpFlag = 0
-	elseif Fnp_OtherNPFlag == 5 then
+	elseif Fnp_OtherNPFlag == 6 then
 		curNpFlag = 2
 	else
 		curNpFlag = 1
@@ -104,11 +91,10 @@ local function registerMyEvents(self, event, ...)
 		Fnp_SavedScaleList = {
 			normal = 1,
 			small = 0.20,
-			only = 1.45,
+			only = 1.4,
 		}
-		initFnp_SavedScaleList_only(Fnp_OtherNPFlag)
 	else -- V4 update to V5
-		if Fnp_SavedScaleList.only == nil then initFnp_SavedScaleList_only(Fnp_OtherNPFlag) end
+		if Fnp_SavedScaleList.only == nil then Fnp_SavedScaleList.only = 1.4 end
 	end
 
 	isNullOnlyList = false
@@ -277,7 +263,7 @@ local hideSwitchSingleUnit = {
 			frame[curNpFlag1Type]:SetScale(curScaleList.small)
 		end
 	end,
-	[2] = function(frame) --ek
+	[2] = function(frame) --ek number
 		if frame == nil then return end
 		if frame.UnitFrame then
 			frame.UnitFrame.name:SetWidth(curEkScaleList.SMALLW)
@@ -368,9 +354,9 @@ local showSwitchSingleUnit = {
 function FilteredNamePlate.actionUnitStateAfterChanged()
     --FilteredNamePlate.printSavedScaleList(Fnp_SavedScaleList)
 	--curNpFlag = Fnp_OtherNPFlag
-	if Fnp_OtherNPFlag == 0 then
+	if Fnp_OtherNPFlag == 0 or Fnp_OtherNPFlag == 1 then
 		curNpFlag = 0
-	elseif Fnp_OtherNPFlag == 5 then
+	elseif Fnp_OtherNPFlag == 6 then
 		curNpFlag = 2
 	else
 		curNpFlag = 1
@@ -656,22 +642,23 @@ function FilteredNamePlate_OnLoad(self)
 	self:RegisterEvent("PLAYER_ENTERING_WORLD")
 end
 
-function FilteredNamePlate.AvailabilityDropDown_OnShow(isInit, frame)
+function FilteredNamePlate.AvailabilityDropDown_OnShow(frame)
 	local uitypes = {
 		[0] = FNP_LOCALE_TEXT.FNP_ORIG_TITLE,
-		[1] = "TidyPlates",
-		[2] = "Kui_NamePlates",
-		[3] = "EUI/RayUI",
-		[4] = "NDUI",
-		[5] = FNP_LOCALE_TEXT.FNP_EKNUM_TITLE,
+		[1] = FNP_LOCALE_TEXT.FNP_ORIG_TITLE2,
+		[2] = "TidyPlates",
+		[3] = "Kui_NamePlates",
+		[4] = "EUI/RayUI",
+		[5] = "NDUI",
+		[6] = FNP_LOCALE_TEXT.FNP_EKNUM_TITLE,
 	}
-	if isInit then
+	if isInitedDrop == nil or isInitedDrop == false then
 		local function DropDown_OnClick(val)
 			UIDropDownMenu_SetSelectedValue(FilteredNamePlate_Frame_DropDownUIType, val)
 			UIDropDownMenu_SetText(FilteredNamePlate_Frame_DropDownUIType, uitypes[val])
 			if Fnp_OtherNPFlag == val then return end
 			Fnp_OtherNPFlag = val
-			initFnp_SavedScaleList_only(val)
+			Fnp_SavedScaleList.only = 1.4
 			FilteredNamePlate_Frame_OnlyShowScale:SetValue(Fnp_SavedScaleList.only * 100)
 			FilteredNamePlate.isSettingChanged = true
 			FilteredNamePlate_Frame_reloadUIBtn:Show()
@@ -690,21 +677,24 @@ function FilteredNamePlate.AvailabilityDropDown_OnShow(isInit, frame)
 				[3] = false,
 				[4] = false,
 				[5] = false,
+				[6] = false,
 			}
 			uitypesChecked[Fnp_OtherNPFlag] = true
-
-			for i,n in pairs(uitypes) do
-				info.text = n
+			local i = 0
+			for j,n in pairs(uitypes) do
+				info.text = uitypes[i]
 				info.value = i
 				info.checked = uitypesChecked[i]
 				info.keepShownOnClick = false
 				info.func = function(_, self, val) DropDown_OnClick(val) end
 				info.arg1 = self
 				info.arg2 = i
+				i = i + 1
 				UIDropDownMenu_AddButton(info)
 			end
 		end
 		UIDropDownMenu_Initialize(frame, initWithDropDown)
+		isInitedDrop = true
 	end
 	UIDropDownMenu_SetText(frame, uitypes[Fnp_OtherNPFlag])
 end
