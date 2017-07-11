@@ -3,7 +3,7 @@
 <!--Script file="FilteredNamePlateHelp.lua" / -->
 <Frame name="FilteredNamePlate_Frame" hidden="true" parent="UIParent" toplevel="true" movable="true" frameStrata="HIGH" enableMouse="true" enableKeyboard="true">
 	<Size>
-		<AbsDimension x="480" y="450" />
+		<AbsDimension x="500" y="450" />
 	</Size>
 	<Anchors>
 		<Anchor point="CENTER" />
@@ -286,7 +286,7 @@
 			<Anchors>
 				<Anchor point="BOTTOMRIGHT" relativeTo="$parent">
 				<Offset>
-					<AbsDimension x="-30" y="60" />
+					<AbsDimension x="-12" y="60" />
 				</Offset>
 				</Anchor>
 			</Anchors>
@@ -303,12 +303,12 @@
 		</Button>
 		<Button name="FilteredNamePlate_Frame_reloadUIBtn" inherits="OptionsButtonTemplate" Hidden="true" text="">
 			<Size>
-				<AbsDimension x="85" y="35" />
+				<AbsDimension x="80" y="35" />
 			</Size>
 			<Anchors>
 				<Anchor point="TOPLEFT" relativeTo="FilteredNamePlate_Frame_takeEffectBtn">
 				<Offset>
-					<AbsDimension x="-100" y="0" />
+					<AbsDimension x="-90" y="0" />
 				</Offset>
 				</Anchor>
 			</Anchors>

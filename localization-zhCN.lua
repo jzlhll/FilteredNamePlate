@@ -46,5 +46,5 @@ FNP_LOCALE_TEXT.FNP_PRINT_HELP3 = "\124cFF00CD00/fnp refresh \124r快速隐藏�
 FNP_LOCALE_TEXT.FNP_TEXT_HELP = "帮助";
 FNP_LOCALE_TEXT.FNP_TEXT_SHARE = "队伍分享";
 --FNP_LOCALE_TEXT.FNP_TEXT_SHARE2 = "公会分享";
-FNP_LOCALE_TEXT.FNP_TEXT_INFO0 = "\124cFF00CD00如果设置没有生效, 来回切换显示和隐藏的快捷键即可。如果改动过多或者仍然有一些不正常, 尝试重载界面。V6: 自动开启 esc->界面->名字->显示所有姓名板.如果你不喜欢,请手动关闭而插件功能将会异常.\124r";
+FNP_LOCALE_TEXT.FNP_TEXT_INFO0 = "\124cFF00CD00如果设置没有生效, 或者改动过多, 仍有一些不正常, 尝试重载界面。V6: 自动开启 esc->界面->名字->显示所有姓名板.如果你不喜欢,请手动关闭而插件功能将会异常.\124r";
 end

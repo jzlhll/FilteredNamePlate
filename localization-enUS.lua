@@ -45,5 +45,5 @@ FNP_LOCALE_TEXT.FNP_PRINT_HELP3 = "\124cFF00CD00/fnp refresh \124rquickly to hid
 FNP_LOCALE_TEXT.FNP_TEXT_HELP = "Help";
 FNP_LOCALE_TEXT.FNP_TEXT_SHARE = "Share";
 --FNP_LOCALE_TEXT.FNP_TEXT_SHARE2 = "Share";
-FNP_LOCALE_TEXT.FNP_TEXT_INFO0 = "\124cFF00CD00If the setting does not take effect, you can switch the shortcut key to display and hide healthbar(nameplates). If it still has some flaws, try to reload.V6: automatically open esc-> interface ->displays all the name plate. If you don't prefer, then manually shut down, while the FNP will be abnormal.\124r";
+FNP_LOCALE_TEXT.FNP_TEXT_INFO0 = "\124cFF00CD00If the setting does not take effect,or it still has some flaws, try to reload.V6: automatically open esc-> interface ->displays all the name plate. If you don't prefer, then manually shut down, while the FNP will be abnormal.\124r";
 end
