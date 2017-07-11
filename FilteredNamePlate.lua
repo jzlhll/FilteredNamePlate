@@ -21,28 +21,11 @@ local SPELL_SCALE = 0.5
 
 local curNpFlag, curNpFlag1Type
 
-local function setCVarValues(isNotReset)
-	if isNotReset then
-		if Fnp_SysCvarNPTab["beRead"] == false then
-			Fnp_SysCvarNPTab["nameplateShowEnemies"] = GetCVar("nameplateShowEnemies")
-			Fnp_SysCvarNPTab["nameplateShowEnemyMinions"] = GetCVar("nameplateShowEnemyMinions")
-			Fnp_SysCvarNPTab["nameplateShowEnemyMinus"] = GetCVar("nameplateShowEnemyMinus")
-			Fnp_SysCvarNPTab["nameplateShowAll"] = GetCVar("nameplateShowAll")
-			print("1a "..Fnp_SysCvarNPTab["nameplateShowEnemies"].." b "..Fnp_SysCvarNPTab["nameplateShowEnemyMinions"].." c "..Fnp_SysCvarNPTab["nameplateShowEnemyMinus"].." d "..Fnp_SysCvarNPTab["nameplateShowAll"])
-		end
-		Fnp_SysCvarNPTab["beRead"] = true
-		SetCVar("nameplateShowEnemies", 1)
-		SetCVar("nameplateShowEnemyMinions", 1)
-		SetCVar("nameplateShowEnemyMinus", 1)
-		SetCVar("nameplateShowAll", 1)
-	else
-		Fnp_SysCvarNPTab["beRead"] = false
-		SetCVar("nameplateShowEnemies", Fnp_SysCvarNPTab["nameplateShowEnemies"])
-		SetCVar("nameplateShowEnemyMinions", Fnp_SysCvarNPTab["nameplateShowEnemyMinions"])
-		SetCVar("nameplateShowEnemyMinus", Fnp_SysCvarNPTab["nameplateShowEnemyMinus"])
-		SetCVar("nameplateShowAll", Fnp_SysCvarNPTab["nameplateShowAll"])
-		print("2a "..Fnp_SysCvarNPTab["nameplateShowEnemies"].." b "..Fnp_SysCvarNPTab["nameplateShowEnemyMinions"].." c "..Fnp_SysCvarNPTab["nameplateShowEnemyMinus"].." d "..Fnp_SysCvarNPTab["nameplateShowAll"])
-	end
+local function setCVarValues()
+	SetCVar("nameplateShowEnemies", 1)
+	SetCVar("nameplateShowEnemyMinions", 1)
+	SetCVar("nameplateShowEnemyMinus", 1)
+	SetCVar("nameplateShowAll", 1)
 end
 
 local function getCurFrameTypeByFlag(flag)
@@ -187,7 +170,7 @@ local function reinitScaleValues()
 		curEkScaleList.mid_perc_font = curEkScaleList.normal_perc_font * SPELL_SCALE
 		curEkScaleList.small_perc_font = curEkScaleList.normal_perc_font * Fnp_SavedScaleList.small
 	end
-	setCVarValues(true)
+	setCVarValues()
 end
 
 
@@ -389,7 +372,7 @@ function FilteredNamePlate.actionUnitStateAfterChanged()
 	initScaleValues()
 	local matched = false
 	local matched2 = false
-	setCVarValues(Fnp_Enable)
+	setCVarValues()
 	if Fnp_Enable == true then
 		isInOnlySt = false
 		--仅显
@@ -545,7 +528,7 @@ local function actionUnitAdded(self, event, ...)
 	if isScaleInited == false then
 		initScaleValues()
 	end
-	
+
 	if isScaleInited == false then
 		if isErrInLoad == false then
 			isErrInLoad = true
@@ -555,6 +538,7 @@ local function actionUnitAdded(self, event, ...)
 		end
 		return
 	end
+	if Fnp_Enable == false then return end
 	if isNullOnlyList == true and isNullFilterList == true then
 		return
 	end
@@ -563,7 +547,6 @@ local function actionUnitAdded(self, event, ...)
 	if UnitIsPlayer(unitid) then
 		return
 	end
-	if Fnp_Enable == false then return end
 	actionUnitAddedForce(unitid)
 end
 

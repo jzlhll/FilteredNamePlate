@@ -3,7 +3,7 @@
 <!--Script file="FilteredNamePlateHelp.lua" / -->
 <Frame name="FilteredNamePlate_Frame" hidden="true" parent="UIParent" toplevel="true" movable="true" frameStrata="HIGH" enableMouse="true" enableKeyboard="true">
 	<Size>
-		<AbsDimension x="460" y="450" />
+		<AbsDimension x="480" y="450" />
 	</Size>
 	<Anchors>
 		<Anchor point="CENTER" />
@@ -308,7 +308,7 @@
 			<Anchors>
 				<Anchor point="TOPLEFT" relativeTo="FilteredNamePlate_Frame_takeEffectBtn">
 				<Offset>
-					<AbsDimension x="-130" y="0" />
+					<AbsDimension x="-100" y="0" />
 				</Offset>
 				</Anchor>
 			</Anchors>
@@ -425,8 +425,6 @@
 				FilteredNamePlate_Frame:StopMovingOrSizing();
 			end
 		</OnMouseUp>
-		<OnLeave>
-		</OnLeave>
 	</Scripts>
 </Frame>
 </Ui>
