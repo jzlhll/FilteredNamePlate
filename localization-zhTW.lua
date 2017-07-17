@@ -46,4 +46,5 @@ FNP_LOCALE_TEXT.FNP_TEXT_HELP = "幫助";
 FNP_LOCALE_TEXT.FNP_TEXT_SHARE = "隊伍分享";
 --FNP_LOCALE_TEXT.FNP_TEXT_SHARE2 = "公會分享";
 FNP_LOCALE_TEXT.FNP_TEXT_INFO0 = "\124cFF00CD00如果設置后沒有生效, 或者仍有一些不正常，嘗試重載界面.V6: 自動開啟esc->界面->名字-顯示所有姓名板.如果你不喜歡,請手動關閉而插件功能將會異常.\124r";
+FNP_LOCALE_TEXT.FNP_CHANGED_UITYPE = "修改了UI類型!下次有新怪進入視野,將會刷新效果!如果效果不佳, 則重載界面";
 end

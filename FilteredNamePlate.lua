@@ -12,7 +12,7 @@ local FilterNp_EventList = FilterNp_EventList
 
 local isRegistered, isInOnlySt, isScaleInited, isErrInLoad, isNullOnlyList, isNullFilterList, isInitedDrop
 
-local curScaleList, curOrigScaleList, curEkScaleList
+local curScaleList
 
 local SPELL_SCALE = 0.5
 
@@ -28,25 +28,35 @@ local function setCVarValues()
 	SetCVar("nameplateShowAll", 1)
 end
 
-local function getCurFrameTypeByFlag(flag)
-	if flag == 2 then
-		return "carrier"
-	elseif flag == 3 then
-		return "kui"
-	elseif flag == 4 then
-		return "UnitFrame"
-	elseif flag == 5 then
-		return "unitFrame"
-	end
-	return "UnitFrame"
-end
-
 local function getTableCount(atab)
 	local count = 0
     for pos, name in ipairs(atab) do
         count = count + 1
     end
 	return count
+end
+
+local function GenCurNpFlags()
+	if Fnp_OtherNPFlag == 0 or Fnp_OtherNPFlag == 1 then
+		curNpFlag = 0
+	elseif Fnp_OtherNPFlag == 6 then
+		curNpFlag = 2
+	elseif Fnp_OtherNPFlag == 7 then
+		curNpFlag = 3
+	else
+		curNpFlag = 1
+	end
+	--print("curNp"..curNpFlag.." FnpOther "..Fnp_OtherNPFlag)
+	curNpFlag1Type = "UnitFrame"
+	if flag == 2 then
+		curNpFlag1Type = "carrier"
+	elseif flag == 3 then
+		curNpFlag1Type = "kui"
+	elseif flag == 4 then
+		curNpFlag1Type = "UnitFrame"
+	elseif flag == 5 then
+		curNpFlag1Type = "unitFrame"
+	end
 end
 
 local function registerMyEvents(self, event, ...)
@@ -58,26 +68,7 @@ local function registerMyEvents(self, event, ...)
 	if Fnp_OtherNPFlag == nil then
 		Fnp_OtherNPFlag = 0
 	end
-
-	if Fnp_SysCvarNPTab == nil then
-		Fnp_SysCvarNPTab = {
-			["beRead"] = false,
-			["nameplateShowEnemies"] = 1,
-			["nameplateShowEnemyMinions"] = 1,
-			["nameplateShowEnemyMinus"] = 1,
-			["nameplateShowAll"] = 1 --alway show all plate
-		}
-	end
-
-	if Fnp_OtherNPFlag == 0 or Fnp_OtherNPFlag == 1 then
-		curNpFlag = 0
-	elseif Fnp_OtherNPFlag == 6 then
-		curNpFlag = 2
-	else
-		curNpFlag = 1
-	end
-
-	curNpFlag1Type = getCurFrameTypeByFlag(Fnp_OtherNPFlag)
+	GenCurNpFlags()
 
 	if Fnp_ONameList == nil then
 		Fnp_ONameList = {}
@@ -95,7 +86,7 @@ local function registerMyEvents(self, event, ...)
 	if Fnp_SavedScaleList == nil then
 		Fnp_SavedScaleList = {
 			normal = 1,
-			small = 0.20,
+			small = 0.25,
 			only = 1.4,
 		}
 	else -- V4 update to V5
@@ -154,21 +145,26 @@ local function reinitScaleValues()
 		curScaleList.middle = curScaleList.normal * SPELL_SCALE
 		curScaleList.only = curScaleList.SYSTEM * Fnp_SavedScaleList.only
 	elseif curNpFlag == 0 then
-		curOrigScaleList.name.normal = curOrigScaleList.name.SYSTEM
-		curOrigScaleList.name.small = curOrigScaleList.name.normal * Fnp_SavedScaleList.small
-		curOrigScaleList.name.middle = curOrigScaleList.name.small
-		if curOrigScaleList.name.small < 30 then
-			curOrigScaleList.name.small = 30
-			curOrigScaleList.name.middle = 30
+		curScaleList.name.normal = curScaleList.name.SYSTEM
+		curScaleList.name.small = curScaleList.name.normal * Fnp_SavedScaleList.small
+		curScaleList.name.middle = curScaleList.name.small
+		if curScaleList.name.small < 30 then
+			curScaleList.name.small = 30
+			curScaleList.name.middle = 30
 		end
-		curOrigScaleList.bars.heal_normalHeight = curOrigScaleList.bars.HEAL_SYS_HEIGHT * Fnp_SavedScaleList.normal;
-		curOrigScaleList.bars.heal_onlyHeight = curOrigScaleList.bars.HEAL_SYS_HEIGHT * Fnp_SavedScaleList.only;
-		curOrigScaleList.bars.cast_midHeight = curOrigScaleList.bars.CAST_SYS_HEIGHT * SPELL_SCALE;
+		curScaleList.bars.heal_normalHeight = curScaleList.bars.HEAL_SYS_HEIGHT * Fnp_SavedScaleList.normal;
+		curScaleList.bars.heal_onlyHeight = curScaleList.bars.HEAL_SYS_HEIGHT * Fnp_SavedScaleList.only;
+		curScaleList.bars.cast_midHeight = curScaleList.bars.CAST_SYS_HEIGHT * SPELL_SCALE;
 	elseif curNpFlag == 2 then
-		curEkScaleList.normal_perc_font = curEkScaleList.PERC_FONT * Fnp_SavedScaleList.normal
-		curEkScaleList.only_perc_font = curEkScaleList.PERC_FONT * Fnp_SavedScaleList.only
-		curEkScaleList.mid_perc_font = curEkScaleList.normal_perc_font * SPELL_SCALE
-		curEkScaleList.small_perc_font = curEkScaleList.normal_perc_font * Fnp_SavedScaleList.small
+		curScaleList.normal_perc_font = curScaleList.PERC_FONT * Fnp_SavedScaleList.normal
+		curScaleList.only_perc_font = curScaleList.PERC_FONT * Fnp_SavedScaleList.only
+		curScaleList.mid_perc_font = curScaleList.normal_perc_font * SPELL_SCALE
+		curScaleList.small_perc_font = curScaleList.normal_perc_font * Fnp_SavedScaleList.small
+	elseif curNpFlag == 3 then
+		curScaleList.normal_name_font = curScaleList.NAME_FONT * Fnp_SavedScaleList.normal
+		curScaleList.only_name_font = curScaleList.NAME_FONT * Fnp_SavedScaleList.only
+		curScaleList.mid_name_font = curScaleList.normal_name_font * SPELL_SCALE
+		curScaleList.small_name_font = curScaleList.normal_name_font * Fnp_SavedScaleList.small
 	end
 	setCVarValues()
 end
@@ -182,74 +178,95 @@ local function initScaleValues()
 
 	for _, frame in pairs(GetNamePlates()) do
 		local foundUnit = frame.namePlateUnitToken or (frame.UnitFrame and frame.UnitFrame.unit)
+		local sys = 0
 		if foundUnit then
-			curScaleList = {
-			SYSTEM = 0.78,
-			normal = 1.0,
-			small = 0.20,
-			middle = SPELL_SCALE,
-			only = 1.45,
-			};
-			curOrigScaleList = {
-				name = {
-					SYSTEM = 130,
-					normal = 130,
-					small = 40,
-					middle = 40,
-				},
-				bars = {
-					HEAL_SYS_HEIGHT = 10.8,
-					heal_normalHeight = 10.8,
-					heal_onlyHeight = 15.0,
-					CAST_SYS_HEIGHT = 10.8,
-					cast_midHeight = 5.4
+			if curNpFlag == 0 then --Orig模型
+				curScaleList = {
+					name = {
+						SYSTEM = 130,
+						normal = 130,
+						small = 40,
+						middle = 40,
+					},
+					bars = {
+						HEAL_SYS_HEIGHT = 10.8,
+						heal_normalHeight = 10.8,
+						heal_onlyHeight = 15.0,
+						CAST_SYS_HEIGHT = 10.8,
+						cast_midHeight = 5.4
+					}
 				}
-			}
-			curEkScaleList = {
-				SYSTEMW = 130,
-				SMALLW = 40,
-				SYSTEMH = 100,
-				SMALLH = 20,
-
-				PERC_FONT = 18,
-				normal_perc_font = 18,
-				only_perc_font = 10,
-				mid_perc_font = 15,
-				small_perc_font = 8,
-			}
-			local sys = 0
-			if curNpFlag == 0 then --Orig
 				if frame.UnitFrame then
 					sys = 1
-					curOrigScaleList.name.SYSTEM = frame.UnitFrame:GetWidth()
+					curScaleList.name.SYSTEM = frame.UnitFrame:GetWidth()
 					if frame.UnitFrame.healthBar then
-						curOrigScaleList.bars.HEAL_SYS_HEIGHT = frame.UnitFrame.healthBar:GetHeight()
+						curScaleList.bars.HEAL_SYS_HEIGHT = frame.UnitFrame.healthBar:GetHeight()
 					end
 					if frame.UnitFrame.castBar then
-						curOrigScaleList.bars.CAST_SYS_HEIGHT = frame.UnitFrame.castBar:GetHeight()
+						curScaleList.bars.CAST_SYS_HEIGHT = frame.UnitFrame.castBar:GetHeight()
 					end
 				end
-			elseif curNpFlag == 2 then -- ek
+			elseif curNpFlag == 2 then -- ek number 模型
+				curScaleList = {
+					SYSTEMW = 130,
+					SMALLW = 40,
+					SYSTEMH = 100,
+					SMALLH = 20,
+
+					PERC_FONT = 18,
+					normal_perc_font = 18,
+					only_perc_font = 10,
+					mid_perc_font = 15,
+					small_perc_font = 8,
+				}
 				if frame.UnitFrame then
 					sys = 1
-					curEkScaleList.SYSTEMW = frame.UnitFrame.name:GetWidth()
-					curEkScaleList.SYSTEMH = frame.UnitFrame.name:GetHeight()
+					curScaleList.SYSTEMW = frame.UnitFrame.name:GetWidth()
+					curScaleList.SYSTEMH = frame.UnitFrame.name:GetHeight()
 					if frame.UnitFrame.healthperc then
-						local _,size,_ = frame.UnitFrame.healthperc:GetFont()
-						curEkScaleList.PERC_FONT = size
+						local face,size,flag = frame.UnitFrame.healthperc:GetFont()
+						curScaleList.fontFace = face
+						curScaleList.fontFlag = flag
+						curScaleList.PERC_FONT = size
 					end
 				end
-			else -- 1~4
+			else -- 1~4 纯条模型
+				sys = 1
+				curScaleList = {
+					SYSTEM = 0.78,
+					normal = 1.0,
+					small = 0.20,
+					middle = SPELL_SCALE,
+					only = 1.45,
+				}
 				if frame[curNpFlag1Type] then
-					sys = frame[curNpFlag1Type]:GetEffectiveScale()
+					curScaleList.SYSTEM = frame[curNpFlag1Type]:GetEffectiveScale()
 				end
 			end
-			if sys > 0.01 then -- it's a real info
-				curScaleList.SYSTEM = sys
-				reinitScaleValues()
-				isScaleInited = true
-				break
+		elseif (frame and frame.ouf) then --sheStack
+			if curNpFlag == 3 then -- shestack 模型
+				curScaleList = {
+					NAME_FONT = 18,
+					normal_name_font = 18,
+					only_name_font = 10,
+					mid_name_font = 15,
+					small_name_font = 8,
+				}
+
+				sys = 1
+				if frame.ouf.Name then
+					local face,size,flag = frame.ouf.Name:GetFont()
+					curScaleList.NAME_FONT = size
+					curScaleList.fontFace = face
+					curScaleList.fontFlag = flag
+				end
 			end
+		end
+		if sys > 0.01 then -- it's a real info
+			curScaleList.SYSTEM = sys
+			reinitScaleValues()
+			isScaleInited = true
+			break
 		end
 	end
 end
@@ -258,9 +275,9 @@ local hideSwitchSingleUnit = {
 	[0] = function(frame) --orig
 		if frame == nil then return end
 		if frame.UnitFrame then
-			frame.UnitFrame.name:SetWidth(curOrigScaleList.name.small)
+			frame.UnitFrame.name:SetWidth(curScaleList.name.small)
 			if frame.UnitFrame.healthBar then frame.UnitFrame.healthBar:Hide() end
-			frame.UnitFrame.castBar:SetHeight(curOrigScaleList.bars.cast_midHeight)
+			frame.UnitFrame.castBar:SetHeight(curScaleList.bars.cast_midHeight)
 		end
 	end,
 	[1] = function(frame) -- all the scaled one
@@ -272,12 +289,20 @@ local hideSwitchSingleUnit = {
 	[2] = function(frame) --ek number
 		if frame == nil then return end
 		if frame.UnitFrame then
-			frame.UnitFrame.name:SetWidth(curEkScaleList.SMALLW)
-			frame.UnitFrame.name:SetHeight(curEkScaleList.SMALLH)
+			frame.UnitFrame.name:SetWidth(curScaleList.SMALLW)
+			frame.UnitFrame.name:SetHeight(curScaleList.SMALLH)
 			if frame.UnitFrame.healthperc then
-				local face, size, flag = frame.UnitFrame.healthperc:GetFont()
-				frame.UnitFrame.healthperc:SetFont(face, curEkScaleList.small_perc_font, flag)
+				frame.UnitFrame.healthperc:SetFont(curScaleList.fontFace, curScaleList.small_perc_font, curScaleList.fontFlag)
 			end
+		end
+	end,
+	[3] = function(frame) --sheStack
+		if frame == nil then return end
+		if frame.ouf then
+			if frame.ouf.Name then
+				frame.ouf.Name:SetFont(curScaleList.fontFace, curScaleList.small_name_font, curScaleList.fontFlag)
+			end
+			if frame.ouf.Health then frame.ouf.Health:Hide() end
 		end
 	end,
 }
@@ -287,27 +312,26 @@ local showSwitchSingleUnit = {
 	[0] = function(frame, isOnlyShowSpellCast, restore, isOnlyUnit)
 		if frame and frame.UnitFrame then
 			if restore == true then
-				frame.UnitFrame.name:SetWidth(curOrigScaleList.name.SYSTEM)
+				frame.UnitFrame.name:SetWidth(curScaleList.name.SYSTEM)
 				if frame.UnitFrame.healthBar then
 					frame.UnitFrame.healthBar:Show()
-					frame.UnitFrame.healthBar:SetHeight(curOrigScaleList.bars.HEAL_SYS_HEIGHT)
+					frame.UnitFrame.healthBar:SetHeight(curScaleList.bars.HEAL_SYS_HEIGHT)
 				end
-				frame.UnitFrame.castBar:SetHeight(curOrigScaleList.bars.CAST_SYS_HEIGHT)
+				frame.UnitFrame.castBar:SetHeight(curScaleList.bars.CAST_SYS_HEIGHT)
 			elseif isOnlyShowSpellCast == false then
-				frame.UnitFrame.name:SetWidth(curOrigScaleList.name.normal)
+				frame.UnitFrame.name:SetWidth(curScaleList.name.normal)
 				if frame.UnitFrame.healthBar then
 					frame.UnitFrame.healthBar:Show()
 					if isOnlyUnit then
-						frame.UnitFrame.healthBar:SetHeight(curOrigScaleList.bars.heal_onlyHeight)
+						frame.UnitFrame.healthBar:SetHeight(curScaleList.bars.heal_onlyHeight)
 					else
-						frame.UnitFrame.healthBar:SetHeight(curOrigScaleList.bars.heal_normalHeight)
+						frame.UnitFrame.healthBar:SetHeight(curScaleList.bars.heal_normalHeight)
 					end
 				end
-				frame.UnitFrame.castBar:SetHeight(curOrigScaleList.bars.CAST_SYS_HEIGHT)
-				
+				frame.UnitFrame.castBar:SetHeight(curScaleList.bars.CAST_SYS_HEIGHT)
 			else
-				frame.UnitFrame.name:SetWidth(curOrigScaleList.name.middle)
-				frame.UnitFrame.castBar:SetHeight(curOrigScaleList.bars.cast_midHeight)
+				frame.UnitFrame.name:SetWidth(curScaleList.name.middle)
+				frame.UnitFrame.castBar:SetHeight(curScaleList.bars.cast_midHeight)
 				--frame.UnitFrame.healthBar:Show()
 			end
 		end
@@ -330,51 +354,63 @@ local showSwitchSingleUnit = {
 	[2] = function(frame, isOnlyShowSpellCast, restore, isOnlyUnit)
 		if frame and frame.UnitFrame then
 			if restore == true then
-				frame.UnitFrame.name:SetWidth(curEkScaleList.SYSTEMW)
-				frame.UnitFrame.name:SetHeight(curEkScaleList.SYSTEMH)
+				frame.UnitFrame.name:SetWidth(curScaleList.SYSTEMW)
+				frame.UnitFrame.name:SetHeight(curScaleList.SYSTEMH)
 				if frame.UnitFrame.healthperc then
-					local face, size, flag = frame.UnitFrame.healthperc:GetFont()
-					frame.UnitFrame.healthperc:SetFont(face, curEkScaleList.PERC_FONT, flag)
+					frame.UnitFrame.healthperc:SetFont(curScaleList.fontFace, curScaleList.PERC_FONT, curScaleList.fontFlag)
 				end
 			elseif isOnlyShowSpellCast == false then
-				frame.UnitFrame.name:SetWidth(curEkScaleList.SYSTEMW)
+				frame.UnitFrame.name:SetWidth(curScaleList.SYSTEMW)
 				if frame.UnitFrame.healthperc then
-					local face, size, flag = frame.UnitFrame.healthperc:GetFont()
 					if isOnlyUnit then
-						frame.UnitFrame.healthperc:SetFont(face, curEkScaleList.only_perc_font, flag)
+						frame.UnitFrame.healthperc:SetFont(curScaleList.fontFace, curScaleList.only_perc_font, curScaleList.fontFlag)
 					else
-						frame.UnitFrame.healthperc:SetFont(face, curEkScaleList.normal_perc_font, flag)
+						frame.UnitFrame.healthperc:SetFont(curScaleList.fontFace, curScaleList.normal_perc_font, curScaleList.fontFlag)
 					end
 				end
 			else
 				if frame.UnitFrame.healthperc then
-					local face, size, flag = frame.UnitFrame.healthperc:GetFont()
-					frame.UnitFrame.healthperc:SetFont(face, curEkScaleList.mid_perc_font, flag)
+					frame.UnitFrame.healthperc:SetFont(curScaleList.fontFace, curScaleList.mid_perc_font, curScaleList.fontFlag)
 				end
 				--frame.UnitFrame.healthBar:Show()
+			end
+		end
+	end,
+	[3] = function(frame, isOnlyShowSpellCast, restore, isOnlyUnit)
+		if frame and frame.ouf then
+			if restore == true then
+				frame.ouf.Name:SetFont(curScaleList.fontFace, curScaleList.NAME_FONT, curScaleList.fontFlag)
+				frame.ouf.Health:Show()
+			elseif isOnlyShowSpellCast == false then
+				frame.ouf.Health:Show()
+				if isOnlyUnit then
+					frame.ouf.Name:SetFont(curScaleList.fontFace, curScaleList.only_name_font, curScaleList.fontFlag)
+				else
+					frame.ouf.Name:SetFont(curScaleList.fontFace, curScaleList.normal_name_font, curScaleList.fontFlag)
+				end
+			else
+				frame.ouf.Name:SetFont(curScaleList.fontFace, curScaleList.mid_name_font, curScaleList.fontFlag)
 			end
 		end
 	end,
 }
 
 function FilteredNamePlate.actionUnitStateAfterChanged()
-    --FilteredNamePlate.printSavedScaleList(Fnp_SavedScaleList)
-	--curNpFlag = Fnp_OtherNPFlag
-	if Fnp_OtherNPFlag == 0 or Fnp_OtherNPFlag == 1 then
-		curNpFlag = 0
-	elseif Fnp_OtherNPFlag == 6 then
-		curNpFlag = 2
-	else
-		curNpFlag = 1
+	local lastNp = curNpFlag
+    GenCurNpFlags()
+	if not (curNpFlag == lastNp) then --UI类型有变
+		-- 需要有怪在周围重新 重新获取一下
+		isScaleInited = false
+		print(FNP_LOCALE_TEXT.FNP_CHANGED_UITYPE)
+		return
 	end
-	curNpFlag1Type = getCurFrameTypeByFlag(Fnp_OtherNPFlag)
 
 	initScaleValues()
 	local matched = false
 	local matched2 = false
 	setCVarValues()
+	isInOnlySt = false
 	if Fnp_Enable == true then
-		isInOnlySt = false
 		--仅显
 		isNullOnlyList = false
 		if getTableCount(Fnp_ONameList) == 0 then isNullOnlyList = true end
@@ -386,7 +422,7 @@ function FilteredNamePlate.actionUnitStateAfterChanged()
 			if isNullOnlyList == true then
 				matched2 = false
 				if isNullFilterList == false then
-					local foundUnit = frame.namePlateUnitToken or (frame.UnitFrame and frame.UnitFrame.unit)
+					local foundUnit = (frame.namePlateUnitToken or (frame.UnitFrame and frame.UnitFrame.unit)) or (frame.unitFrame and frame.unitFrame.unit)
 					if foundUnit then matched2 = isMatchedNameList(Fnp_FNameList, GetUnitName(foundUnit)) end
 				end
 				if matched2 == true then
@@ -395,7 +431,7 @@ function FilteredNamePlate.actionUnitStateAfterChanged()
 					showSwitchSingleUnit[curNpFlag](frame, false, false, false) -- 全是普通情况
 				end
 			else
-				local foundUnit = frame.namePlateUnitToken or (frame.UnitFrame and frame.UnitFrame.unit)
+				local foundUnit = (frame.namePlateUnitToken or (frame.UnitFrame and frame.UnitFrame.unit)) or (frame.unitFrame and frame.unitFrame.unit)
 				matched = false
 				if foundUnit then matched = isMatchedNameList(Fnp_ONameList, GetUnitName(foundUnit)) end
 				if matched == true then
@@ -405,8 +441,9 @@ function FilteredNamePlate.actionUnitStateAfterChanged()
 			end
 		end
 		if isHide == true then
+			isInOnlySt = true
 			for _, frame in pairs(GetNamePlates()) do
-				local foundUnit = frame.namePlateUnitToken or (frame.UnitFrame and frame.UnitFrame.unit)
+				local foundUnit = (frame.namePlateUnitToken or (frame.UnitFrame and frame.UnitFrame.unit)) or (frame.unitFrame and frame.unitFrame.unit)
 				matched = false
 				if foundUnit then matched = isMatchedNameList(Fnp_ONameList, GetUnitName(foundUnit)) end
 				if matched == true then
@@ -416,7 +453,6 @@ function FilteredNamePlate.actionUnitStateAfterChanged()
 					if UnitIsPlayer(foundUnit) == false then hideSwitchSingleUnit[curNpFlag](frame) end
 				end
 			end
-			isInOnlySt = true
 		else
 			for _, frame in pairs(GetNamePlates()) do
 				-- 普通模式
@@ -426,25 +462,14 @@ function FilteredNamePlate.actionUnitStateAfterChanged()
 		-- registerMyEvents(FilteredNamePlate_Frame, "", "")
 	else -- 已经关闭功能就全部显示
 		for _, frame in pairs(GetNamePlates()) do
-			local foundUnit = frame.namePlateUnitToken or (frame.UnitFrame and frame.UnitFrame.unit)
+			local foundUnit = (frame.namePlateUnitToken or (frame.UnitFrame and frame.UnitFrame.unit)) or (frame.unitFrame and frame.unitFrame.unit)
 			if foundUnit then
 				-- disable 还原了！
 				showSwitchSingleUnit[curNpFlag](frame, false, true, false)
 			end
 		end
-		isInOnlySt = false
 		-- unRegisterMyEvents(FilteredNamePlate_Frame)
 	end
-end
-
-local function getNamePlateFromPlatesById(unitid)
-	for _, frame in pairs(GetNamePlates()) do
-		local foundUnit = frame.namePlateUnitToken or (frame.UnitFrame and frame.UnitFrame.unit)
-		if foundUnit and (foundUnit == unitid) then
-			return frame
-		end
-	end
-	return nil
 end
 
 local function actionUnitAddedForce(unitid)
@@ -460,15 +485,14 @@ local function actionUnitAddedForce(unitid)
 	-- 1. 当前add的单位名,是否match
 	local curOnlyMatch = isMatchedNameList(Fnp_ONameList, addedname)
 	if curOnlyMatch == false and isInOnlySt == true then
-		--新增单位不需要仅显,但是目前处于仅显情况下, 那么,就将当前这个Hide TODO 这里改成直接用自己,而不是用GetNamePlates
-		-- local frame = getNamePlateFromPlatesById(unitid)
+		--新增单位不需要仅显,但是目前处于仅显情况下, 那么,就将当前这个Hide
 		local frame = GetNamePlateForUnit(unitid)
-		local foundUnit = frame.namePlateUnitToken or (frame.UnitFrame and frame.UnitFrame.unit)
+		local foundUnit = (frame.namePlateUnitToken or (frame.UnitFrame and frame.UnitFrame.unit)) or (frame.unitFrame and frame.unitFrame.unit)
 		if UnitIsPlayer(foundUnit) == false then hideSwitchSingleUnit[curNpFlag](frame) end
 	elseif curOnlyMatch == false and isInOnlySt == false then
 		-- 新增单位不需要仅显, 此时也没有仅显, 就不管了.现在我们将当前的效果展示出来
 		local frame = GetNamePlateForUnit(unitid)
-		local foundUnit = frame.namePlateUnitToken or (frame.UnitFrame and frame.UnitFrame.unit)
+		local foundUnit = (frame.namePlateUnitToken or (frame.UnitFrame and frame.UnitFrame.unit)) or (frame.unitFrame and frame.unitFrame.unit)
 		if UnitIsPlayer(foundUnit) == false then showSwitchSingleUnit[curNpFlag](GetNamePlateForUnit(unitid), false, false, false) end
 	elseif curOnlyMatch == true and isInOnlySt == true then
 		-- 新增单位是需要仅显的,而此时已经有仅显的了,于是我们什么也不用干 -- 更新，怀疑在异步调用的时候莫名奇妙被hide了这里开出来确保
@@ -476,7 +500,7 @@ local function actionUnitAddedForce(unitid)
 	elseif curOnlyMatch == true and isInOnlySt == false then
 		--新增单位是需要仅显的,而此时不是仅显, 于是我们就将之前的都Hide,当前这个不用处理
 		for _, frame in pairs(GetNamePlates()) do
-			local foundUnit = frame.namePlateUnitToken or (frame.UnitFrame and frame.UnitFrame.unit)
+			local foundUnit = (frame.namePlateUnitToken or (frame.UnitFrame and frame.UnitFrame.unit)) or (frame.unitFrame and frame.unitFrame.unit)
 			if foundUnit then
 				-- TODO 判断是否是正在读条
 				if (unitid == foundUnit) then
@@ -500,7 +524,7 @@ local function actionUnitRemovedForce(unitid)
 		local matched = false
 		local name = ""
 		for _, frame in pairs(GetNamePlates()) do
-			local foundUnit = frame.namePlateUnitToken or (frame.UnitFrame and frame.UnitFrame.unit)
+			local foundUnit = (frame.namePlateUnitToken or (frame.UnitFrame and frame.UnitFrame.unit)) or (frame.unitFrame and frame.unitFrame.unit)
 			if foundUnit then
 				matched = isMatchedNameList(Fnp_ONameList, GetUnitName(foundUnit))
 				if matched == true then
@@ -510,7 +534,7 @@ local function actionUnitRemovedForce(unitid)
 		end
 		--没有找到,说明我们该退出了就显示
 		for _, frame in pairs(GetNamePlates()) do
-			local foundUnit = frame.namePlateUnitToken or (frame.UnitFrame and frame.UnitFrame.unit)
+			local foundUnit = (frame.namePlateUnitToken or (frame.UnitFrame and frame.UnitFrame.unit)) or (frame.unitFrame and frame.unitFrame.unit)
 			if foundUnit then
 				matched = isMatchedNameList(Fnp_ONameList, GetUnitName(foundUnit))
 				if matched == false then
@@ -658,6 +682,7 @@ function FilteredNamePlate.AvailabilityDropDown_OnShow(frame)
 		[4] = "EUI/RayUI",
 		[5] = "NDUI",
 		[6] = FNP_LOCALE_TEXT.FNP_EKNUM_TITLE,
+		[7] = "ShestackUI"
 	}
 	if isInitedDrop == nil or isInitedDrop == false then
 		local function DropDown_OnClick(val)
@@ -666,11 +691,18 @@ function FilteredNamePlate.AvailabilityDropDown_OnShow(frame)
 			if Fnp_OtherNPFlag == val then return end
 			Fnp_OtherNPFlag = val
 			Fnp_SavedScaleList.only = 1.4
+			--配置不同UI下 small的默认比例
+			if val == 7 then
+				Fnp_SavedScaleList.small = 0.5
+				Fnp_SavedScaleList.only = 1.2
+			else
+				Fnp_SavedScaleList.small = 0.25
+			end
+
 			FilteredNamePlate_Frame_OnlyShowScale:SetValue(Fnp_SavedScaleList.only * 100)
 			FilteredNamePlate.isSettingChanged = true
 			FilteredNamePlate_Frame_reloadUIBtn:Show()
 			FilteredNamePlate_Frame_takeEffectBtn:Show()
-			print(L.FNP_PRINT_UITYPE_CHANGED)
 		end
 
 		local function initWithDropDown()
@@ -685,6 +717,7 @@ function FilteredNamePlate.AvailabilityDropDown_OnShow(frame)
 				[4] = false,
 				[5] = false,
 				[6] = false,
+				[7] = false,
 			}
 			uitypesChecked[Fnp_OtherNPFlag] = true
 			local i = 0
