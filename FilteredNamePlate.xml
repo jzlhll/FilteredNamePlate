@@ -1,6 +1,7 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/..\FrameXML\UI.xsd">
 <Script file="FilteredNamePlate.lua"/>
-<!--Script file="FilteredNamePlateHelp.lua" / -->
+<Script file="FilteredNamePlateHelp.lua" />
+<Script file="FNPSupportList.lua" />
 <Frame name="FilteredNamePlate_Frame" hidden="true" parent="UIParent" toplevel="true" movable="true" frameStrata="HIGH" enableMouse="true" enableKeyboard="true">
 	<Size>
 		<AbsDimension x="500" y="450" />

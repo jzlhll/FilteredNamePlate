@@ -36,29 +36,6 @@ local function getTableCount(atab)
 	return count
 end
 
-local function GenCurNpFlags()
-	if Fnp_OtherNPFlag == 0 or Fnp_OtherNPFlag == 1 then
-		curNpFlag = 0
-	elseif Fnp_OtherNPFlag == 6 then
-		curNpFlag = 2
-	elseif Fnp_OtherNPFlag == 7 then
-		curNpFlag = 3
-	else
-		curNpFlag = 1
-	end
-	--print("curNp"..curNpFlag.." FnpOther "..Fnp_OtherNPFlag)
-	curNpFlag1Type = "UnitFrame"
-	if flag == 2 then
-		curNpFlag1Type = "carrier"
-	elseif flag == 3 then
-		curNpFlag1Type = "kui"
-	elseif flag == 4 then
-		curNpFlag1Type = "UnitFrame"
-	elseif flag == 5 then
-		curNpFlag1Type = "unitFrame"
-	end
-end
-
 local function registerMyEvents(self, event, ...)
 	if isRegistered == true then return end
 	if Fnp_Enable == nil then
@@ -68,7 +45,7 @@ local function registerMyEvents(self, event, ...)
 	if Fnp_OtherNPFlag == nil then
 		Fnp_OtherNPFlag = 0
 	end
-	GenCurNpFlags()
+	curNpFlag, curNpFlag1Type = FilteredNamePlate.GenCurNpFlags()
 
 	if Fnp_ONameList == nil then
 		Fnp_ONameList = {}
@@ -83,15 +60,7 @@ local function registerMyEvents(self, event, ...)
 		isInOnlySt = false
 	end
 
-	if Fnp_SavedScaleList == nil then
-		Fnp_SavedScaleList = {
-			normal = 1,
-			small = 0.25,
-			only = 1.4,
-		}
-	else -- V4 update to V5
-		if Fnp_SavedScaleList.only == nil then Fnp_SavedScaleList.only = 1.4 end
-	end
+	FilteredNamePlate.InitSavedScaleList()
 
 	isNullOnlyList = false
 	isNullFilterList = false
@@ -180,7 +149,7 @@ local function initScaleValues()
 		local foundUnit = frame.namePlateUnitToken or (frame.UnitFrame and frame.UnitFrame.unit)
 		local sys = 0
 		if foundUnit then
-			if curNpFlag == 0 then --Orig模型
+			if curNpFlag == 0 then --Orig模型 调节名字宽度，调节血条高度，施法条高度
 				curScaleList = {
 					name = {
 						SYSTEM = 130,
@@ -206,7 +175,7 @@ local function initScaleValues()
 						curScaleList.bars.CAST_SYS_HEIGHT = frame.UnitFrame.castBar:GetHeight()
 					end
 				end
-			elseif curNpFlag == 2 then -- ek number 模型
+			elseif curNpFlag == 2 then -- ek number 模型 调节名字宽度和高度，调节血量字体大小
 				curScaleList = {
 					SYSTEMW = 130,
 					SMALLW = 40,
@@ -230,7 +199,7 @@ local function initScaleValues()
 						curScaleList.PERC_FONT = size
 					end
 				end
-			else -- 1~4 纯条模型
+			else -- 1~4 纯条模型 最简单啦 直接调节整体frame scale
 				sys = 1
 				curScaleList = {
 					SYSTEM = 0.78,
@@ -243,8 +212,8 @@ local function initScaleValues()
 					curScaleList.SYSTEM = frame[curNpFlag1Type]:GetEffectiveScale()
 				end
 			end
-		elseif (frame and frame.ouf) then --sheStack
-			if curNpFlag == 3 then -- shestack 模型
+		elseif (frame and frame.ouf) then --sheStack 整体frame都不标准 /(ㄒoㄒ)/~~
+			if curNpFlag == 3 then -- shestack 模型 调节名字字体大小，血条和施法条也不调节了，直接用hide处理
 				curScaleList = {
 					NAME_FONT = 18,
 					normal_name_font = 18,
@@ -397,7 +366,7 @@ local showSwitchSingleUnit = {
 
 function FilteredNamePlate.actionUnitStateAfterChanged()
 	local lastNp = curNpFlag
-    GenCurNpFlags()
+	curNpFlag, curNpFlag1Type = FilteredNamePlate.GenCurNpFlags()
 	if not (curNpFlag == lastNp) then --UI类型有变
 		-- 需要有怪在周围重新 重新获取一下
 		isScaleInited = false
@@ -674,30 +643,14 @@ function FilteredNamePlate_OnLoad(self)
 end
 
 function FilteredNamePlate.AvailabilityDropDown_OnShow(frame)
-	local uitypes = {
-		[0] = FNP_LOCALE_TEXT.FNP_ORIG_TITLE,
-		[1] = FNP_LOCALE_TEXT.FNP_ORIG_TITLE2,
-		[2] = "TidyPlates",
-		[3] = "Kui_NamePlates",
-		[4] = "EUI/RayUI",
-		[5] = "NDUI",
-		[6] = FNP_LOCALE_TEXT.FNP_EKNUM_TITLE,
-		[7] = "ShestackUI"
-	}
 	if isInitedDrop == nil or isInitedDrop == false then
 		local function DropDown_OnClick(val)
 			UIDropDownMenu_SetSelectedValue(FilteredNamePlate_Frame_DropDownUIType, val)
-			UIDropDownMenu_SetText(FilteredNamePlate_Frame_DropDownUIType, uitypes[val])
+			UIDropDownMenu_SetText(FilteredNamePlate_Frame_DropDownUIType, FilteredNamePlate.UITypeList[val])
 			if Fnp_OtherNPFlag == val then return end
 			Fnp_OtherNPFlag = val
-			Fnp_SavedScaleList.only = 1.4
-			--配置不同UI下 small的默认比例
-			if val == 7 then
-				Fnp_SavedScaleList.small = 0.5
-				Fnp_SavedScaleList.only = 1.2
-			else
-				Fnp_SavedScaleList.small = 0.25
-			end
+
+			FilteredNamePlate.ChangedSavedScaleList(val)
 
 			FilteredNamePlate_Frame_OnlyShowScale:SetValue(Fnp_SavedScaleList.only * 100)
 			FilteredNamePlate.isSettingChanged = true
@@ -708,35 +661,27 @@ function FilteredNamePlate.AvailabilityDropDown_OnShow(frame)
 		local function initWithDropDown()
 			local self = FilteredNamePlate
 			local info = {}
-
-			local uitypesChecked = {
-				[0] = false,
-				[1] = false,
-				[2] = false,
-				[3] = false,
-				[4] = false,
-				[5] = false,
-				[6] = false,
-				[7] = false,
-			}
-			uitypesChecked[Fnp_OtherNPFlag] = true
 			local i = 0
-			for j,n in pairs(uitypes) do
-				info.text = uitypes[i]
+			for i=0,#FilteredNamePlate.UITypeCheckList do
+				FilteredNamePlate.UITypeCheckList[i] = false
+			end
+			FilteredNamePlate.UITypeCheckList[Fnp_OtherNPFlag] = true
+			i = 0
+			for i = 0,#FilteredNamePlate.UITypeList do
+				info.text = FilteredNamePlate.UITypeList[i]
 				info.value = i
-				info.checked = uitypesChecked[i]
+				info.checked = FilteredNamePlate.UITypeCheckList[i]
 				info.keepShownOnClick = false
 				info.func = function(_, self, val) DropDown_OnClick(val) end
 				info.arg1 = self
 				info.arg2 = i
-				i = i + 1
 				UIDropDownMenu_AddButton(info)
 			end
 		end
 		UIDropDownMenu_Initialize(frame, initWithDropDown)
 		isInitedDrop = true
 	end
-	UIDropDownMenu_SetText(frame, uitypes[Fnp_OtherNPFlag])
+	UIDropDownMenu_SetText(frame, FilteredNamePlate.UITypeList[Fnp_OtherNPFlag])
 end
 
 function FilteredNamePlate.FNP_EnableButtonChecked(self, checked)
@@ -752,7 +697,7 @@ function FilteredNamePlate.FNP_ModeEditBoxWritenEsc()
 	local names = ""
 	local first = true
 	for key, var in ipairs(Fnp_ONameList) do
-		if first then 
+		if first then
 			names = var
 			first = false
 		else
@@ -764,7 +709,7 @@ function FilteredNamePlate.FNP_ModeEditBoxWritenEsc()
 	names = ""
 	first = true
 	for key, var in ipairs(Fnp_FNameList) do
-		if first then 
+		if first then
 			names = var
 			first = false
 		else
@@ -776,10 +721,10 @@ end
 
 function FilteredNamePlate.FNP_ModeEditBoxWriten(mode, inputStr)
 	if mode == "o" then
-		Fnp_ONameList = {}  
+		Fnp_ONameList = {}
 		string.gsub(inputStr, '[^;]+', function(w) table.insert(Fnp_ONameList, w) end )
 	else
-		Fnp_FNameList = {}  
+		Fnp_FNameList = {}
 		string.gsub(inputStr, '[^;]+', function(w) table.insert(Fnp_FNameList, w) end )
 	end
 end
@@ -828,5 +773,13 @@ function SlashCmdList.FilteredNamePlate(msg)
 		end
 	elseif msg == "refresh" then
 		FilteredNamePlate.actionUnitStateAfterChanged()
+	elseif msg == "test" then
+		for _, frame in pairs(GetNamePlates()) do
+			if frame then
+				print("startttttt")
+				FilteredNamePlate.printTable(frame.UnitFrame)
+				break
+			end
+		end
 	end
 end
