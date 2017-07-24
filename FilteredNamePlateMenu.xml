@@ -58,7 +58,7 @@
 			</Scripts>
 			<HighlightTexture file="Interface\Buttons\ButtonHilight-Square" alphaMode="ADD"/>
 		</Button>
-		<Button name="$parent3" inherits="OptionsButtonTemplate" text="百分比">
+		<Button name="$parent3" inherits="OptionsButtonTemplate" text="Size">
 			<Size>
 				<AbsDimension x="60" y="40" />
 			</Size>
@@ -113,5 +113,10 @@
 			<HighlightTexture file="Interface\Buttons\ButtonHilight-Square" alphaMode="ADD"/>
 		</Button>
 	</Frames>
+	<Scripts>
+		<OnLoad>
+			FilteredNamePlate_OnLoad(self);
+		</OnLoad>
+	</Scripts>
 </Frame>
 </Ui>

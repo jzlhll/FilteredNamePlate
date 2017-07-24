@@ -16,13 +16,6 @@ local curScaleList
 
 local SPELL_SCALE = 0.5
 
-local LeftMenuButtons = {
-	"general" = FilteredNamePlate_Menu1,
-	"filter" = FilteredNamePlate_Menu2,
-	"percent" = FilteredNamePlate_Menu3,
-	"killline" = FilteredNamePlate_Menu4,
-	"about" = FilteredNamePlate_Menu5,
-}
 --Fnnp_OtherNPFlag 0是默认 1是TidyPlate模式 2是Kui 3是EUI 4是NDUI. 5 EKPlate.
 --curNNpFlag标记当前采用哪种缩放模式.1表SIMPLE_SCALE模式.2表示EK.0表示原生.
 
@@ -33,6 +26,64 @@ local function setCVarValues()
 	SetCVar("nameplateShowEnemyMinions", 1)
 	SetCVar("nameplateShowEnemyMinus", 1)
 	SetCVar("nameplateShowAll", 1)
+end
+
+local function ClickOnMenu(info)
+	FilteredNamePlate_Menu1:UnlockHighlight()
+	FilteredNamePlate_Menu2:UnlockHighlight()
+	FilteredNamePlate_Menu3:UnlockHighlight()
+	FilteredNamePlate_Menu4:UnlockHighlight()
+	FilteredNamePlate_Menu5:UnlockHighlight()
+
+	FilteredNamePlate_Frame_EnableCheckButton:Hide()
+	FilteredNamePlate_Frame_TankModCB:Hide()
+	FilteredNamePlate_Frame_KilllineModCB:Hide()
+	FilteredNamePlate_Frame_uitype:Hide()
+	FilteredNamePlate_Frame_DropDownUIType:Hide()
+	
+	FilteredNamePlate_Frame_OnlyShowModeEditBox:Hide()
+	FilteredNamePlate_Frame_FilteredModeEditBox:Hide()
+	FilteredNamePlate_Frame_OnlyShows_Text:Hide()
+	FilteredNamePlate_Frame_Filters_Text:Hide()
+	FilteredNamePlate_Frame_note:Hide()
+
+	FilteredNamePlate_Frame_SystemScale:Hide()
+	FilteredNamePlate_Frame_OnlyShowScale:Hide()
+	FilteredNamePlate_Frame_OnlyOtherShowScale:Hide()
+	
+	FilteredNamePlate_Frame_HelpIcon:Hide()
+	FilteredNamePlate_Frame_ShareIcon:Hide()
+
+	FilteredNamePlate_Frame_AuthorText:Hide()
+	FilteredNamePlate_Frame_webText:Hide()
+	if info == "general" then
+		FilteredNamePlate_Menu1:LockHighlight()
+		FilteredNamePlate_Frame_EnableCheckButton:Show()
+		FilteredNamePlate_Frame_TankModCB:Show()
+		FilteredNamePlate_Frame_KilllineModCB:Show()
+		FilteredNamePlate_Frame_uitype:Show()
+		FilteredNamePlate_Frame_DropDownUIType:Show()
+	elseif info == "filter" then
+		FilteredNamePlate_Menu2:LockHighlight()
+		FilteredNamePlate_Frame_OnlyShowModeEditBox:Show()
+		FilteredNamePlate_Frame_FilteredModeEditBox:Show()
+		FilteredNamePlate_Frame_OnlyShows_Text:Show()
+		FilteredNamePlate_Frame_Filters_Text:Show()
+		FilteredNamePlate_Frame_note:Show()
+	elseif info == "percent" then
+		FilteredNamePlate_Menu3:LockHighlight()
+		FilteredNamePlate_Frame_SystemScale:Show()
+		FilteredNamePlate_Frame_OnlyShowScale:Show()
+		FilteredNamePlate_Frame_OnlyOtherShowScale:Show()
+	elseif info == "killline" then
+		FilteredNamePlate_Menu4:LockHighlight()
+	elseif info == "about" then
+		FilteredNamePlate_Menu5:LockHighlight()
+		FilteredNamePlate_Frame_HelpIcon:Show()
+		FilteredNamePlate_Frame_ShareIcon:Show()
+		FilteredNamePlate_Frame_AuthorText:Show()
+		FilteredNamePlate_Frame_webText:Show()
+	end
 end
 
 local function getTableCount(atab)
@@ -47,6 +98,13 @@ local function registerMyEvents(self, event, ...)
 	if isRegistered == true then return end
 	if Fnp_Enable == nil then
 		Fnp_Enable = false
+	end
+	
+	if FnpEnableKeys == nil then
+		FnpEnableKeys = {
+			tankMod = false,
+			killline = false,
+		}
 	end
 
 	if Fnp_OtherNPFlag == nil then
@@ -700,10 +758,7 @@ end
 function FilteredNamePlate_OnLoad(self)
 	isRegistered = false
 	isErrInLoad = false
-	for i,v in ipairs(LeftMenuButtons) do
-		v:LockHighlight()
-	end
-	LeftMenuButtons["general"]:LockHighlight()
+	ClickOnMenu("general")
 	self:RegisterEvent("PLAYER_ENTERING_WORLD")
 end
 
@@ -796,7 +851,6 @@ end
 
 function FilteredNamePlate.FNP_ChangeFrameVisibility(...)
 	local info = ...
-
 	if info == nil then
 		if FilteredNamePlate_Frame:IsVisible() then
 			FilteredNamePlate_Frame:Hide()
@@ -824,10 +878,7 @@ function FilteredNamePlate.FNP_ChangeFrameVisibility(...)
 			end
 		end
 	else
-		for i,v in ipairs(LeftMenuButtons) do
-			v:LockHighlight()
-		end
-		LeftMenuButtons[info]:LockHighlight()
+		ClickOnMenu(info)
 	end
 end
 
