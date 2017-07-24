@@ -10,6 +10,7 @@ FilteredNamePlate.UITypeCheckList = {
 	[5] = false,
 	[6] = false,
 	[7] = false,
+	[8] = false,
 }
 
 FilteredNamePlate.UITypeList = {
@@ -20,7 +21,8 @@ FilteredNamePlate.UITypeList = {
 	[4] = "EUI/RayUI",
 	[5] = "NDUI",
 	[6] = FNP_LOCALE_TEXT.FNP_EKNUM_TITLE,
-	[7] = "ShestackUI"
+	[7] = "ShestackUI",
+	[8] = "CblUI",
 }
 
 function FilteredNamePlate.GenCurNpFlags()
@@ -31,6 +33,8 @@ function FilteredNamePlate.GenCurNpFlags()
 		curNpFlag = 2
 	elseif Fnp_OtherNPFlag == 7 then
 		curNpFlag = 3
+	elseif Fnp_OtherNPFlag == 8 then
+		curNpFlag = 4
 	else -- 最简模型
 		curNpFlag = 1
 	end
@@ -40,7 +44,7 @@ function FilteredNamePlate.GenCurNpFlags()
 		curNpFlag1Type = "carrier"
 	elseif flag == 3 then
 		curNpFlag1Type = "kui"
-	elseif flag == 4 then
+	elseif flag == 4 or flag == 8 then
 		curNpFlag1Type = "UnitFrame"
 	elseif flag == 5 then
 		curNpFlag1Type = "unitFrame"
@@ -67,5 +71,8 @@ function FilteredNamePlate.ChangedSavedScaleList(flag)
      if flag == 7 then
         Fnp_SavedScaleList.small = 0.5
         Fnp_SavedScaleList.only = 1.2
-     end
+     elseif flag == 8 then
+		Fnp_SavedScaleList.small = 0.2
+		Fnp_SavedScaleList.only = 1.35
+ 	 end
 end

@@ -134,10 +134,14 @@ local function reinitScaleValues()
 		curScaleList.only_name_font = curScaleList.NAME_FONT * Fnp_SavedScaleList.only
 		curScaleList.mid_name_font = curScaleList.normal_name_font * SPELL_SCALE
 		curScaleList.small_name_font = curScaleList.normal_name_font * Fnp_SavedScaleList.small
+	elseif curNpFlag == 4 then
+		curScaleList.nor_scale = curScaleList.SYS_SCALE * Fnp_SavedScaleList.normal
+		curScaleList.only_scale = curScaleList.SYS_SCALE * Fnp_SavedScaleList.only
+		curScaleList.mid_scale = curScaleList.nor_scale * SPELL_SCALE
+		curScaleList.small_scale = curScaleList.nor_scale * Fnp_SavedScaleList.small
 	end
 	setCVarValues()
 end
-
 
 local function initScaleValues()
 	if isScaleInited == true then
@@ -199,7 +203,25 @@ local function initScaleValues()
 						curScaleList.PERC_FONT = size
 					end
 				end
-			else -- 1~4 纯条模型 最简单啦 直接调节整体frame scale
+			elseif curNpFlag == 4 then -- CblUI
+				curScaleList = {
+					NAME_SYSTEMW = 130,
+					NAME_SMALLW = 40,
+
+					SYS_SCALE = 1.0,
+					nor_scale = 1.0,
+					only_scale = 1.3,
+					mid_scale = 0.5,
+					small_scale = 0.2,
+				}
+				if frame.UnitFrame then
+					sys = 1
+					curScaleList.NAME_SYSTEMW = frame.UnitFrame.name:GetWidth()
+					if frame.UnitFrame.healthBar then
+						curScaleList.SYS_SCALE = frame.UnitFrame.healthBar:GetEffectiveScale()
+					end
+				end
+			else -- 1 纯条模型 最简单啦 直接调节整体frame scale
 				sys = 1
 				curScaleList = {
 					SYSTEM = 0.78,
@@ -232,7 +254,6 @@ local function initScaleValues()
 			end
 		end
 		if sys > 0.01 then -- it's a real info
-			curScaleList.SYSTEM = sys
 			reinitScaleValues()
 			isScaleInited = true
 			break
@@ -272,6 +293,14 @@ local hideSwitchSingleUnit = {
 				frame.ouf.Name:SetFont(curScaleList.fontFace, curScaleList.small_name_font, curScaleList.fontFlag)
 			end
 			if frame.ouf.Health then frame.ouf.Health:Hide() end
+		end
+	end,
+	[4] = function(frame) --cbl
+		if frame == nil then return end
+		if frame.UnitFrame then
+			frame.UnitFrame.name:SetWidth(curScaleList.NAME_SMALLW)
+			if frame.UnitFrame.healthBar then frame.UnitFrame.healthBar:SetScale(curScaleList.small_scale) end
+			frame.UnitFrame.castBar:SetHeight(curScaleList.mid_scale)
 		end
 	end,
 }
@@ -359,6 +388,31 @@ local showSwitchSingleUnit = {
 				end
 			else
 				frame.ouf.Name:SetFont(curScaleList.fontFace, curScaleList.mid_name_font, curScaleList.fontFlag)
+			end
+		end
+	end,
+	[4] = function(frame, isOnlyShowSpellCast, restore, isOnlyUnit)
+		if frame and frame.UnitFrame then
+			if restore == true then
+				frame.UnitFrame.name:SetWidth(curScaleList.NAME_SYSTEMW)
+				if frame.UnitFrame.healthBar then
+					frame.UnitFrame.healthBar:SetScale(SYS_SCALE)
+				end
+				frame.UnitFrame.castBar:SetScale(SYS_SCALE)
+			elseif isOnlyShowSpellCast == false then
+				frame.UnitFrame.name:SetWidth(curScaleList.NAME_SYSTEMW)
+				if frame.UnitFrame.healthBar then
+					if isOnlyUnit then
+						frame.UnitFrame.healthBar:SetScale(curScaleList.only_scale)
+					else
+						frame.UnitFrame.healthBar:SetScale(curScaleList.nor_scale)
+					end
+				end
+				frame.UnitFrame.castBar:SetScale(curScaleList.SYS_SCALE)
+			else
+				frame.UnitFrame.name:SetWidth(curScaleList.NAME_SYSTEMW)
+				frame.UnitFrame.healthBar:SetScale(curScaleList.mid_scale)
+				--frame.UnitFrame.healthBar:Show()
 			end
 		end
 	end,
