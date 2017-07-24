@@ -205,7 +205,7 @@ local function initScaleValues()
 				end
 			elseif curNpFlag == 4 then -- CblUI
 				curScaleList = {
-					NAME_SYSTEMW = 130,
+					NAME_SYSTEMW = 140,
 					NAME_SMALLW = 40,
 
 					SYS_SCALE = 1.0,
@@ -396,9 +396,9 @@ local showSwitchSingleUnit = {
 			if restore == true then
 				frame.UnitFrame.name:SetWidth(curScaleList.NAME_SYSTEMW)
 				if frame.UnitFrame.healthBar then
-					frame.UnitFrame.healthBar:SetScale(SYS_SCALE)
+					frame.UnitFrame.healthBar:SetScale(curScaleList.SYS_SCALE)
 				end
-				frame.UnitFrame.castBar:SetScale(SYS_SCALE)
+				frame.UnitFrame.castBar:SetScale(curScaleList.SYS_SCALE)
 			elseif isOnlyShowSpellCast == false then
 				frame.UnitFrame.name:SetWidth(curScaleList.NAME_SYSTEMW)
 				if frame.UnitFrame.healthBar then
