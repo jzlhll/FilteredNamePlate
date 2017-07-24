@@ -14,10 +14,10 @@
 			<AbsInset left="5" right="6" top="6" bottom="5" />
 		</BackgroundInsets>
 		<TileSize>
-			<AbsValue val="32" />
+			<AbsValue val="24" />
 		</TileSize>
 		<EdgeSize>
-			<AbsValue val="32" />
+			<AbsValue val="24" />
 		</EdgeSize>
 	</Backdrop>
 	<Frames>

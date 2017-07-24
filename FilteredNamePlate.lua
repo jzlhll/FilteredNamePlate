@@ -16,6 +16,13 @@ local curScaleList
 
 local SPELL_SCALE = 0.5
 
+local LeftMenuButtons = {
+	"general" = FilteredNamePlate_Menu1,
+	"filter" = FilteredNamePlate_Menu2,
+	"percent" = FilteredNamePlate_Menu3,
+	"killline" = FilteredNamePlate_Menu4,
+	"about" = FilteredNamePlate_Menu5,
+}
 --Fnnp_OtherNPFlag 0是默认 1是TidyPlate模式 2是Kui 3是EUI 4是NDUI. 5 EKPlate.
 --curNNpFlag标记当前采用哪种缩放模式.1表SIMPLE_SCALE模式.2表示EK.0表示原生.
 
@@ -693,6 +700,10 @@ end
 function FilteredNamePlate_OnLoad(self)
 	isRegistered = false
 	isErrInLoad = false
+	for i,v in ipairs(LeftMenuButtons) do
+		v:LockHighlight()
+	end
+	LeftMenuButtons["general"]:LockHighlight()
 	self:RegisterEvent("PLAYER_ENTERING_WORLD")
 end
 
@@ -784,28 +795,39 @@ function FilteredNamePlate.FNP_ModeEditBoxWriten(mode, inputStr)
 end
 
 function FilteredNamePlate.FNP_ChangeFrameVisibility(...)
-	if FilteredNamePlate_Frame:IsVisible() then
-		FilteredNamePlate_Frame:Hide()
-	else
-		local oldChange = FilteredNamePlate.isSettingChanged
-		FilteredNamePlate_Frame:Show()
-		FilteredNamePlate_Frame_reloadUIBtn:Hide()
-		if Fnp_Enable == true then
-			FilteredNamePlate_Frame_EnableCheckButton:SetChecked(true);
+	local info = ...
+
+	if info == nil then
+		if FilteredNamePlate_Frame:IsVisible() then
+			FilteredNamePlate_Frame:Hide()
+			FilteredNamePlate_Menu:Hide()
 		else
-			FilteredNamePlate_Frame_EnableCheckButton:SetChecked(false);
+			local oldChange = FilteredNamePlate.isSettingChanged
+			FilteredNamePlate_Frame:Show()
+			FilteredNamePlate_Menu:Show()
+			FilteredNamePlate_Frame_reloadUIBtn:Hide()
+			if Fnp_Enable == true then
+				FilteredNamePlate_Frame_EnableCheckButton:SetChecked(true);
+			else
+				FilteredNamePlate_Frame_EnableCheckButton:SetChecked(false);
+			end
+
+			FilteredNamePlate_Frame_OnlyShowScale:SetValue(Fnp_SavedScaleList.only * 100)
+			FilteredNamePlate_Frame_OnlyOtherShowScale:SetValue(Fnp_SavedScaleList.small * 100)
+			FilteredNamePlate_Frame_SystemScale:SetValue(Fnp_SavedScaleList.normal * 100)
+
+			FilteredNamePlate_Frame_OnlyShowModeEditBox:SetText(table.concat(Fnp_ONameList, ";"));
+			FilteredNamePlate_Frame_FilteredModeEditBox:SetText(table.concat(Fnp_FNameList, ";"));
+
+			if oldChange == false then
+				FilteredNamePlate_Frame_takeEffectBtn:Hide()
+			end
 		end
-
-		FilteredNamePlate_Frame_OnlyShowScale:SetValue(Fnp_SavedScaleList.only * 100)
-		FilteredNamePlate_Frame_OnlyOtherShowScale:SetValue(Fnp_SavedScaleList.small * 100)
-		FilteredNamePlate_Frame_SystemScale:SetValue(Fnp_SavedScaleList.normal * 100)
-
-		FilteredNamePlate_Frame_OnlyShowModeEditBox:SetText(table.concat(Fnp_ONameList, ";"));
-		FilteredNamePlate_Frame_FilteredModeEditBox:SetText(table.concat(Fnp_FNameList, ";"));
-
-		if oldChange == false then
-			FilteredNamePlate_Frame_takeEffectBtn:Hide()
+	else
+		for i,v in ipairs(LeftMenuButtons) do
+			v:LockHighlight()
 		end
+		LeftMenuButtons[info]:LockHighlight()
 	end
 end
 
