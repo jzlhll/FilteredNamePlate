@@ -7,7 +7,7 @@ FNP_LOCALE_TEXT.FNP_AUTO_FITTOOLTIP = "Auto Fit UIType but may be wrong, you can
 
 FNP_LOCALE_TEXT.FNP_TOOLTIP_TIDY = "Using with TidyPlate, check this.";
 FNP_LOCALE_TEXT.FNP_TOOLTIP_KUI = "Using with Kui_namePlates, check this";
-FNP_LOCALE_TEXT.FNP_ORIG_TITLE = "Original";
+FNP_LOCALE_TEXT.FNP_ORIG_TITLE = "Original/maoR";
 FNP_LOCALE_TEXT.FNP_ORIG_TITLE2 = "EK Bar";
 FNP_LOCALE_TEXT.FNP_EKNUM_TITLE = "EK Number/AltzUI";
 FNP_LOCALE_TEXT.FNP_TOOLTIP_ORIG = "Using with original UI, check this";
