@@ -8,7 +8,6 @@ SLASH_FilteredNamePlate1 = "/fnp"
 local GetNamePlateForUnit , GetNamePlates = C_NamePlate.GetNamePlateForUnit, C_NamePlate.GetNamePlates
 local UnitName, GetUnitName = UnitName, GetUnitName
 local string_find = string.find
-local FilterNp_EventList = FilterNp_EventList
 
 local isRegistered, isInOnlySt, isScaleInited, isErrInLoad, isNullOnlyList, isNullFilterList, isInitedDrop
 
@@ -50,6 +49,9 @@ local function ClickOnMenu(info)
 	FilteredNamePlate_Frame_SystemScale:Hide()
 	FilteredNamePlate_Frame_OnlyShowScale:Hide()
 	FilteredNamePlate_Frame_OnlyOtherShowScale:Hide()
+
+	FilteredNamePlate_Frame_Slider_KL1:Hide()
+	FilteredNamePlate_Frame_Slider_KL2:Hide()
 	
 	FilteredNamePlate_Frame_HelpIcon:Hide()
 	FilteredNamePlate_Frame_ShareIcon:Hide()
@@ -77,6 +79,8 @@ local function ClickOnMenu(info)
 		FilteredNamePlate_Frame_OnlyOtherShowScale:Show()
 	elseif info == "killline" then
 		FilteredNamePlate_Menu4:LockHighlight()
+		FilteredNamePlate_Frame_Slider_KL1:Show()
+		FilteredNamePlate_Frame_Slider_KL2:Show()
 	elseif info == "about" then
 		FilteredNamePlate_Menu5:LockHighlight()
 		FilteredNamePlate_Frame_HelpIcon:Show()
@@ -95,6 +99,7 @@ local function getTableCount(atab)
 end
 
 local function registerMyEvents(self, event, ...)
+	print("regst")
 	if isRegistered == true then return end
 	if Fnp_Enable == nil then
 		Fnp_Enable = false
@@ -110,6 +115,7 @@ local function registerMyEvents(self, event, ...)
 	if Fnp_OtherNPFlag == nil then
 		Fnp_OtherNPFlag = 0
 	end
+	print("regst22")
 	curNpFlag, curNpFlag1Type = FilteredNamePlate.GenCurNpFlags()
 
 	if Fnp_ONameList == nil then
@@ -136,7 +142,7 @@ local function registerMyEvents(self, event, ...)
 
 	if Fnp_Enable == true then
 		FilteredNamePlate.isSettingChanged = false
-		for k, v in pairs(FilterNp_EventList) do
+		for k, v in pairs(FilteredNamePlate.FilterNp_EventList) do
 			if k ~= "PLAYER_ENTERING_WORLD" then
 				self:RegisterEvent(k,v)
 			end
@@ -149,7 +155,7 @@ local function unRegisterMyEvents(self)
 	if isRegistered == true then
 		isRegistered = false
 		Fnp_Enable = false
-		for k, v in pairs(FilterNp_EventList) do
+		for k, v in pairs(FilteredNamePlate.FilterNp_EventList) do
 			if k ~= "PLAYER_ENTERING_WORLD" then
 				self:UnregisterEvent(k,v)
 			end
@@ -734,7 +740,7 @@ local function actionAreaChanged(self, event)
 	-- print("areaChanged> "..event)
 end --]]
 
-FilterNp_EventList = {
+FilteredNamePlate.FilterNp_EventList = {
 	["NAME_PLATE_UNIT_ADDED"]         = actionUnitAdded,
 	["NAME_PLATE_UNIT_REMOVED"]       = actionUnitRemoved,
 
@@ -749,17 +755,16 @@ FilterNp_EventList = {
 };
 
 function FilteredNamePlate_OnEvent(self, event, ...)
-	local handler = FilterNp_EventList[event]
+	local handler = FilteredNamePlate.FilterNp_EventList[event]
 	if handler then
 	    handler(self, event, ...)
 	end
 end
 
-function FilteredNamePlate_OnLoad(self)
+function FilteredNamePlate_OnLoad()
 	isRegistered = false
 	isErrInLoad = false
-	ClickOnMenu("general")
-	self:RegisterEvent("PLAYER_ENTERING_WORLD")
+	FilteredNamePlate_Frame:RegisterEvent("PLAYER_ENTERING_WORLD")
 end
 
 function FilteredNamePlate.AvailabilityDropDown_OnShow(frame)
@@ -804,12 +809,12 @@ function FilteredNamePlate.AvailabilityDropDown_OnShow(frame)
 	UIDropDownMenu_SetText(frame, FilteredNamePlate.UITypeList[Fnp_OtherNPFlag])
 end
 
-function FilteredNamePlate.FNP_EnableButtonChecked(self, checked)
-	if (checked) then
-		Fnp_Enable = true;
-	else
-		Fnp_Enable = false;
+function FilteredNamePlate.FNP_EnableButtonChecked(frame, checked, ...)
+	if frame then
+		if FilteredNamePlate_Frame == nil then return end
+		if not FilteredNamePlate_Frame:IsShown() then return end
 	end
+	Fnp_Enable = checked
 	FilteredNamePlate.actionUnitStateAfterChanged()
 end
 
@@ -857,18 +862,17 @@ function FilteredNamePlate.FNP_ChangeFrameVisibility(...)
 			FilteredNamePlate_Menu:Hide()
 		else
 			local oldChange = FilteredNamePlate.isSettingChanged
-			FilteredNamePlate_Frame:Show()
-			FilteredNamePlate_Menu:Show()
 			FilteredNamePlate_Frame_reloadUIBtn:Hide()
-			if Fnp_Enable == true then
-				FilteredNamePlate_Frame_EnableCheckButton:SetChecked(true);
-			else
-				FilteredNamePlate_Frame_EnableCheckButton:SetChecked(false);
-			end
+			FilteredNamePlate_Frame_EnableCheckButton:SetChecked(Fnp_Enable);
+			FilteredNamePlate_Frame_TankModCB:SetChecked(FnpEnableKeys.tankMod);
+			FilteredNamePlate_Frame_KilllineModCB:SetChecked(FnpEnableKeys.killline);
 
 			FilteredNamePlate_Frame_OnlyShowScale:SetValue(Fnp_SavedScaleList.only * 100)
 			FilteredNamePlate_Frame_OnlyOtherShowScale:SetValue(Fnp_SavedScaleList.small * 100)
 			FilteredNamePlate_Frame_SystemScale:SetValue(Fnp_SavedScaleList.normal * 100)
+
+			FilteredNamePlate_Frame_Slider_KL1:SetValue(Fnp_SavedScaleList.killline1 * 100)
+			FilteredNamePlate_Frame_Slider_KL2:SetValue(Fnp_SavedScaleList.killline2 * 100)
 
 			FilteredNamePlate_Frame_OnlyShowModeEditBox:SetText(table.concat(Fnp_ONameList, ";"));
 			FilteredNamePlate_Frame_FilteredModeEditBox:SetText(table.concat(Fnp_FNameList, ";"));
@@ -876,6 +880,8 @@ function FilteredNamePlate.FNP_ChangeFrameVisibility(...)
 			if oldChange == false then
 				FilteredNamePlate_Frame_takeEffectBtn:Hide()
 			end
+			FilteredNamePlate_Frame:Show()
+			FilteredNamePlate_Menu:Show()
 		end
 	else
 		ClickOnMenu(info)
@@ -903,7 +909,6 @@ function SlashCmdList.FilteredNamePlate(msg)
 	elseif msg == "test" then
 		for _, frame in pairs(GetNamePlates()) do
 			if frame then
-				print("startttttt")
 				FilteredNamePlate.printTable(frame.UnitFrame)
 				break
 			end

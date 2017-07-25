@@ -58,9 +58,13 @@ function FilteredNamePlate.InitSavedScaleList()
             normal = 1,
             small = 0.25,
             only = 1.4,
+			killline1 = 1.0,
+			killline2 = 0.2,
         }
     else -- V4 update to V5
         if Fnp_SavedScaleList.only == nil then Fnp_SavedScaleList.only = 1.4 end
+		if Fnp_SavedScaleList.killline1 == nil then Fnp_SavedScaleList.killline1 = 1.0 end
+		if Fnp_SavedScaleList.killline2 == nil then Fnp_SavedScaleList.killline2 = 0.2 end
     end
 end
 
