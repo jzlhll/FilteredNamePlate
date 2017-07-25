@@ -813,6 +813,18 @@ function FilteredNamePlate.FNP_EnableButtonChecked(frame, checked, ...)
 	if frame then
 		if FilteredNamePlate_Frame == nil then return end
 		if not FilteredNamePlate_Frame:IsShown() then return end
+		local info = ...
+		if info == "killline" then
+			FnpEnableKeys.killline = checked
+			if FnpEnableKeys.killline then
+				FilteredNamePlate_Menu4:Enable() -- modify --
+			else
+				FilteredNamePlate_Menu4:Disable() -- modify --
+			end
+		elseif info == "tank" then
+			FnpEnableKeys.tankMod = checked
+		end
+		return
 	end
 	Fnp_Enable = checked
 	FilteredNamePlate.actionUnitStateAfterChanged()
@@ -876,6 +888,12 @@ function FilteredNamePlate.FNP_ChangeFrameVisibility(...)
 
 			FilteredNamePlate_Frame_OnlyShowModeEditBox:SetText(table.concat(Fnp_ONameList, ";"));
 			FilteredNamePlate_Frame_FilteredModeEditBox:SetText(table.concat(Fnp_FNameList, ";"));
+
+			if FnpEnableKeys.killline then
+				FilteredNamePlate_Menu4:Enable() -- modify --
+			else
+				FilteredNamePlate_Menu4:Disable() -- modify --
+			end
 
 			if oldChange == false then
 				FilteredNamePlate_Frame_takeEffectBtn:Hide()

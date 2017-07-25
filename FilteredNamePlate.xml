@@ -57,7 +57,7 @@
 					FilteredNamePlate.FNP_EnableButtonChecked(self, self:GetChecked(), "tank")
 				</OnClick>
 				<OnEnter>
-                   GameTooltip:SetOwner(self, "ANCHOR_CURSOR_RIGHT");
+                   GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
 				   GameTooltip:SetText(FNP_LOCALE_TEXT.FNP_ENABLE_TANK_TXT_TOOLTIP);
              	</OnEnter>
               	<OnLeave>
@@ -250,7 +250,7 @@
 				  end
 			   </OnValueChanged>
 			   <OnEnter>
-				  GameTooltip:SetOwner(self, "ANCHOR_CURSOR_RIGHT");
+				  GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
 				  GameTooltip:SetText(FNP_LOCALE_TEXT.FNP_DEFAULT_SCALE_TOOLTIP);
 			   </OnEnter>
 			   <OnLeave>
@@ -283,7 +283,7 @@
 				  end
 			   </OnValueChanged>
 			   <OnEnter>
-				  GameTooltip:SetOwner(self, "ANCHOR_CURSOR_RIGHT");
+				  GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
 				  GameTooltip:SetText(FNP_LOCALE_TEXT.FNP_ONLYSHOW_SCALE_TOOLTIP);
 			   </OnEnter>
 			   <OnLeave>
@@ -318,7 +318,7 @@
 				  end
 			   </OnValueChanged>
 			   <OnEnter>
-				  GameTooltip:SetOwner(self, "ANCHOR_CURSOR_RIGHT");
+				  GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
 				  GameTooltip:SetText(FNP_LOCALE_TEXT.FNP_ONLYSHOW_OTHER_SCALE_TOOLTIP);
 			   </OnEnter>
 			   <OnLeave>
@@ -337,13 +337,13 @@
             <Scripts>
 			   <OnLoad>
 				  _G[self:GetName().."Text"]:SetText(FNP_LOCALE_TEXT.FNP_KILLLINE);
-				  _G[self:GetName().."High"]:SetText(FNP_LOCALE_TEXT.FNP_TXT_BIG.."50%");
-				  _G[self:GetName().."Low"]:SetText(FNP_LOCALE_TEXT.FNP_TXT_SMALL.."100%");
+				  _G[self:GetName().."High"]:SetText(FNP_LOCALE_TEXT.FNP_TXT_BIG.."100%");
+				  _G[self:GetName().."Low"]:SetText(FNP_LOCALE_TEXT.FNP_TXT_SMALL.."60%");
 				  self:SetMinMaxValues(60, 100);
 				  self:SetValueStep(1);
 			   </OnLoad>
 			   <OnValueChanged>
-			   	  _G[self:GetName().."Text"]:SetText(FNP_LOCALE_TEXT.FNP_KILLLINE.."("..string.format("%.0f", self:GetValue()).."%)");
+			   	  _G[self:GetName().."Text"]:SetText(FNP_LOCALE_TEXT.FNP_KILLLINE..string.format("%.0f", self:GetValue()).."%");
 				  Fnp_SavedScaleList.killline1 = string.format("%.2f", self:GetValue() / 100)
 				  if FilteredNamePlate_Frame:IsShown() then
 				  	  FilteredNamePlate.isSettingChanged = true
@@ -351,7 +351,7 @@
 				  end
 			   </OnValueChanged>
 			   <OnEnter>
-				  GameTooltip:SetOwner(self, "ANCHOR_CURSOR_RIGHT");
+				  GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
 				  GameTooltip:SetText(FNP_LOCALE_TEXT.FNP_KILLLINE_TOOLTIP);
 			   </OnEnter>
 			   <OnLeave>
@@ -370,13 +370,13 @@
 		   <Scripts>
 			   <OnLoad>
 				  _G[self:GetName().."Text"]:SetText(FNP_LOCALE_TEXT.FNP_KILLLINE2);
-				  _G[self:GetName().."High"]:SetText(FNP_LOCALE_TEXT.FNP_TXT_BIG.."200%");
-				  _G[self:GetName().."Low"]:SetText(FNP_LOCALE_TEXT.FNP_TXT_SMALL.."100%");
-				  self:SetMinMaxValues(100, 200);
+				  _G[self:GetName().."High"]:SetText(FNP_LOCALE_TEXT.FNP_TXT_BIG.."35%");
+				  _G[self:GetName().."Low"]:SetText(FNP_LOCALE_TEXT.FNP_TXT_SMALL.."0%");
+				  self:SetMinMaxValues(0, 35);
 				  self:SetValueStep(1);
 			   </OnLoad>
 			   <OnValueChanged>
-			      _G[self:GetName().."Text"]:SetText(FNP_LOCALE_TEXT.FNP_KILLLINE2.."("..string.format("%.0f", self:GetValue()).."%)");
+			      _G[self:GetName().."Text"]:SetText(FNP_LOCALE_TEXT.FNP_KILLLINE2..string.format("%.0f", self:GetValue()).."%");
 				  Fnp_SavedScaleList.killline2 = string.format("%.2f", self:GetValue() / 100)
 				  if FilteredNamePlate_Frame:IsShown() then
 				      FilteredNamePlate.isSettingChanged = true
@@ -384,7 +384,7 @@
 				  end
 			   </OnValueChanged>
 			   <OnEnter>
-				  GameTooltip:SetOwner(self, "ANCHOR_CURSOR_RIGHT");
+				  GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
 				  GameTooltip:SetText(FNP_LOCALE_TEXT.FNP_KILLLINE_TOOLTIP2);
 			   </OnEnter>
 			   <OnLeave>

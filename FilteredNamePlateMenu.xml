@@ -22,7 +22,7 @@
 		</EdgeSize>
 	</Backdrop>
 	<Frames>
-		<Button name="$parent1" inherits="OptionsButtonTemplate" text="一般">
+		<Button name="$parent1" inherits="OptionsButtonTemplate">
 			<Size>
 				<AbsDimension x="60" y="40" />
 			</Size>
@@ -40,7 +40,7 @@
 			</Scripts>
 			<HighlightTexture file="Interface\Buttons\ButtonHilight-Square" alphaMode="ADD"/>
 		</Button>
-		<Button name="$parent2" inherits="OptionsButtonTemplate" text="过滤">
+		<Button name="$parent2" inherits="OptionsButtonTemplate">
 			<Size>
 				<AbsDimension x="60" y="40" />
 			</Size>
@@ -58,7 +58,7 @@
 			</Scripts>
 			<HighlightTexture file="Interface\Buttons\ButtonHilight-Square" alphaMode="ADD"/>
 		</Button>
-		<Button name="$parent3" inherits="OptionsButtonTemplate" text="Size">
+		<Button name="$parent3" inherits="OptionsButtonTemplate">
 			<Size>
 				<AbsDimension x="60" y="40" />
 			</Size>
@@ -76,7 +76,7 @@
 			</Scripts>
 			<HighlightTexture file="Interface\Buttons\ButtonHilight-Square" alphaMode="ADD"/>
 		</Button>
-		<Button name="$parent4" inherits="OptionsButtonTemplate" text="斩杀线">
+		<Button name="$parent4" inherits="OptionsButtonTemplate">
 			<Size>
 				<AbsDimension x="60" y="40" />
 			</Size>
@@ -94,7 +94,7 @@
 			</Scripts>
 			<HighlightTexture file="Interface\Buttons\ButtonHilight-Square" alphaMode="ADD"/>
 		</Button>
-		<Button name="$parent5" inherits="OptionsButtonTemplate" text="关于">
+		<Button name="$parent5" inherits="OptionsButtonTemplate">
 			<Size>
 				<AbsDimension x="60" y="40" />
 			</Size>
