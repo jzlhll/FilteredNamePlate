@@ -7,11 +7,12 @@ local FilteredNamePlate = FilteredNamePlate
 SLASH_FilteredNamePlate1 = "/fnp"
 local GetNamePlateForUnit , GetNamePlates = C_NamePlate.GetNamePlateForUnit, C_NamePlate.GetNamePlates
 local UnitName, GetUnitName = UnitName, GetUnitName
+local UnitHealth, UnitHealthMax = UnitHealth, UnitHealthMax
 local string_find = string.find
 
 local isRegistered, isInOnlySt, isScaleInited, isErrInLoad, isNullOnlyList, isNullFilterList, isInitedDrop
 
-local curScaleList
+local curScaleList, LastTimeStamps, IsKillLine1, IsKillLine2
 
 local SPELL_SCALE = 0.5
 
@@ -25,6 +26,16 @@ local function setCVarValues()
 	SetCVar("nameplateShowEnemyMinions", 1)
 	SetCVar("nameplateShowEnemyMinus", 1)
 	SetCVar("nameplateShowAll", 1)
+end
+
+local function regHealthEvents(registed)
+	if registed then
+		FilteredNamePlate_Frame:RegisterEvent("UNIT_HEALTH", actionUnitHealth)
+		FilteredNamePlate_Frame:RegisterEvent("UNIT_MAXHEALTH", actionUnitHealth)
+	else
+		FilteredNamePlate_Frame:UnregisterEvent("UNIT_HEALTH", actionUnitHealth)
+		FilteredNamePlate_Frame:UnregisterEvent("UNIT_MAXHEALTH", actionUnitHealth)
+	end
 end
 
 local function ClickOnMenu(info)
@@ -99,7 +110,6 @@ local function getTableCount(atab)
 end
 
 local function registerMyEvents(self, event, ...)
-	print("regst")
 	if isRegistered == true then return end
 	if Fnp_Enable == nil then
 		Fnp_Enable = false
@@ -112,10 +122,14 @@ local function registerMyEvents(self, event, ...)
 		}
 	end
 
+	if FnpEnableKeys.killline then
+		regHealthEvents(true)
+	end
+
 	if Fnp_OtherNPFlag == nil then
 		Fnp_OtherNPFlag = 0
 	end
-	print("regst22")
+
 	curNpFlag, curNpFlag1Type = FilteredNamePlate.GenCurNpFlags()
 
 	if Fnp_ONameList == nil then
@@ -131,7 +145,14 @@ local function registerMyEvents(self, event, ...)
 		isInOnlySt = false
 	end
 
+	LastTimeStamps = {
+		heal = 0,
+	}
+
 	FilteredNamePlate.InitSavedScaleList()
+
+	IsKillLine1 = FnpEnableKeys.killline and (Fnp_SavedScaleList.killline1 < 100)
+	IsKillLine2 = FnpEnableKeys.killline and (Fnp_SavedScaleList.killline2 >= 0.01)
 
 	isNullOnlyList = false
 	isNullFilterList = false
@@ -490,6 +511,9 @@ local showSwitchSingleUnit = {
 }
 
 function FilteredNamePlate.actionUnitStateAfterChanged()
+	IsKillLine1 = FnpEnableKeys.killline and (Fnp_SavedScaleList.killline1 < 100)
+	IsKillLine2 = FnpEnableKeys.killline and (Fnp_SavedScaleList.killline2 >= 0.01)
+	-- TODO 添加血量变化
 	local lastNp = curNpFlag
 	curNpFlag, curNpFlag1Type = FilteredNamePlate.GenCurNpFlags()
 	if not (curNpFlag == lastNp) then --UI类型有变
@@ -735,10 +759,34 @@ local function actionUnitSpellCastStop(self, event, ...)
 	actionUnitSpellCastStopOnlyShowMode(...)
 end
 
---[[
-local function actionAreaChanged(self, event)
-	-- print("areaChanged> "..event)
-end --]]
+local function actionUnitHealth(self, event, ...)
+	local unitid = ...
+	if UnitIsPlayer(unitid) then
+		return
+	end
+	local ts = GetTime()
+	if (LastTimeStamps.heal + 0.2) >= ts then
+		return
+	end
+	LastTimeStamps.heal = ts
+	local perc = (UnitHealth("target") * 100) / UnitHealthMax("target")
+	print(UnitHealthMax("target").."changed! "..unitid..GetUnitName(unitid)..perc)
+	if UnitHealthMax("target") > 0 then
+		local isKill = false
+		if IsKillLine1 and perc >= Fnp_SavedScaleList.killline1 then
+			isKill = true
+		end
+		if IsKillLine2 and perc >= Fnp_SavedScaleList.killline2 then
+			isKill = true
+		end
+		local frame = GetNamePlateForUnit(unitid)
+		if isKill then
+			showSwitchSingleUnit[curNpFlag](frame, false, false, true)
+		else
+			--TODO 这个刷新可能太频繁了。恢复显示机制。
+		end
+	end
+end
 
 FilteredNamePlate.FilterNp_EventList = {
 	["NAME_PLATE_UNIT_ADDED"]         = actionUnitAdded,
@@ -816,11 +864,15 @@ function FilteredNamePlate.FNP_EnableButtonChecked(frame, checked, ...)
 		local info = ...
 		if info == "killline" then
 			FnpEnableKeys.killline = checked
+			IsKillLine1 = FnpEnableKeys.killline and (Fnp_SavedScaleList.killline1 < 100)
+			IsKillLine2 = FnpEnableKeys.killline and (Fnp_SavedScaleList.killline2 >= 0.01)
 			if FnpEnableKeys.killline then
 				FilteredNamePlate_Menu4:Enable() -- modify --
+				--TODO 添加血量变化
 			else
 				FilteredNamePlate_Menu4:Disable() -- modify --
 			end
+			regHealthEvents(FnpEnableKeys.killline)
 		elseif info == "tank" then
 			FnpEnableKeys.tankMod = checked
 		end
