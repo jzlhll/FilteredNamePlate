@@ -35,7 +35,7 @@
 			</Anchors>
 			<Scripts>
 				<OnClick>
-					FilteredNamePlate.FNP_ChangeFrameVisibility("general")
+					FilteredNamePlate:FNP_ChangeFrameVisibility("general")
 				</OnClick>
 			</Scripts>
 			<HighlightTexture file="Interface\Buttons\ButtonHilight-Square" alphaMode="ADD"/>
@@ -53,7 +53,7 @@
 			</Anchors>
 			<Scripts>
 				<OnClick>
-					FilteredNamePlate.FNP_ChangeFrameVisibility("filter")
+					FilteredNamePlate:FNP_ChangeFrameVisibility("filter")
 				</OnClick>
 			</Scripts>
 			<HighlightTexture file="Interface\Buttons\ButtonHilight-Square" alphaMode="ADD"/>
@@ -71,7 +71,7 @@
 			</Anchors>
 			<Scripts>
 				<OnClick>
-					FilteredNamePlate.FNP_ChangeFrameVisibility("percent")
+					FilteredNamePlate:FNP_ChangeFrameVisibility("percent")
 				</OnClick>
 			</Scripts>
 			<HighlightTexture file="Interface\Buttons\ButtonHilight-Square" alphaMode="ADD"/>
@@ -89,7 +89,7 @@
 			</Anchors>
 			<Scripts>
 				<OnClick>
-					FilteredNamePlate.FNP_ChangeFrameVisibility("killline")
+					FilteredNamePlate:FNP_ChangeFrameVisibility("killline")
 				</OnClick>
 			</Scripts>
 			<HighlightTexture file="Interface\Buttons\ButtonHilight-Square" alphaMode="ADD"/>
@@ -107,7 +107,7 @@
 			</Anchors>
 			<Scripts>
 				<OnClick>
-					FilteredNamePlate.FNP_ChangeFrameVisibility("about")
+					FilteredNamePlate:FNP_ChangeFrameVisibility("about")
 				</OnClick>
 			</Scripts>
 			<HighlightTexture file="Interface\Buttons\ButtonHilight-Square" alphaMode="ADD"/>

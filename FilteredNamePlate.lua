@@ -1,9 +1,6 @@
 local _
 local _G = _G
-FilteredNamePlate = {}
 local L = FNP_LOCALE_TEXT
-local FilteredNamePlate = FilteredNamePlate
-
 SLASH_FilteredNamePlate1 = "/fnp"
 local GetNamePlateForUnit , GetNamePlates = C_NamePlate.GetNamePlateForUnit, C_NamePlate.GetNamePlates
 local UnitName, GetUnitName = UnitName, GetUnitName
@@ -12,9 +9,7 @@ local string_find = string.find
 
 local isRegistered, isInOnlySt, isScaleInited, isErrInLoad, isNullOnlyList, isNullFilterList, isInitedDrop
 
-local curScaleList, LastTimeStamps, IsKillLine1, IsKillLine2
-
-local SPELL_SCALE = 0.5
+local LastTimeStamps, IsKillLine1, IsKillLine2
 
 --Fnnp_OtherNPFlag 0是默认 1是TidyPlate模式 2是Kui 3是EUI 4是NDUI. 5 EKPlate.
 --curNNpFlag标记当前采用哪种缩放模式.1表SIMPLE_SCALE模式.2表示EK.0表示原生.
@@ -130,7 +125,7 @@ local function registerMyEvents(self, event, ...)
 		Fnp_OtherNPFlag = 0
 	end
 
-	curNpFlag, curNpFlag1Type = FilteredNamePlate.GenCurNpFlags()
+	curNpFlag, curNpFlag1Type = FilteredNamePlate:GenCurNpFlags()
 
 	if Fnp_ONameList == nil then
 		Fnp_ONameList = {}
@@ -149,7 +144,7 @@ local function registerMyEvents(self, event, ...)
 		heal = 0,
 	}
 
-	FilteredNamePlate.InitSavedScaleList()
+	FilteredNamePlate:InitSavedScaleList()
 
 	IsKillLine1 = FnpEnableKeys.killline and (Fnp_SavedScaleList.killline1 < 100)
 	IsKillLine2 = FnpEnableKeys.killline and (Fnp_SavedScaleList.killline2 >= 0.01)
@@ -199,182 +194,28 @@ local function isMatchedNameList(tabList, tName)
 end
 
 ---------kkkkk---kkkkk---kkkkk-------------
-local function reinitScaleValues()
-	if curNpFlag == 1 then
-		curScaleList.normal = curScaleList.SYSTEM * Fnp_SavedScaleList.normal
-		curScaleList.small = curScaleList.normal * Fnp_SavedScaleList.small
-		curScaleList.middle = curScaleList.normal * SPELL_SCALE
-		curScaleList.only = curScaleList.SYSTEM * Fnp_SavedScaleList.only
-	elseif curNpFlag == 0 then
-		curScaleList.name.normal = curScaleList.name.SYSTEM
-		curScaleList.name.small = curScaleList.name.normal * Fnp_SavedScaleList.small
-		curScaleList.name.middle = curScaleList.name.small
-		if curScaleList.name.small < 30 then
-			curScaleList.name.small = 30
-			curScaleList.name.middle = 30
-		end
-		curScaleList.bars.heal_normalHeight = curScaleList.bars.HEAL_SYS_HEIGHT * Fnp_SavedScaleList.normal;
-		curScaleList.bars.heal_onlyHeight = curScaleList.bars.HEAL_SYS_HEIGHT * Fnp_SavedScaleList.only;
-		curScaleList.bars.cast_midHeight = curScaleList.bars.CAST_SYS_HEIGHT * SPELL_SCALE;
-	elseif curNpFlag == 2 then
-		curScaleList.normal_perc_font = curScaleList.PERC_FONT * Fnp_SavedScaleList.normal
-		curScaleList.only_perc_font = curScaleList.PERC_FONT * Fnp_SavedScaleList.only
-		curScaleList.mid_perc_font = curScaleList.normal_perc_font * SPELL_SCALE
-		curScaleList.small_perc_font = curScaleList.normal_perc_font * Fnp_SavedScaleList.small
-	elseif curNpFlag == 3 then
-		curScaleList.normal_name_font = curScaleList.NAME_FONT * Fnp_SavedScaleList.normal
-		curScaleList.only_name_font = curScaleList.NAME_FONT * Fnp_SavedScaleList.only
-		curScaleList.mid_name_font = curScaleList.normal_name_font * SPELL_SCALE
-		curScaleList.small_name_font = curScaleList.normal_name_font * Fnp_SavedScaleList.small
-	elseif curNpFlag == 4 then
-		curScaleList.nor_scale = curScaleList.SYS_SCALE * Fnp_SavedScaleList.normal
-		curScaleList.only_scale = curScaleList.SYS_SCALE * Fnp_SavedScaleList.only
-		curScaleList.mid_scale = curScaleList.nor_scale * SPELL_SCALE
-		curScaleList.small_scale = curScaleList.nor_scale * Fnp_SavedScaleList.small
-	end
-	setCVarValues()
-end
-
-local function initScaleValues()
-	if isScaleInited == true then
-		reinitScaleValues()
-		return
-	end
-
-	for _, frame in pairs(GetNamePlates()) do
-		local foundUnit = frame.namePlateUnitToken or (frame.UnitFrame and frame.UnitFrame.unit)
-		local sys = 0
-		if foundUnit then
-			if curNpFlag == 0 then --Orig模型 调节名字宽度，调节血条高度，施法条高度
-				curScaleList = {
-					name = {
-						SYSTEM = 130,
-						normal = 130,
-						small = 40,
-						middle = 40,
-					},
-					bars = {
-						HEAL_SYS_HEIGHT = 10.8,
-						heal_normalHeight = 10.8,
-						heal_onlyHeight = 15.0,
-						CAST_SYS_HEIGHT = 10.8,
-						cast_midHeight = 5.4
-					}
-				}
-				if frame.UnitFrame then
-					sys = 1
-					curScaleList.name.SYSTEM = frame.UnitFrame:GetWidth()
-					if frame.UnitFrame.healthBar then
-						curScaleList.bars.HEAL_SYS_HEIGHT = frame.UnitFrame.healthBar:GetHeight()
-					end
-					if frame.UnitFrame.castBar then
-						curScaleList.bars.CAST_SYS_HEIGHT = frame.UnitFrame.castBar:GetHeight()
-					end
-				end
-			elseif curNpFlag == 2 then -- ek number 模型 调节名字宽度和高度，调节血量字体大小
-				curScaleList = {
-					SYSTEMW = 130,
-					SMALLW = 40,
-					SYSTEMH = 100,
-					SMALLH = 20,
-
-					PERC_FONT = 18,
-					normal_perc_font = 18,
-					only_perc_font = 10,
-					mid_perc_font = 15,
-					small_perc_font = 8,
-				}
-				if frame.UnitFrame then
-					sys = 1
-					curScaleList.SYSTEMW = frame.UnitFrame.name:GetWidth()
-					curScaleList.SYSTEMH = frame.UnitFrame.name:GetHeight()
-					if frame.UnitFrame.healthperc then
-						local face,size,flag = frame.UnitFrame.healthperc:GetFont()
-						curScaleList.fontFace = face
-						curScaleList.fontFlag = flag
-						curScaleList.PERC_FONT = size
-					end
-				end
-			elseif curNpFlag == 4 then -- CblUI
-				curScaleList = {
-					NAME_SYSTEMW = 140,
-					NAME_SMALLW = 40,
-
-					SYS_SCALE = 1.0,
-					nor_scale = 1.0,
-					only_scale = 1.3,
-					mid_scale = 0.5,
-					small_scale = 0.2,
-				}
-				if frame.UnitFrame then
-					sys = 1
-					curScaleList.NAME_SYSTEMW = frame.UnitFrame.name:GetWidth()
-					if frame.UnitFrame.healthBar then
-						curScaleList.SYS_SCALE = frame.UnitFrame.healthBar:GetEffectiveScale()
-					end
-				end
-			else -- 1 纯条模型 最简单啦 直接调节整体frame scale
-				sys = 1
-				curScaleList = {
-					SYSTEM = 0.78,
-					normal = 1.0,
-					small = 0.20,
-					middle = SPELL_SCALE,
-					only = 1.45,
-				}
-				if frame[curNpFlag1Type] then
-					curScaleList.SYSTEM = frame[curNpFlag1Type]:GetEffectiveScale()
-				end
-			end
-		elseif (frame and frame.ouf) then --sheStack 整体frame都不标准 /(ㄒoㄒ)/~~
-			if curNpFlag == 3 then -- shestack 模型 调节名字字体大小，血条和施法条也不调节了，直接用hide处理
-				curScaleList = {
-					NAME_FONT = 18,
-					normal_name_font = 18,
-					only_name_font = 10,
-					mid_name_font = 15,
-					small_name_font = 8,
-				}
-
-				sys = 1
-				if frame.ouf.Name then
-					local face,size,flag = frame.ouf.Name:GetFont()
-					curScaleList.NAME_FONT = size
-					curScaleList.fontFace = face
-					curScaleList.fontFlag = flag
-				end
-			end
-		end
-		if sys > 0.01 then -- it's a real info
-			reinitScaleValues()
-			isScaleInited = true
-			break
-		end
-	end
-end
-
 local hideSwitchSingleUnit = {
 	[0] = function(frame) --orig
 		if frame == nil then return end
 		if frame.UnitFrame then
-			frame.UnitFrame.name:SetWidth(curScaleList.name.small)
+			frame.UnitFrame.name:SetWidth(FilteredNamePlate.curScaleList.name.small)
 			if frame.UnitFrame.healthBar then frame.UnitFrame.healthBar:Hide() end
-			frame.UnitFrame.castBar:SetHeight(curScaleList.bars.cast_midHeight)
+			frame.UnitFrame.castBar:SetHeight(FilteredNamePlate.curScaleList.bars.cast_midHeight)
 		end
 	end,
 	[1] = function(frame) -- all the scaled one
 		if frame == nil then return end
 		if frame[curNpFlag1Type] then
-			frame[curNpFlag1Type]:SetScale(curScaleList.small)
+			frame[curNpFlag1Type]:SetScale(FilteredNamePlate.curScaleList.small)
 		end
 	end,
 	[2] = function(frame) --ek number
 		if frame == nil then return end
 		if frame.UnitFrame then
-			frame.UnitFrame.name:SetWidth(curScaleList.SMALLW)
-			frame.UnitFrame.name:SetHeight(curScaleList.SMALLH)
+			frame.UnitFrame.name:SetWidth(FilteredNamePlate.curScaleList.SMALLW)
+			frame.UnitFrame.name:SetHeight(FilteredNamePlate.curScaleList.SMALLH)
 			if frame.UnitFrame.healthperc then
-				frame.UnitFrame.healthperc:SetFont(curScaleList.fontFace, curScaleList.small_perc_font, curScaleList.fontFlag)
+				frame.UnitFrame.healthperc:SetFont(FilteredNamePlate.curScaleList.fontFace, FilteredNamePlate.curScaleList.small_perc_font, FilteredNamePlate.curScaleList.fontFlag)
 			end
 		end
 	end,
@@ -382,7 +223,7 @@ local hideSwitchSingleUnit = {
 		if frame == nil then return end
 		if frame.ouf then
 			if frame.ouf.Name then
-				frame.ouf.Name:SetFont(curScaleList.fontFace, curScaleList.small_name_font, curScaleList.fontFlag)
+				frame.ouf.Name:SetFont(FilteredNamePlate.curScaleList.fontFace, FilteredNamePlate.curScaleList.small_name_font, FilteredNamePlate.curScaleList.fontFlag)
 			end
 			if frame.ouf.Health then frame.ouf.Health:Hide() end
 		end
@@ -390,9 +231,9 @@ local hideSwitchSingleUnit = {
 	[4] = function(frame) --cbl
 		if frame == nil then return end
 		if frame.UnitFrame then
-			frame.UnitFrame.name:SetWidth(curScaleList.NAME_SMALLW)
-			if frame.UnitFrame.healthBar then frame.UnitFrame.healthBar:SetScale(curScaleList.small_scale) end
-			frame.UnitFrame.castBar:SetHeight(curScaleList.mid_scale)
+			frame.UnitFrame.name:SetWidth(FilteredNamePlate.curScaleList.NAME_SMALLW)
+			if frame.UnitFrame.healthBar then frame.UnitFrame.healthBar:SetScale(FilteredNamePlate.curScaleList.small_scale) end
+			frame.UnitFrame.castBar:SetHeight(FilteredNamePlate.curScaleList.mid_scale)
 		end
 	end,
 }
@@ -402,26 +243,26 @@ local showSwitchSingleUnit = {
 	[0] = function(frame, isOnlyShowSpellCast, restore, isOnlyUnit)
 		if frame and frame.UnitFrame then
 			if restore == true then
-				frame.UnitFrame.name:SetWidth(curScaleList.name.SYSTEM)
+				frame.UnitFrame.name:SetWidth(FilteredNamePlate.curScaleList.name.SYSTEM)
 				if frame.UnitFrame.healthBar then
 					frame.UnitFrame.healthBar:Show()
-					frame.UnitFrame.healthBar:SetHeight(curScaleList.bars.HEAL_SYS_HEIGHT)
+					frame.UnitFrame.healthBar:SetHeight(FilteredNamePlate.curScaleList.bars.HEAL_SYS_HEIGHT)
 				end
-				frame.UnitFrame.castBar:SetHeight(curScaleList.bars.CAST_SYS_HEIGHT)
+				frame.UnitFrame.castBar:SetHeight(FilteredNamePlate.curScaleList.bars.CAST_SYS_HEIGHT)
 			elseif isOnlyShowSpellCast == false then
-				frame.UnitFrame.name:SetWidth(curScaleList.name.normal)
+				frame.UnitFrame.name:SetWidth(FilteredNamePlate.curScaleList.name.normal)
 				if frame.UnitFrame.healthBar then
 					frame.UnitFrame.healthBar:Show()
 					if isOnlyUnit then
-						frame.UnitFrame.healthBar:SetHeight(curScaleList.bars.heal_onlyHeight)
+						frame.UnitFrame.healthBar:SetHeight(FilteredNamePlate.curScaleList.bars.heal_onlyHeight)
 					else
-						frame.UnitFrame.healthBar:SetHeight(curScaleList.bars.heal_normalHeight)
+						frame.UnitFrame.healthBar:SetHeight(FilteredNamePlate.curScaleList.bars.heal_normalHeight)
 					end
 				end
-				frame.UnitFrame.castBar:SetHeight(curScaleList.bars.CAST_SYS_HEIGHT)
+				frame.UnitFrame.castBar:SetHeight(FilteredNamePlate.curScaleList.bars.CAST_SYS_HEIGHT)
 			else
-				frame.UnitFrame.name:SetWidth(curScaleList.name.middle)
-				frame.UnitFrame.castBar:SetHeight(curScaleList.bars.cast_midHeight)
+				frame.UnitFrame.name:SetWidth(FilteredNamePlate.curScaleList.name.middle)
+				frame.UnitFrame.castBar:SetHeight(FilteredNamePlate.curScaleList.bars.cast_midHeight)
 				--frame.UnitFrame.healthBar:Show()
 			end
 		end
@@ -429,38 +270,38 @@ local showSwitchSingleUnit = {
 	[1] = function(frame, isOnlyShowSpellCast, restore, isOnlyUnit)
 		if frame and frame[curNpFlag1Type] then
 			if restore == true then
-				frame[curNpFlag1Type]:SetScale(curScaleList.SYSTEM)
+				frame[curNpFlag1Type]:SetScale(FilteredNamePlate.curScaleList.SYSTEM)
 			elseif isOnlyShowSpellCast == false then
 				if isOnlyUnit == true then
-					frame[curNpFlag1Type]:SetScale(curScaleList.only)
+					frame[curNpFlag1Type]:SetScale(FilteredNamePlate.curScaleList.only)
 				else
-					frame[curNpFlag1Type]:SetScale(curScaleList.normal)
+					frame[curNpFlag1Type]:SetScale(FilteredNamePlate.curScaleList.normal)
 				end
 			else
-				frame[curNpFlag1Type]:SetScale(curScaleList.middle)
+				frame[curNpFlag1Type]:SetScale(FilteredNamePlate.curScaleList.middle)
 			end
 		end
 	end,
 	[2] = function(frame, isOnlyShowSpellCast, restore, isOnlyUnit)
 		if frame and frame.UnitFrame then
 			if restore == true then
-				frame.UnitFrame.name:SetWidth(curScaleList.SYSTEMW)
-				frame.UnitFrame.name:SetHeight(curScaleList.SYSTEMH)
+				frame.UnitFrame.name:SetWidth(FilteredNamePlate.curScaleList.SYSTEMW)
+				frame.UnitFrame.name:SetHeight(FilteredNamePlate.curScaleList.SYSTEMH)
 				if frame.UnitFrame.healthperc then
-					frame.UnitFrame.healthperc:SetFont(curScaleList.fontFace, curScaleList.PERC_FONT, curScaleList.fontFlag)
+					frame.UnitFrame.healthperc:SetFont(FilteredNamePlate.curScaleList.fontFace, FilteredNamePlate.curScaleList.PERC_FONT, FilteredNamePlate.curScaleList.fontFlag)
 				end
 			elseif isOnlyShowSpellCast == false then
-				frame.UnitFrame.name:SetWidth(curScaleList.SYSTEMW)
+				frame.UnitFrame.name:SetWidth(FilteredNamePlate.curScaleList.SYSTEMW)
 				if frame.UnitFrame.healthperc then
 					if isOnlyUnit then
-						frame.UnitFrame.healthperc:SetFont(curScaleList.fontFace, curScaleList.only_perc_font, curScaleList.fontFlag)
+						frame.UnitFrame.healthperc:SetFont(FilteredNamePlate.curScaleList.fontFace, FilteredNamePlate.curScaleList.only_perc_font, FilteredNamePlate.curScaleList.fontFlag)
 					else
-						frame.UnitFrame.healthperc:SetFont(curScaleList.fontFace, curScaleList.normal_perc_font, curScaleList.fontFlag)
+						frame.UnitFrame.healthperc:SetFont(FilteredNamePlate.curScaleList.fontFace, FilteredNamePlate.curScaleList.normal_perc_font, FilteredNamePlate.curScaleList.fontFlag)
 					end
 				end
 			else
 				if frame.UnitFrame.healthperc then
-					frame.UnitFrame.healthperc:SetFont(curScaleList.fontFace, curScaleList.mid_perc_font, curScaleList.fontFlag)
+					frame.UnitFrame.healthperc:SetFont(FilteredNamePlate.curScaleList.fontFace, FilteredNamePlate.curScaleList.mid_perc_font, FilteredNamePlate.curScaleList.fontFlag)
 				end
 				--frame.UnitFrame.healthBar:Show()
 			end
@@ -469,53 +310,53 @@ local showSwitchSingleUnit = {
 	[3] = function(frame, isOnlyShowSpellCast, restore, isOnlyUnit)
 		if frame and frame.ouf then
 			if restore == true then
-				frame.ouf.Name:SetFont(curScaleList.fontFace, curScaleList.NAME_FONT, curScaleList.fontFlag)
+				frame.ouf.Name:SetFont(FilteredNamePlate.curScaleList.fontFace, FilteredNamePlate.curScaleList.NAME_FONT, FilteredNamePlate.curScaleList.fontFlag)
 				frame.ouf.Health:Show()
 			elseif isOnlyShowSpellCast == false then
 				frame.ouf.Health:Show()
 				if isOnlyUnit then
-					frame.ouf.Name:SetFont(curScaleList.fontFace, curScaleList.only_name_font, curScaleList.fontFlag)
+					frame.ouf.Name:SetFont(FilteredNamePlate.curScaleList.fontFace, FilteredNamePlate.curScaleList.only_name_font, FilteredNamePlate.curScaleList.fontFlag)
 				else
-					frame.ouf.Name:SetFont(curScaleList.fontFace, curScaleList.normal_name_font, curScaleList.fontFlag)
+					frame.ouf.Name:SetFont(FilteredNamePlate.curScaleList.fontFace, FilteredNamePlate.curScaleList.normal_name_font, FilteredNamePlate.curScaleList.fontFlag)
 				end
 			else
-				frame.ouf.Name:SetFont(curScaleList.fontFace, curScaleList.mid_name_font, curScaleList.fontFlag)
+				frame.ouf.Name:SetFont(FilteredNamePlate.curScaleList.fontFace, FilteredNamePlate.curScaleList.mid_name_font, FilteredNamePlate.curScaleList.fontFlag)
 			end
 		end
 	end,
 	[4] = function(frame, isOnlyShowSpellCast, restore, isOnlyUnit)
 		if frame and frame.UnitFrame then
 			if restore == true then
-				frame.UnitFrame.name:SetWidth(curScaleList.NAME_SYSTEMW)
+				frame.UnitFrame.name:SetWidth(FilteredNamePlate.curScaleList.NAME_SYSTEMW)
 				if frame.UnitFrame.healthBar then
-					frame.UnitFrame.healthBar:SetScale(curScaleList.SYS_SCALE)
+					frame.UnitFrame.healthBar:SetScale(FilteredNamePlate.curScaleList.SYS_SCALE)
 				end
-				frame.UnitFrame.castBar:SetScale(curScaleList.SYS_SCALE)
+				frame.UnitFrame.castBar:SetScale(FilteredNamePlate.curScaleList.SYS_SCALE)
 			elseif isOnlyShowSpellCast == false then
-				frame.UnitFrame.name:SetWidth(curScaleList.NAME_SYSTEMW)
+				frame.UnitFrame.name:SetWidth(FilteredNamePlate.curScaleList.NAME_SYSTEMW)
 				if frame.UnitFrame.healthBar then
 					if isOnlyUnit then
-						frame.UnitFrame.healthBar:SetScale(curScaleList.only_scale)
+						frame.UnitFrame.healthBar:SetScale(FilteredNamePlate.curScaleList.only_scale)
 					else
-						frame.UnitFrame.healthBar:SetScale(curScaleList.nor_scale)
+						frame.UnitFrame.healthBar:SetScale(FilteredNamePlate.curScaleList.nor_scale)
 					end
 				end
-				frame.UnitFrame.castBar:SetScale(curScaleList.SYS_SCALE)
+				frame.UnitFrame.castBar:SetScale(FilteredNamePlate.curScaleList.SYS_SCALE)
 			else
-				frame.UnitFrame.name:SetWidth(curScaleList.NAME_SYSTEMW)
-				frame.UnitFrame.healthBar:SetScale(curScaleList.mid_scale)
+				frame.UnitFrame.name:SetWidth(FilteredNamePlate.curScaleList.NAME_SYSTEMW)
+				frame.UnitFrame.healthBar:SetScale(FilteredNamePlate.curScaleList.mid_scale)
 				--frame.UnitFrame.healthBar:Show()
 			end
 		end
 	end,
 }
 
-function FilteredNamePlate.actionUnitStateAfterChanged()
+function FilteredNamePlate:actionUnitStateAfterChanged()
 	IsKillLine1 = FnpEnableKeys.killline and (Fnp_SavedScaleList.killline1 < 100)
 	IsKillLine2 = FnpEnableKeys.killline and (Fnp_SavedScaleList.killline2 >= 0.01)
 	-- TODO 添加血量变化
 	local lastNp = curNpFlag
-	curNpFlag, curNpFlag1Type = FilteredNamePlate.GenCurNpFlags()
+	curNpFlag, curNpFlag1Type = FilteredNamePlate:GenCurNpFlags()
 	if not (curNpFlag == lastNp) then --UI类型有变
 		-- 需要有怪在周围重新 重新获取一下
 		isScaleInited = false
@@ -523,7 +364,7 @@ function FilteredNamePlate.actionUnitStateAfterChanged()
 		return
 	end
 
-	initScaleValues()
+	isScaleInited = FilteredNamePlate:initScaleValues(curNpFlag, isScaleInited)
 	local matched = false
 	local matched2 = false
 	setCVarValues()
@@ -668,7 +509,8 @@ end
 
 local function actionUnitAdded(self, event, ...)
 	if isScaleInited == false then
-		initScaleValues()
+		isScaleInited = FilteredNamePlate:initScaleValues(curNpFlag, isScaleInited)
+		setCVarValues()
 	end
 
 	if isScaleInited == false then
@@ -815,7 +657,7 @@ function FilteredNamePlate_OnLoad()
 	FilteredNamePlate_Frame:RegisterEvent("PLAYER_ENTERING_WORLD")
 end
 
-function FilteredNamePlate.AvailabilityDropDown_OnShow(frame)
+function FilteredNamePlate:AvailabilityDropDown_OnShow(frame)
 	if isInitedDrop == nil or isInitedDrop == false then
 		local function DropDown_OnClick(val)
 			UIDropDownMenu_SetSelectedValue(FilteredNamePlate_Frame_DropDownUIType, val)
@@ -823,7 +665,7 @@ function FilteredNamePlate.AvailabilityDropDown_OnShow(frame)
 			if Fnp_OtherNPFlag == val then return end
 			Fnp_OtherNPFlag = val
 
-			FilteredNamePlate.ChangedSavedScaleList(val)
+			FilteredNamePlate:ChangedSavedScaleList(val)
 
 			FilteredNamePlate_Frame_OnlyShowScale:SetValue(Fnp_SavedScaleList.only * 100)
 			FilteredNamePlate.isSettingChanged = true
@@ -857,7 +699,7 @@ function FilteredNamePlate.AvailabilityDropDown_OnShow(frame)
 	UIDropDownMenu_SetText(frame, FilteredNamePlate.UITypeList[Fnp_OtherNPFlag])
 end
 
-function FilteredNamePlate.FNP_EnableButtonChecked(frame, checked, ...)
+function FilteredNamePlate:FNP_EnableButtonChecked(frame, checked, ...)
 	if frame then
 		if FilteredNamePlate_Frame == nil then return end
 		if not FilteredNamePlate_Frame:IsShown() then return end
@@ -879,10 +721,10 @@ function FilteredNamePlate.FNP_EnableButtonChecked(frame, checked, ...)
 		return
 	end
 	Fnp_Enable = checked
-	FilteredNamePlate.actionUnitStateAfterChanged()
+	FilteredNamePlate:actionUnitStateAfterChanged()
 end
 
-function FilteredNamePlate.FNP_ModeEditBoxWritenEsc()
+function FilteredNamePlate:FNP_ModeEditBoxWritenEsc()
 	local names = ""
 	local first = true
 	for key, var in ipairs(Fnp_ONameList) do
@@ -908,7 +750,7 @@ function FilteredNamePlate.FNP_ModeEditBoxWritenEsc()
 	FilteredNamePlate_Frame_FilteredModeEditBox:SetText(names);
 end
 
-function FilteredNamePlate.FNP_ModeEditBoxWriten(mode, inputStr)
+function FilteredNamePlate:FNP_ModeEditBoxWriten(mode, inputStr)
 	if mode == "o" then
 		Fnp_ONameList = {}
 		string.gsub(inputStr, '[^;]+', function(w) table.insert(Fnp_ONameList, w) end )
@@ -918,7 +760,7 @@ function FilteredNamePlate.FNP_ModeEditBoxWriten(mode, inputStr)
 	end
 end
 
-function FilteredNamePlate.FNP_ChangeFrameVisibility(...)
+function FilteredNamePlate:FNP_ChangeFrameVisibility(...)
 	local info = ...
 	if info == nil then
 		if FilteredNamePlate_Frame:IsVisible() then
@@ -965,17 +807,17 @@ function SlashCmdList.FilteredNamePlate(msg)
 		print(L.FNP_PRINT_HELP2)
 		print(L.FNP_PRINT_HELP3)
 	elseif msg == "options" or msg == "opt" then
-		FilteredNamePlate.FNP_ChangeFrameVisibility()
+		FilteredNamePlate:FNP_ChangeFrameVisibility()
 	elseif msg == "change" or msg == "ch" then
 		if Fnp_Enable == true then
 			FilteredNamePlate_Frame_EnableCheckButton:SetChecked(false)
-			FilteredNamePlate.FNP_EnableButtonChecked(FilteredNamePlate_Frame, false)
+			FilteredNamePlate:FNP_EnableButtonChecked(FilteredNamePlate_Frame, false)
 		else
 			FilteredNamePlate_Frame_EnableCheckButton:SetChecked(true)
-			FilteredNamePlate.FNP_EnableButtonChecked(FilteredNamePlate_Frame, true)
+			FilteredNamePlate:FNP_EnableButtonChecked(FilteredNamePlate_Frame, true)
 		end
 	elseif msg == "refresh" then
-		FilteredNamePlate.actionUnitStateAfterChanged()
+		FilteredNamePlate:actionUnitStateAfterChanged()
 	elseif msg == "test" then
 		for _, frame in pairs(GetNamePlates()) do
 			if frame then

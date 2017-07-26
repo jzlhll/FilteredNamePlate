@@ -13,6 +13,7 @@
 localization-zhCN.lua
 localization-enUS.lua
 localization-zhTW.lua
+FNPSupportList.lua
 
 FilteredNamePlate.xml
 FilteredNamePlateMenu.xml
