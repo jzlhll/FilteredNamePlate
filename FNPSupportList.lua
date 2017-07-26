@@ -1,5 +1,4 @@
 local _
-local _G = _G
 local GetNamePlateForUnit , GetNamePlates = C_NamePlate.GetNamePlateForUnit, C_NamePlate.GetNamePlates
 local UnitName, GetUnitName = UnitName, GetUnitName
 FilteredNamePlate = LibStub("AceAddon-3.0"):NewAddon("FilteredNamePlate", "AceEvent-3.0")
@@ -15,6 +14,12 @@ FilteredNamePlate.UITypeCheckList = {
 	[8] = false,
 }
 
+-- UIType  -> curNpFlag
+-- 原生0,1		   0
+-- 简单2,3,4,5	   1
+-- EKNum 6	    	2
+-- she7		        3
+-- CBL 8		    4
 FilteredNamePlate.UITypeList = {
 	[0] = FNP_LOCALE_TEXT.FNP_ORIG_TITLE,
 	[1] = FNP_LOCALE_TEXT.FNP_ORIG_TITLE2,
@@ -42,15 +47,14 @@ function FilteredNamePlate:GenCurNpFlags()
 	else -- 最简模型
 		curNpFlag = 1
 	end
-	--print("curNp"..curNpFlag.." FnpOther "..Fnp_OtherNPFlag)
 	local curNpFlag1Type = "UnitFrame" --针对最简单模型的frameName
-	if flag == 2 then
+	if Fnp_OtherNPFlag == 2 then
 		curNpFlag1Type = "carrier"
-	elseif flag == 3 then
+	elseif Fnp_OtherNPFlag == 3 then
 		curNpFlag1Type = "kui"
-	elseif flag == 4 or flag == 8 then
+	elseif Fnp_OtherNPFlag == 4 or Fnp_OtherNPFlag == 8 then
 		curNpFlag1Type = "UnitFrame"
-	elseif flag == 5 then
+	elseif Fnp_OtherNPFlag == 5 then
 		curNpFlag1Type = "unitFrame"
 	end
 	return curNpFlag, curNpFlag1Type

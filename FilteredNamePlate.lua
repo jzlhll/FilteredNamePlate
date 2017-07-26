@@ -1,5 +1,4 @@
 local _
-local _G = _G
 local L = FNP_LOCALE_TEXT
 SLASH_FilteredNamePlate1 = "/fnp"
 local GetNamePlateForUnit , GetNamePlates = C_NamePlate.GetNamePlateForUnit, C_NamePlate.GetNamePlates
