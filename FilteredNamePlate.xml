@@ -36,7 +36,7 @@
 				_G[self:GetName().."Text"]:SetText(FNP_LOCALE_TEXT.FNP_ENABLE_TXT);
 				</OnLoad>
 				<OnClick>
-					FilteredNamePlate:FNP_EnableButtonChecked(self, self:GetChecked())
+					FilteredNamePlate:FNP_EnableButtonChecked(nil, self:GetChecked())
 				</OnClick>
 			</Scripts>
 		</CheckButton>
@@ -343,7 +343,7 @@
 			   </OnLoad>
 			   <OnValueChanged>
 			   	  _G[self:GetName().."Text"]:SetText(FNP_LOCALE_TEXT.FNP_KILLLINE..string.format("%.0f", self:GetValue()).."%");
-				  Fnp_SavedScaleList.killline1 = string.format("%.2f", self:GetValue() / 100)
+				  Fnp_SavedScaleList.killline1 = self:GetValue() / 100
 				  if FilteredNamePlate_Frame:IsShown() then
 				  	  FilteredNamePlate.isSettingChanged = true
 				  	  FilteredNamePlate_Frame_takeEffectBtn:Show()
@@ -376,7 +376,7 @@
 			   </OnLoad>
 			   <OnValueChanged>
 			      _G[self:GetName().."Text"]:SetText(FNP_LOCALE_TEXT.FNP_KILLLINE2..string.format("%.0f", self:GetValue()).."%");
-				  Fnp_SavedScaleList.killline2 = string.format("%.2f", self:GetValue() / 100)
+				  Fnp_SavedScaleList.killline2 = self:GetValue() / 100
 				  if FilteredNamePlate_Frame:IsShown() then
 				      FilteredNamePlate.isSettingChanged = true
 				      FilteredNamePlate_Frame_takeEffectBtn:Show()

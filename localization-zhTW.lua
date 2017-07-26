@@ -1,7 +1,7 @@
 ﻿-- Prevent tainting global _.
 if GetLocale() == "zhTW" then
 FNP_LOCALE_TEXT.FNP_ENABLE_TXT = "啟用";
-FNP_LOCALE_TEXT.FNP_ENABLE_TANK_TXT = "坦克啟用";
+FNP_LOCALE_TEXT.FNP_ENABLE_TANK_TXT = "坦克專用";
 FNP_LOCALE_TEXT.FNP_ENABLE_TANK_TXT_TOOLTIP = "自己是坦克：目標不是自己的怪物將被當做僅顯單位。";
 FNP_LOCALE_TEXT.FNP_ENABLE_KILLINE_TXT = "斬殺啟用";
 FNP_LOCALE_TEXT.FNP_STRING_WEBSITE = "http://bbs.nga.cn/read.php?tid=11817959";

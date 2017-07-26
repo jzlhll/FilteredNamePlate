@@ -1,7 +1,7 @@
 local _
 local L = FNP_LOCALE_TEXT
 SLASH_FilteredNamePlate1 = "/fnp"
-local GetNamePlateForUnit , GetNamePlates = C_NamePlate.GetNamePlateForUnit, C_NamePlate.GetNamePlates
+local GetNamePlateForUnit , GetNamePlates, UnitThreatSituation = C_NamePlate.GetNamePlateForUnit, C_NamePlate.GetNamePlates, UnitThreatSituation
 local UnitName, GetUnitName = UnitName, GetUnitName
 local UnitHealth, UnitHealthMax = UnitHealth, UnitHealthMax
 local string_find = string.find
@@ -32,66 +32,11 @@ local function regHealthEvents(registed)
 	end
 end
 
-local function ClickOnMenu(info)
-	FilteredNamePlate_Menu1:UnlockHighlight()
-	FilteredNamePlate_Menu2:UnlockHighlight()
-	FilteredNamePlate_Menu3:UnlockHighlight()
-	FilteredNamePlate_Menu4:UnlockHighlight()
-	FilteredNamePlate_Menu5:UnlockHighlight()
-
-	FilteredNamePlate_Frame_EnableCheckButton:Hide()
-	FilteredNamePlate_Frame_TankModCB:Hide()
-	FilteredNamePlate_Frame_KilllineModCB:Hide()
-	FilteredNamePlate_Frame_uitype:Hide()
-	FilteredNamePlate_Frame_DropDownUIType:Hide()
-	
-	FilteredNamePlate_Frame_OnlyShowModeEditBox:Hide()
-	FilteredNamePlate_Frame_FilteredModeEditBox:Hide()
-	FilteredNamePlate_Frame_OnlyShows_Text:Hide()
-	FilteredNamePlate_Frame_Filters_Text:Hide()
-	FilteredNamePlate_Frame_note:Hide()
-
-	FilteredNamePlate_Frame_SystemScale:Hide()
-	FilteredNamePlate_Frame_OnlyShowScale:Hide()
-	FilteredNamePlate_Frame_OnlyOtherShowScale:Hide()
-
-	FilteredNamePlate_Frame_Slider_KL1:Hide()
-	FilteredNamePlate_Frame_Slider_KL2:Hide()
-	
-	FilteredNamePlate_Frame_HelpIcon:Hide()
-	FilteredNamePlate_Frame_ShareIcon:Hide()
-
-	FilteredNamePlate_Frame_AuthorText:Hide()
-	FilteredNamePlate_Frame_webText:Hide()
-	if info == "general" then
-		FilteredNamePlate_Menu1:LockHighlight()
-		FilteredNamePlate_Frame_EnableCheckButton:Show()
-		FilteredNamePlate_Frame_TankModCB:Show()
-		FilteredNamePlate_Frame_KilllineModCB:Show()
-		FilteredNamePlate_Frame_uitype:Show()
-		FilteredNamePlate_Frame_DropDownUIType:Show()
-	elseif info == "filter" then
-		FilteredNamePlate_Menu2:LockHighlight()
-		FilteredNamePlate_Frame_OnlyShowModeEditBox:Show()
-		FilteredNamePlate_Frame_FilteredModeEditBox:Show()
-		FilteredNamePlate_Frame_OnlyShows_Text:Show()
-		FilteredNamePlate_Frame_Filters_Text:Show()
-		FilteredNamePlate_Frame_note:Show()
-	elseif info == "percent" then
-		FilteredNamePlate_Menu3:LockHighlight()
-		FilteredNamePlate_Frame_SystemScale:Show()
-		FilteredNamePlate_Frame_OnlyShowScale:Show()
-		FilteredNamePlate_Frame_OnlyOtherShowScale:Show()
-	elseif info == "killline" then
-		FilteredNamePlate_Menu4:LockHighlight()
-		FilteredNamePlate_Frame_Slider_KL1:Show()
-		FilteredNamePlate_Frame_Slider_KL2:Show()
-	elseif info == "about" then
-		FilteredNamePlate_Menu5:LockHighlight()
-		FilteredNamePlate_Frame_HelpIcon:Show()
-		FilteredNamePlate_Frame_ShareIcon:Show()
-		FilteredNamePlate_Frame_AuthorText:Show()
-		FilteredNamePlate_Frame_webText:Show()
+local function regUnitTargetEvents(registed)
+	if registed then
+		FilteredNamePlate_Frame:RegisterEvent("UNIT_TARGET", actionUnitTarget) -- UNIT_TARGET , actionUnitTarget
+	else
+		FilteredNamePlate_Frame:UnregisterEvent("UNIT_TARGET", actionUnitTarget) -- UNIT_TARGET
 	end
 end
 
@@ -112,12 +57,16 @@ local function registerMyEvents(self, event, ...)
 	if FnpEnableKeys == nil then
 		FnpEnableKeys = {
 			tankMod = false,
-			killline = false,
+			killlineMod = false,
 		}
 	end
 
-	if FnpEnableKeys.killline then
+	if FnpEnableKeys.killlineMod then
 		regHealthEvents(true)
+	end
+	
+	if FnpEnableKeys.tankMod then
+		regUnitTargetEvents(true)
 	end
 
 	if Fnp_OtherNPFlag == nil then
@@ -145,8 +94,8 @@ local function registerMyEvents(self, event, ...)
 
 	FilteredNamePlate:InitSavedScaleList()
 
-	IsKillLine1 = FnpEnableKeys.killline and (Fnp_SavedScaleList.killline1 < 100)
-	IsKillLine2 = FnpEnableKeys.killline and (Fnp_SavedScaleList.killline2 >= 0.01)
+	IsKillLine1 = FnpEnableKeys.killlineMod and (Fnp_SavedScaleList.killline1 < 100)
+	IsKillLine2 = FnpEnableKeys.killlineMod and (Fnp_SavedScaleList.killline2 >= 0.01)
 
 	isNullOnlyList = false
 	isNullFilterList = false
@@ -158,7 +107,7 @@ local function registerMyEvents(self, event, ...)
 	if Fnp_Enable == true then
 		FilteredNamePlate.isSettingChanged = false
 		for k, v in pairs(FilteredNamePlate.FilterNp_EventList) do
-			if k ~= "PLAYER_ENTERING_WORLD" then
+			if k ~= "PLAYER_ENTERING_WORLD" and k ~= "UNIT_HEALTH" and k ~= "UNIT_MAXHEALTH" and k ~= "UNIT_TARGET" then
 				self:RegisterEvent(k,v)
 			end
         end
@@ -171,7 +120,7 @@ local function unRegisterMyEvents(self)
 		isRegistered = false
 		Fnp_Enable = false
 		for k, v in pairs(FilteredNamePlate.FilterNp_EventList) do
-			if k ~= "PLAYER_ENTERING_WORLD" then
+			if k ~= "PLAYER_ENTERING_WORLD" and k ~= "UNIT_HEALTH" and k ~= "UNIT_MAXHEALTH" and k ~= "UNIT_TARGET" then
 				self:UnregisterEvent(k,v)
 			end
         end
@@ -351,8 +300,8 @@ local showSwitchSingleUnit = {
 }
 
 function FilteredNamePlate:actionUnitStateAfterChanged()
-	IsKillLine1 = FnpEnableKeys.killline and (Fnp_SavedScaleList.killline1 < 100)
-	IsKillLine2 = FnpEnableKeys.killline and (Fnp_SavedScaleList.killline2 >= 0.01)
+	IsKillLine1 = FnpEnableKeys.killlineMod and (Fnp_SavedScaleList.killline1 < 100)
+	IsKillLine2 = FnpEnableKeys.killlineMod and (Fnp_SavedScaleList.killline2 >= 0.01)
 	-- TODO 添加血量变化
 	local lastNp = curNpFlag
 	curNpFlag, curNpFlag1Type = FilteredNamePlate:GenCurNpFlags()
@@ -600,6 +549,22 @@ local function actionUnitSpellCastStop(self, event, ...)
 	actionUnitSpellCastStopOnlyShowMode(...)
 end
 
+local function actionUnitTarget(self, event, ...)
+	local unitid = ...
+	if UnitIsPlayer(unitid) then
+		return
+	end
+	local frame = GetNamePlateForUnit(unitid)
+	local st = UnitThreatSituation("player", frame)
+	print("st "..tostring(st))
+	if st == nil or st == 0 then
+		print("目标不是自己")
+		showSwitchSingleUnit[curNpFlag](frame, false, false, true)
+	else
+		showSwitchSingleUnit[curNpFlag](frame, false, false, false)
+	end
+end
+
 local function actionUnitHealth(self, event, ...)
 	local unitid = ...
 	if UnitIsPlayer(unitid) then
@@ -639,8 +604,10 @@ FilteredNamePlate.FilterNp_EventList = {
 	["UNIT_SPELLCAST_CHANNEL_STOP"]   = actionUnitSpellCastStop,
 
 	["PLAYER_ENTERING_WORLD"]         = registerMyEvents,
-	-- ["PLAYER_TARGET_CHANGED"]		  = actionTargetChanged,
-	-- ["ZONE_CHANGED_NEW_AREA"]         = actionAreaChanged,
+
+	["UNIT_HEALTH"]                   = actionUnitHealth,
+	["UNIT_MAXHEALTH"]                = actionUnitHealth,
+	["UNIT_TARGET"]                   = actionUnitTarget
 };
 
 function FilteredNamePlate_OnEvent(self, event, ...)
@@ -704,18 +671,19 @@ function FilteredNamePlate:FNP_EnableButtonChecked(frame, checked, ...)
 		if not FilteredNamePlate_Frame:IsShown() then return end
 		local info = ...
 		if info == "killline" then
-			FnpEnableKeys.killline = checked
-			IsKillLine1 = FnpEnableKeys.killline and (Fnp_SavedScaleList.killline1 < 100)
-			IsKillLine2 = FnpEnableKeys.killline and (Fnp_SavedScaleList.killline2 >= 0.01)
-			if FnpEnableKeys.killline then
+			FnpEnableKeys.killlineMod = checked
+			IsKillLine1 = FnpEnableKeys.killlineMod and (Fnp_SavedScaleList.killline1 < 100)
+			IsKillLine2 = FnpEnableKeys.killlineMod and (Fnp_SavedScaleList.killline2 >= 0.01)
+			if FnpEnableKeys.killlineMod then
 				FilteredNamePlate_Menu4:Enable() -- modify --
 				--TODO 添加血量变化
 			else
 				FilteredNamePlate_Menu4:Disable() -- modify --
 			end
-			regHealthEvents(FnpEnableKeys.killline)
+			regHealthEvents(FnpEnableKeys.killlineMod)
 		elseif info == "tank" then
 			FnpEnableKeys.tankMod = checked
+			regUnitTargetEvents(FnpEnableKeys.tankMod)
 		end
 		return
 	end
@@ -770,7 +738,11 @@ function FilteredNamePlate:FNP_ChangeFrameVisibility(...)
 			FilteredNamePlate_Frame_reloadUIBtn:Hide()
 			FilteredNamePlate_Frame_EnableCheckButton:SetChecked(Fnp_Enable);
 			FilteredNamePlate_Frame_TankModCB:SetChecked(FnpEnableKeys.tankMod);
-			FilteredNamePlate_Frame_KilllineModCB:SetChecked(FnpEnableKeys.killline);
+			FilteredNamePlate_Frame_KilllineModCB:SetChecked(FnpEnableKeys.killlineMod);
+			if not FnpEnableKeys.killlineMod then --TODO TODO
+				FilteredNamePlate_Menu4:Hide()
+				FilteredNamePlate_Frame_KilllineModCB:Hide()
+			end
 
 			FilteredNamePlate_Frame_OnlyShowScale:SetValue(Fnp_SavedScaleList.only * 100)
 			FilteredNamePlate_Frame_OnlyOtherShowScale:SetValue(Fnp_SavedScaleList.small * 100)
@@ -782,7 +754,7 @@ function FilteredNamePlate:FNP_ChangeFrameVisibility(...)
 			FilteredNamePlate_Frame_OnlyShowModeEditBox:SetText(table.concat(Fnp_ONameList, ";"));
 			FilteredNamePlate_Frame_FilteredModeEditBox:SetText(table.concat(Fnp_FNameList, ";"));
 
-			if FnpEnableKeys.killline then
+			if FnpEnableKeys.killlineMod then
 				FilteredNamePlate_Menu4:Enable() -- modify --
 			else
 				FilteredNamePlate_Menu4:Disable() -- modify --
@@ -795,6 +767,68 @@ function FilteredNamePlate:FNP_ChangeFrameVisibility(...)
 			FilteredNamePlate_Menu:Show()
 		end
 	else
+		local function ClickOnMenu(info)
+			FilteredNamePlate_Menu1:UnlockHighlight()
+			FilteredNamePlate_Menu2:UnlockHighlight()
+			FilteredNamePlate_Menu3:UnlockHighlight()
+			FilteredNamePlate_Menu4:UnlockHighlight()
+			FilteredNamePlate_Menu5:UnlockHighlight()
+
+			FilteredNamePlate_Frame_EnableCheckButton:Hide()
+			FilteredNamePlate_Frame_TankModCB:Hide()
+			FilteredNamePlate_Frame_KilllineModCB:Hide()
+			FilteredNamePlate_Frame_uitype:Hide()
+			FilteredNamePlate_Frame_DropDownUIType:Hide()
+			
+			FilteredNamePlate_Frame_OnlyShowModeEditBox:Hide()
+			FilteredNamePlate_Frame_FilteredModeEditBox:Hide()
+			FilteredNamePlate_Frame_OnlyShows_Text:Hide()
+			FilteredNamePlate_Frame_Filters_Text:Hide()
+			FilteredNamePlate_Frame_note:Hide()
+
+			FilteredNamePlate_Frame_SystemScale:Hide()
+			FilteredNamePlate_Frame_OnlyShowScale:Hide()
+			FilteredNamePlate_Frame_OnlyOtherShowScale:Hide()
+
+			FilteredNamePlate_Frame_Slider_KL1:Hide()
+			FilteredNamePlate_Frame_Slider_KL2:Hide()
+			
+			FilteredNamePlate_Frame_HelpIcon:Hide()
+			FilteredNamePlate_Frame_ShareIcon:Hide()
+
+			FilteredNamePlate_Frame_AuthorText:Hide()
+			FilteredNamePlate_Frame_webText:Hide()
+			if info == "general" then
+				FilteredNamePlate_Menu1:LockHighlight()
+				FilteredNamePlate_Frame_EnableCheckButton:Show()
+				FilteredNamePlate_Frame_TankModCB:Show()
+				-- TODO 后续打开 FilteredNamePlate_Frame_KilllineModCB:Show()
+				FilteredNamePlate_Frame_uitype:Show()
+				FilteredNamePlate_Frame_DropDownUIType:Show()
+			elseif info == "filter" then
+				FilteredNamePlate_Menu2:LockHighlight()
+				FilteredNamePlate_Frame_OnlyShowModeEditBox:Show()
+				FilteredNamePlate_Frame_FilteredModeEditBox:Show()
+				FilteredNamePlate_Frame_OnlyShows_Text:Show()
+				FilteredNamePlate_Frame_Filters_Text:Show()
+				FilteredNamePlate_Frame_note:Show()
+			elseif info == "percent" then
+				FilteredNamePlate_Menu3:LockHighlight()
+				FilteredNamePlate_Frame_SystemScale:Show()
+				FilteredNamePlate_Frame_OnlyShowScale:Show()
+				FilteredNamePlate_Frame_OnlyOtherShowScale:Show()
+			elseif info == "killline" then
+				FilteredNamePlate_Menu4:LockHighlight()
+				FilteredNamePlate_Frame_Slider_KL1:Show()
+				FilteredNamePlate_Frame_Slider_KL2:Show()
+			elseif info == "about" then
+				FilteredNamePlate_Menu5:LockHighlight()
+				FilteredNamePlate_Frame_HelpIcon:Show()
+				FilteredNamePlate_Frame_ShareIcon:Show()
+				FilteredNamePlate_Frame_AuthorText:Show()
+				FilteredNamePlate_Frame_webText:Show()
+			end
+		end
 		ClickOnMenu(info)
 	end
 end
@@ -821,6 +855,7 @@ function SlashCmdList.FilteredNamePlate(msg)
 		for _, frame in pairs(GetNamePlates()) do
 			if frame then
 				FilteredNamePlate.printTable(frame.UnitFrame)
+				
 				break
 			end
 		end
