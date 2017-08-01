@@ -8,8 +8,8 @@ local string_find = string.find
 
 local isRegistered, isScaleInited, isErrInLoad, isNullOnlyList, isNullFilterList, isInitedDrop
 
-local IsKillLine1, IsKillLine2
-local AllInfos, MYNAME, isInOnlySt -- #ALLMYINFOS#
+-- TODO local IsKillLine1, IsKillLine2, AllInfos, MYNAME
+local isInOnlySt -- #ALLMYINFOS#
 
 --Fnnp_OtherNPFlag 0是默认 1是TidyPlate模式 2是Kui 3是EUI 4是NDUI. 5 EKPlate.
 --curNNpFlag标记当前采用哪种缩放模式.1表SIMPLE_SCALE模式.2表示EK.0表示原生.
@@ -66,7 +66,7 @@ local function registerMyEvents(self, event, ...)
 		regHealthEvents(true)
 	end
 	
-	AllInfos = {}
+	-- TODO AllInfos = {}
 	
 	if FnpEnableKeys.tankMod then
 		regUnitTargetEvents(true)
@@ -93,8 +93,8 @@ local function registerMyEvents(self, event, ...)
 
 	FilteredNamePlate:InitSavedScaleList()
 
-	IsKillLine1 = FnpEnableKeys.killlineMod and (Fnp_SavedScaleList.killline1 < 98)
-	IsKillLine2 = FnpEnableKeys.killlineMod and (Fnp_SavedScaleList.killline2 >= 0.02)
+	-- TODO IsKillLine1 = FnpEnableKeys.killlineMod and (Fnp_SavedScaleList.killline1 < 98)
+	-- TODO IsKillLine2 = FnpEnableKeys.killlineMod and (Fnp_SavedScaleList.killline2 >= 0.02)
 
 	isNullOnlyList = false
 	isNullFilterList = false
@@ -299,9 +299,9 @@ local ShowAFrame = {
 }
 
 function FilteredNamePlate:actionUnitStateAfterChanged()
-	IsKillLine1 = FnpEnableKeys.killlineMod and (Fnp_SavedScaleList.killline1 < 100)
-	IsKillLine2 = FnpEnableKeys.killlineMod and (Fnp_SavedScaleList.killline2 >= 0.01)
-	AllInfos = {}
+	-- TODO IsKillLine1 = FnpEnableKeys.killlineMod and (Fnp_SavedScaleList.killline1 < 100)
+	-- TODO IsKillLine2 = FnpEnableKeys.killlineMod and (Fnp_SavedScaleList.killline2 >= 0.01)
+	-- TODO AllInfos = {}
 	local lastNp = curNpFlag
 	curNpFlag, curNpFlag1Type = FilteredNamePlate:GenCurNpFlags()
 	if not (curNpFlag == lastNp) then --UI类型有变
@@ -485,14 +485,14 @@ end
 
 local function actionUnitAddedForce(unitid)
 	local addedname = UnitName(unitid)
-	getUnitIdInfo(unitid, true)
-	AllInfos[unitid].name = addedname  -- #ALLMYINFOS#
+	--TODO getUnitIdInfo(unitid, true)
+	--AllInfos[unitid].name = addedname  -- #ALLMYINFOS#
 
 	-- 0. 当前Add的单位名,是否match filter
 	local curFilterMatch = false
 	if isNullFilterList == false then curFilterMatch = isMatchedNameList(Fnp_FNameList, addedname) end
 	if curFilterMatch == true then
-		AllInfos[unitid].matchType = 2  -- #ALLMYINFOS#
+		--AllInfos[unitid].matchType = 2  -- #ALLMYINFOS#
 		local frame = GetNamePlateForUnit(unitid)
 		HideAFrame[curNpFlag](frame)
 		return
@@ -501,23 +501,23 @@ local function actionUnitAddedForce(unitid)
 	local curOnlyMatch = isMatchedNameList(Fnp_ONameList, addedname)
 	if curOnlyMatch == false and isInOnlySt == true then
 		--新增单位不需要仅显,但是目前处于仅显情况下, 那么,就将当前这个Hide
-		AllInfos[unitid].matchType = 0  -- #ALLMYINFOS#
+		--AllInfos[unitid].matchType = 0  -- #ALLMYINFOS#
 		local frame = GetNamePlateForUnit(unitid)
 		local foundUnit = (frame.namePlateUnitToken or (frame.UnitFrame and frame.UnitFrame.unit)) or (frame.unitFrame and frame.unitFrame.unit)
 		if UnitIsPlayer(foundUnit) == false then HideAFrame[curNpFlag](frame) end
 	elseif curOnlyMatch == false and isInOnlySt == false then
 		-- 新增单位不需要仅显, 此时也没有仅显, 就不管了.现在我们将当前的效果展示出来
-		AllInfos[unitid].matchType = 0  -- #ALLMYINFOS#
+		--AllInfos[unitid].matchType = 0  -- #ALLMYINFOS#
 		local frame = GetNamePlateForUnit(unitid)
 		local foundUnit = (frame.namePlateUnitToken or (frame.UnitFrame and frame.UnitFrame.unit)) or (frame.unitFrame and frame.unitFrame.unit)
 		if UnitIsPlayer(foundUnit) == false then ShowAFrame[curNpFlag](GetNamePlateForUnit(unitid), false, false, false) end
 	elseif curOnlyMatch == true and isInOnlySt == true then
 		-- 新增单位是需要仅显的,而此时已经有仅显的了,于是我们什么也不用干 -- 更新，怀疑在异步调用的时候莫名奇妙被hide了这里开出来确保
-		AllInfos[unitid].matchType = 1  -- #ALLMYINFOS#
+		--AllInfos[unitid].matchType = 1  -- #ALLMYINFOS#
 		ShowAFrame[curNpFlag](GetNamePlateForUnit(unitid), false, false, true)
 	elseif curOnlyMatch == true and isInOnlySt == false then
 		--新增单位是需要仅显的,而此时不是仅显, 于是我们就将之前的都Hide,当前这个仅显
-		AllInfos[unitid].matchType = 1  -- #ALLMYINFOS#
+		--AllInfos[unitid].matchType = 1  -- #ALLMYINFOS#
 		for _, frame in pairs(GetNamePlates()) do
 			local foundUnit = (frame.namePlateUnitToken or (frame.UnitFrame and frame.UnitFrame.unit)) or (frame.unitFrame and frame.unitFrame.unit)
 			if foundUnit then
@@ -539,9 +539,9 @@ end
 
 local function actionUnitRemovedForce(unitid)
 	-- 1. 当前移除的单位名,是否match
-	if AllInfos and AllInfos[unitid] then
-		AllInfos[unitid].inSee = false -- #ALLMYINFOS#
-	end
+	-- if AllInfos and AllInfos[unitid] then
+	--	AllInfos[unitid].inSee = false -- #ALLMYINFOS#
+	-- end
 	local curOnlyMatch = isMatchedNameList(Fnp_ONameList, UnitName(unitid))
 	if curOnlyMatch == true then
 		-- 移除单位是需要仅显的,而此时肯定已经仅显,
@@ -681,7 +681,7 @@ end
 function FilteredNamePlate_OnLoad()
 	isRegistered = false
 	isErrInLoad = false
-	MYNAME = UnitName("player")
+	-- TODO MYNAME = UnitName("player")
 	FilteredNamePlate_Frame:RegisterEvent("PLAYER_ENTERING_WORLD")
 end
 
