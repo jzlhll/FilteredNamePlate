@@ -921,13 +921,5 @@ function SlashCmdList.FilteredNamePlate(msg)
 		end
 	elseif msg == "refresh" then
 		FilteredNamePlate:actionUnitStateAfterChanged()
-	elseif msg == "test" then
-		for _, frame in pairs(GetNamePlates()) do
-			if frame then
-				FilteredNamePlate.printTable(frame.UnitFrame)
-				
-				break
-			end
-		end
 	end
 end
