@@ -76,7 +76,7 @@
 			</Scripts>
 			<HighlightTexture file="Interface\Buttons\ButtonHilight-Square" alphaMode="ADD"/>
 		</Button>
-		<Button name="$parent4" inherits="OptionsButtonTemplate">
+		<Button name="$parent4" inherits="OptionsButtonTemplate" Hidden="true">
 			<Size>
 				<AbsDimension x="60" y="40" />
 			</Size>

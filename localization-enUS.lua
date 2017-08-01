@@ -23,9 +23,9 @@ FNP_LOCALE_TEXT.FNP_ONLYSHOW_OTHER_SCALE_TOOLTIP = "Scale the non-OnlyShow unit 
 FNP_LOCALE_TEXT.FNP_ONLYSHOW_SCALE_TXT = "Scale the OnlyShow unit";
 FNP_LOCALE_TEXT.FNP_ONLYSHOW_SCALE_TOOLTIP = "Scale the OnlyShow unit when only show works";
 
-FNP_LOCALE_TEXT.FNP_KILLLINE = "Execution 100% to ";
+FNP_LOCALE_TEXT.FNP_KILLLINE = "R-Execution 100% to ";
 FNP_LOCALE_TEXT.FNP_KILLLINE_TOOLTIP = "Enemy HP% for Execution from 100% to your expected value.";
-FNP_LOCALE_TEXT.FNP_KILLLINE2 = "R Execution 0% to ";
+FNP_LOCALE_TEXT.FNP_KILLLINE2 = "Execution 0% to ";
 FNP_LOCALE_TEXT.FNP_KILLLINE_TOOLTIP2 = "Enemy HP% for Execution from your expected value to died.";
 
 FNP_LOCALE_TEXT.FNP_TAKEEFFECT_BTN = "Active";
@@ -48,7 +48,6 @@ FNP_LOCALE_TEXT.FNP_PRINT_HELP1 = "\124cFF00CD00/fnp options or /fnp opt \124r o
 FNP_LOCALE_TEXT.FNP_PRINT_HELP2 = "\124cFF00CD00/fnp change or /fnp ch \124r quickly to enable or disable";
 FNP_LOCALE_TEXT.FNP_PRINT_HELP3 = "\124cFF00CD00/fnp refresh \124rquickly to hide the casting units";
 
-FNP_LOCALE_TEXT.FNP_TEXT_HELP = "Help";
 FNP_LOCALE_TEXT.FNP_TEXT_SHARE = "Share";
 --FNP_LOCALE_TEXT.FNP_TEXT_SHARE2 = "Share";
 FNP_LOCALE_TEXT.FNP_TEXT_INFO0 = "\124cFF00CD00If the setting does not take effect,or it still has some flaws, try to reload.V6: automatically open esc-> interface ->displays all the name plate. If you don't prefer, then manually shut down, while the FNP will be abnormal.\124r";

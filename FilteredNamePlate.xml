@@ -40,7 +40,7 @@
 				</OnClick>
 			</Scripts>
 		</CheckButton>
-		<CheckButton name="$parent_TankModCB" inherits="OptionsCheckButtonTemplate">
+		<!-- CheckButton name="$parent_TankModCB" inherits="OptionsCheckButtonTemplate" hidden="true">
 			<Anchors>
 				<Anchor point="TOPLEFT" relativeTo="$parent">
 				<Offset>
@@ -80,13 +80,13 @@
 					FilteredNamePlate:FNP_EnableButtonChecked(self, self:GetChecked(), "killline")
 				</OnClick>
 			</Scripts>
-		</CheckButton>
+		</CheckButton> -->
 		<!-- UIType start -->
 		<Frame name="$parent_DropDownUIType" inherits="UIDropDownMenuTemplate" id="1">
 			<Anchors>
-				<Anchor point="CENTER" relativeTo="$parent_KilllineModCB" relativePoint="TOPLEFT">
+				<Anchor point="CENTER" relativeTo="$parent_EnableCheckButton" relativePoint="TOPLEFT">
 					<Offset>
-						<AbsDimension x="30" y="-110"/>
+						<AbsDimension x="60" y="-180"/>
 					</Offset>
 				</Anchor>
 			</Anchors>
@@ -183,27 +183,6 @@
 				</OnClick>
 			</Scripts>
 		</Button>
-		<Button name="$parent_HelpIcon" inherits="OptionsButtonTemplate" text="" hidden="true">
-			<Size>
-				<AbsDimension x="45" y="35" />
-			</Size>
-			<Anchors>
-				<Anchor point="RIGTH" relativeTo="$parent" relativePoint="BOTTOMRIGHT">
-				<Offset>
-					<AbsDimension x="-55" y="98" />
-				</Offset>
-				</Anchor>
-			</Anchors>
-			<Scripts>
-				<OnLoad>
-				_G[self:GetName().."Text"]:SetText(FNP_LOCALE_TEXT.FNP_TEXT_HELP);
-				</OnLoad>
-				<OnClick>
-					print(FNP_LOCALE_TEXT.FNP_TEXT_INFO0)
-					FilteredNamePlate_Frame_reloadUIBtn:Show()
-				</OnClick>
-			</Scripts>
-		</Button>
 		<Button name="$parent_ShareIcon" inherits="OptionsButtonTemplate" text="" hidden="true">
 			<Size>
 				<AbsDimension x="65" y="35" />
@@ -211,7 +190,7 @@
 			<Anchors>
 				<Anchor point="RIGTH" relativeTo="$parent" relativePoint="BOTTOMRIGHT">
 				<Offset>
-					<AbsDimension x="-130" y="98" />
+					<AbsDimension x="-150" y="98" />
 				</Offset>
 				</Anchor>
 			</Anchors>
@@ -369,9 +348,9 @@
 		   <Scripts>
 			   <OnLoad>
 				  _G[self:GetName().."Text"]:SetText(FNP_LOCALE_TEXT.FNP_KILLLINE2);
-				  _G[self:GetName().."High"]:SetText(FNP_LOCALE_TEXT.FNP_TXT_BIG.."35%");
+				  _G[self:GetName().."High"]:SetText(FNP_LOCALE_TEXT.FNP_TXT_BIG.."40%");
 				  _G[self:GetName().."Low"]:SetText(FNP_LOCALE_TEXT.FNP_TXT_SMALL.."0%");
-				  self:SetMinMaxValues(0, 35);
+				  self:SetMinMaxValues(0, 40);
 				  self:SetValueStep(1);
 			   </OnLoad>
 			   <OnValueChanged>
@@ -420,7 +399,7 @@
 			<Anchors>
 				<Anchor point="TOPLEFT" relativeTo="FilteredNamePlate_Frame_takeEffectBtn">
 				<Offset>
-					<AbsDimension x="-90" y="0" />
+					<AbsDimension x="-80" y="0" />
 				</Offset>
 				</Anchor>
 			</Anchors>

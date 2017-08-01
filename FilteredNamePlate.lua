@@ -6,9 +6,10 @@ local UnitName, GetUnitName = UnitName, GetUnitName
 local UnitHealth, UnitHealthMax = UnitHealth, UnitHealthMax
 local string_find = string.find
 
-local isRegistered, isInOnlySt, isScaleInited, isErrInLoad, isNullOnlyList, isNullFilterList, isInitedDrop
+local isRegistered, isScaleInited, isErrInLoad, isNullOnlyList, isNullFilterList, isInitedDrop
 
-local LastTimeStamps, IsKillLine1, IsKillLine2
+local IsKillLine1, IsKillLine2
+local AllInfos, MYNAME, isInOnlySt -- #ALLMYINFOS#
 
 --Fnnp_OtherNPFlag 0是默认 1是TidyPlate模式 2是Kui 3是EUI 4是NDUI. 5 EKPlate.
 --curNNpFlag标记当前采用哪种缩放模式.1表SIMPLE_SCALE模式.2表示EK.0表示原生.
@@ -34,9 +35,9 @@ end
 
 local function regUnitTargetEvents(registed)
 	if registed then
-		FilteredNamePlate_Frame:RegisterEvent("UNIT_TARGET", actionUnitTarget) -- UNIT_TARGET , actionUnitTarget
+		FilteredNamePlate_Frame:RegisterEvent("UNIT_TARGET", actionUnitTarget)
 	else
-		FilteredNamePlate_Frame:UnregisterEvent("UNIT_TARGET", actionUnitTarget) -- UNIT_TARGET
+		FilteredNamePlate_Frame:UnregisterEvent("UNIT_TARGET", actionUnitTarget)
 	end
 end
 
@@ -65,6 +66,8 @@ local function registerMyEvents(self, event, ...)
 		regHealthEvents(true)
 	end
 	
+	AllInfos = {}
+	
 	if FnpEnableKeys.tankMod then
 		regUnitTargetEvents(true)
 	end
@@ -88,14 +91,10 @@ local function registerMyEvents(self, event, ...)
 		isInOnlySt = false
 	end
 
-	LastTimeStamps = {
-		heal = 0,
-	}
-
 	FilteredNamePlate:InitSavedScaleList()
 
-	IsKillLine1 = FnpEnableKeys.killlineMod and (Fnp_SavedScaleList.killline1 < 100)
-	IsKillLine2 = FnpEnableKeys.killlineMod and (Fnp_SavedScaleList.killline2 >= 0.01)
+	IsKillLine1 = FnpEnableKeys.killlineMod and (Fnp_SavedScaleList.killline1 < 98)
+	IsKillLine2 = FnpEnableKeys.killlineMod and (Fnp_SavedScaleList.killline2 >= 0.02)
 
 	isNullOnlyList = false
 	isNullFilterList = false
@@ -142,7 +141,7 @@ local function isMatchedNameList(tabList, tName)
 end
 
 ---------kkkkk---kkkkk---kkkkk-------------
-local hideSwitchSingleUnit = {
+local HideAFrame = {
 	[0] = function(frame) --orig
 		if frame == nil then return end
 		if frame.UnitFrame then
@@ -187,7 +186,7 @@ local hideSwitchSingleUnit = {
 }
 
 --isOnlyShowSpellCast 的情况下，就代表是仅显模式。并且该怪是非仅显目标而且施法了！
-local showSwitchSingleUnit = {
+local ShowAFrame = {
 	[0] = function(frame, isOnlyShowSpellCast, restore, isOnlyUnit)
 		if frame and frame.UnitFrame then
 			if restore == true then
@@ -302,7 +301,7 @@ local showSwitchSingleUnit = {
 function FilteredNamePlate:actionUnitStateAfterChanged()
 	IsKillLine1 = FnpEnableKeys.killlineMod and (Fnp_SavedScaleList.killline1 < 100)
 	IsKillLine2 = FnpEnableKeys.killlineMod and (Fnp_SavedScaleList.killline2 >= 0.01)
-	-- TODO 添加血量变化
+	AllInfos = {}
 	local lastNp = curNpFlag
 	curNpFlag, curNpFlag1Type = FilteredNamePlate:GenCurNpFlags()
 	if not (curNpFlag == lastNp) then --UI类型有变
@@ -333,9 +332,9 @@ function FilteredNamePlate:actionUnitStateAfterChanged()
 					if foundUnit then matched2 = isMatchedNameList(Fnp_FNameList, GetUnitName(foundUnit)) end
 				end
 				if matched2 == true then
-					hideSwitchSingleUnit[curNpFlag](frame)
+					HideAFrame[curNpFlag](frame)
 				else
-					showSwitchSingleUnit[curNpFlag](frame, false, false, false) -- 全是普通情况
+					ShowAFrame[curNpFlag](frame, false, false, false) -- 全是普通情况
 				end
 			else
 				local foundUnit = (frame.namePlateUnitToken or (frame.UnitFrame and frame.UnitFrame.unit)) or (frame.unitFrame and frame.unitFrame.unit)
@@ -355,15 +354,15 @@ function FilteredNamePlate:actionUnitStateAfterChanged()
 				if foundUnit then matched = isMatchedNameList(Fnp_ONameList, GetUnitName(foundUnit)) end
 				if matched == true then
 					-- 仅显模式仅显的怪
-					showSwitchSingleUnit[curNpFlag](frame, false, false, true)
+					ShowAFrame[curNpFlag](frame, false, false, true)
 				else
-					if UnitIsPlayer(foundUnit) == false then hideSwitchSingleUnit[curNpFlag](frame) end
+					if UnitIsPlayer(foundUnit) == false then HideAFrame[curNpFlag](frame) end
 				end
 			end
 		else
 			for _, frame in pairs(GetNamePlates()) do
 				-- 普通模式
-				showSwitchSingleUnit[curNpFlag](frame, false, false, false)
+				ShowAFrame[curNpFlag](frame, false, false, false)
 			end	
 		end
 		-- registerMyEvents(FilteredNamePlate_Frame, "", "")
@@ -372,58 +371,177 @@ function FilteredNamePlate:actionUnitStateAfterChanged()
 			local foundUnit = (frame.namePlateUnitToken or (frame.UnitFrame and frame.UnitFrame.unit)) or (frame.unitFrame and frame.unitFrame.unit)
 			if foundUnit then
 				-- disable 还原了！
-				showSwitchSingleUnit[curNpFlag](frame, false, true, false)
+				ShowAFrame[curNpFlag](frame, false, true, false)
 			end
 		end
 		-- unRegisterMyEvents(FilteredNamePlate_Frame)
 	end
 end
 
+local function getUnitIdInfo(unitid, reset)
+	if AllInfos[unitid] and (not reset) and AllInfos[unitid].inSee then
+		return
+	end
+	AllInfos[unitid] = nil
+	AllInfos[unitid] = {
+		tankModTS = 0,
+		healModTS = 0,
+		matchType = 0, -- 0 是无。1是onlyShow，2是filterShow
+		inSee = true,
+		trigger1 = 0, 
+		trigger2 = 0,
+	}  -- #ALLMYINFOS#
+end
+
+local function actionChangedByHeal(unitid, shouldBig, needShowBack)
+	if shouldBig then
+		local frame = GetNamePlateForUnit(unitid)
+		ShowAFrame[curNpFlag](frame, false, false, true)
+	else
+		if needShowBack then
+			local frame = GetNamePlateForUnit(unitid)
+			if isInOnlySt and AllInfos[unitid].matchType == 1 then
+				ShowAFrame[curNpFlag](frame, false, false, true) -- 仇恨回来了，恢复正常。但是是仅显目标则变大
+			elseif (not isInOnlySt) and AllInfos[unitid].matchType == 0 then
+				ShowAFrame[curNpFlag](frame, false, false, false) -- 仇恨回来了，恢复正常。
+			elseif (not isInOnlySt) and AllInfos[unitid].matchType == 1 then
+				print("Error not only Show but match 1 !!")
+			else
+				HideAFrame[curNpFlag](frame) -- 仇恨回来了，恢复正常。 但是这些情况应该变小Hide
+			end
+		end -- 如果是在UNIT_ADD传过来nil，将不处理，继续让Add函数处理即可
+	end
+end
+
+local function actionChangedByTarget(unitid, shouldBig, needShowBack)
+	if shouldBig then
+		local frame = GetNamePlateForUnit(unitid)
+		ShowAFrame[curNpFlag](frame, false, false, true)
+	else
+		if needShowBack then
+			local frame = GetNamePlateForUnit(unitid)
+			if isInOnlySt and AllInfos[unitid].matchType == 1 then
+				ShowAFrame[curNpFlag](frame, false, false, true) -- 仇恨回来了，恢复正常。但是是仅显目标则变大
+			elseif (not isInOnlySt) and AllInfos[unitid].matchType == 0 then
+				ShowAFrame[curNpFlag](frame, false, false, false) -- 仇恨回来了，恢复正常。
+			elseif (not isInOnlySt) and AllInfos[unitid].matchType == 1 then
+				print("Error not only Show but match 1 !!")
+			else
+				HideAFrame[curNpFlag](frame) -- 仇恨回来了，恢复正常。 但是这些情况应该变小Hide
+			end
+		end -- 如果是在UNIT_ADD传过来nil，将不处理，继续让Add函数处理即可
+	end
+end
+
+local function actionUnitHealth(self, event, ...)
+	local unitid = ...
+	if UnitIsPlayer(unitid) then
+		return
+	end
+	getUnitIdInfo(unitid, false)
+	local ts = GetTime()
+	if (AllInfos[unitid].healModTS + 0.2) >= ts then -- ###刷新血量监听频率
+		return
+	end
+	AllInfos[unitid].healModTS = ts
+	local hmax = UnitHealthMax(unitid)
+	local curh = UnitHealth(unitid)
+	if hmax > 0 then
+		local perc = (curh * 100) / hmax
+		local isKill = false
+		if IsKillLine1 and perc >= Fnp_SavedScaleList.killline1 then
+			isKill = true
+		end
+		if (not isKill) and IsKillLine2 and perc <= Fnp_SavedScaleList.killline2 then
+			isKill = true
+		end
+		actionChangedByHeal(unitid, isKill, event)
+	else
+		AllInfos[unitid] = nil
+	end
+end
+
+local function actionUnitTarget(self, event, ...)
+	local unitid = ...
+	if UnitIsPlayer(unitid) then
+		return
+	end
+	getUnitIdInfo(unitid, false)
+	local ts = GetTime()
+	
+	if ((AllInfos[unitid].tankModTS + 0.5) >= ts) then -- ###刷新嘲讽频率
+		return
+	end
+
+	AllInfos[unitid].tankModTS = ts
+	local st = UnitThreatSituation("player", frame)
+	if st == nil then return end
+	if st == 0 then
+		actionChangedByTarget(unitid, true, event)
+	else
+		actionChangedByTarget(unitid, (UnitName(unitid.."target") ~= MYNAME), event)
+	end
+end
+
 local function actionUnitAddedForce(unitid)
 	local addedname = UnitName(unitid)
+	getUnitIdInfo(unitid, true)
+	AllInfos[unitid].name = addedname  -- #ALLMYINFOS#
+
 	-- 0. 当前Add的单位名,是否match filter
 	local curFilterMatch = false
 	if isNullFilterList == false then curFilterMatch = isMatchedNameList(Fnp_FNameList, addedname) end
 	if curFilterMatch == true then
+		AllInfos[unitid].matchType = 2  -- #ALLMYINFOS#
 		local frame = GetNamePlateForUnit(unitid)
-		hideSwitchSingleUnit[curNpFlag](frame)
+		HideAFrame[curNpFlag](frame)
 		return
 	end
 	-- 1. 当前add的单位名,是否match
 	local curOnlyMatch = isMatchedNameList(Fnp_ONameList, addedname)
 	if curOnlyMatch == false and isInOnlySt == true then
 		--新增单位不需要仅显,但是目前处于仅显情况下, 那么,就将当前这个Hide
+		AllInfos[unitid].matchType = 0  -- #ALLMYINFOS#
 		local frame = GetNamePlateForUnit(unitid)
 		local foundUnit = (frame.namePlateUnitToken or (frame.UnitFrame and frame.UnitFrame.unit)) or (frame.unitFrame and frame.unitFrame.unit)
-		if UnitIsPlayer(foundUnit) == false then hideSwitchSingleUnit[curNpFlag](frame) end
+		if UnitIsPlayer(foundUnit) == false then HideAFrame[curNpFlag](frame) end
 	elseif curOnlyMatch == false and isInOnlySt == false then
 		-- 新增单位不需要仅显, 此时也没有仅显, 就不管了.现在我们将当前的效果展示出来
+		AllInfos[unitid].matchType = 0  -- #ALLMYINFOS#
 		local frame = GetNamePlateForUnit(unitid)
 		local foundUnit = (frame.namePlateUnitToken or (frame.UnitFrame and frame.UnitFrame.unit)) or (frame.unitFrame and frame.unitFrame.unit)
-		if UnitIsPlayer(foundUnit) == false then showSwitchSingleUnit[curNpFlag](GetNamePlateForUnit(unitid), false, false, false) end
+		if UnitIsPlayer(foundUnit) == false then ShowAFrame[curNpFlag](GetNamePlateForUnit(unitid), false, false, false) end
 	elseif curOnlyMatch == true and isInOnlySt == true then
 		-- 新增单位是需要仅显的,而此时已经有仅显的了,于是我们什么也不用干 -- 更新，怀疑在异步调用的时候莫名奇妙被hide了这里开出来确保
-		showSwitchSingleUnit[curNpFlag](GetNamePlateForUnit(unitid), false, false, true)
+		AllInfos[unitid].matchType = 1  -- #ALLMYINFOS#
+		ShowAFrame[curNpFlag](GetNamePlateForUnit(unitid), false, false, true)
 	elseif curOnlyMatch == true and isInOnlySt == false then
-		--新增单位是需要仅显的,而此时不是仅显, 于是我们就将之前的都Hide,当前这个不用处理
+		--新增单位是需要仅显的,而此时不是仅显, 于是我们就将之前的都Hide,当前这个仅显
+		AllInfos[unitid].matchType = 1  -- #ALLMYINFOS#
 		for _, frame in pairs(GetNamePlates()) do
 			local foundUnit = (frame.namePlateUnitToken or (frame.UnitFrame and frame.UnitFrame.unit)) or (frame.unitFrame and frame.unitFrame.unit)
 			if foundUnit then
 				-- TODO 判断是否是正在读条
 				if (unitid == foundUnit) then
 					-- 刚刚进入仅显模式！这个是仅显单位，那么将他变大一些
-					showSwitchSingleUnit[curNpFlag](frame, false, false, true)
+					ShowAFrame[curNpFlag](frame, false, false, true)
 				else
-					if UnitIsPlayer(foundUnit) == false then hideSwitchSingleUnit[curNpFlag](frame) end
+					if UnitIsPlayer(foundUnit) == false then HideAFrame[curNpFlag](frame) end
 				end
 			end
 		end
 		isInOnlySt = true
 	end
+	if FnpEnableKeys.tankMod then
+		actionUnitTarget(nil, nil, unitid)
+	end
 end
 
 local function actionUnitRemovedForce(unitid)
 	-- 1. 当前移除的单位名,是否match
+	if AllInfos and AllInfos[unitid] then
+		AllInfos[unitid].inSee = false -- #ALLMYINFOS#
+	end
 	local curOnlyMatch = isMatchedNameList(Fnp_ONameList, UnitName(unitid))
 	if curOnlyMatch == true then
 		-- 移除单位是需要仅显的,而此时肯定已经仅显,
@@ -446,7 +564,7 @@ local function actionUnitRemovedForce(unitid)
 				matched = isMatchedNameList(Fnp_ONameList, GetUnitName(foundUnit))
 				if matched == false then
 					-- 退出仅显模式， 说明这些都是普通
-					if UnitIsPlayer(foundUnit) == false then showSwitchSingleUnit[curNpFlag](frame, false, false, false) end
+					if UnitIsPlayer(foundUnit) == false then ShowAFrame[curNpFlag](frame, false, false, false) end
 				end
 			end
 		end
@@ -497,12 +615,8 @@ local function actionUnitRemoved(self, event, ...)
 	end
 	actionUnitRemovedForce(unitid)
 end
---[[
-local function actionTargetChanged(self, event, ...)
-end
---]]
 
-local function actionUnitSpellCastStartOnlyShowMode(...)
+local function actionUnitSpellCastStart(self, event, ...)
 	if isInOnlySt == false then
 		-- 当前处于没有仅显模式,表明所有血条都开着的
 		return
@@ -517,12 +631,12 @@ local function actionUnitSpellCastStartOnlyShowMode(...)
 	-- true的话，表明是我们要的，那么肯定是在显示了。就不管了
 	if curMatch == false then 
 		local frame = GetNamePlateForUnit(unitid)
-		--仅显模式，非仅显怪施法啦！我们放到到miiddle大小
-		showSwitchSingleUnit[curNpFlag](frame, true, false, false)
+		--仅显模式，非仅显怪施法啦！我们放大到miiddle大小
+		ShowAFrame[curNpFlag](frame, true, false, false)
 	end
 end
 
-local function actionUnitSpellCastStopOnlyShowMode(...)
+local function actionUnitSpellCastStop(self, event, ...)
 	if isInOnlySt == false then
 		-- 当前处于没有仅显模式,表明所有血条都开着的
 		return
@@ -537,60 +651,7 @@ local function actionUnitSpellCastStopOnlyShowMode(...)
 	-- true的话，表明是我们要的，那么肯定是在显示了。
 	if curMatch == false then --false，而且是处于isCurrentOnlyShow
 		local frame = GetNamePlateForUnit(unitid)
-		hideSwitchSingleUnit[curNpFlag](frame)
-	end
-end
-
-local function actionUnitSpellCastStart(self, event, ...)
-	actionUnitSpellCastStartOnlyShowMode(...)
-end
-
-local function actionUnitSpellCastStop(self, event, ...)
-	actionUnitSpellCastStopOnlyShowMode(...)
-end
-
-local function actionUnitTarget(self, event, ...)
-	local unitid = ...
-	if UnitIsPlayer(unitid) then
-		return
-	end
-	local frame = GetNamePlateForUnit(unitid)
-	local st = UnitThreatSituation("player", frame)
-	print("st "..tostring(st))
-	if st == nil or st == 0 then
-		print("目标不是自己")
-		showSwitchSingleUnit[curNpFlag](frame, false, false, true)
-	else
-		showSwitchSingleUnit[curNpFlag](frame, false, false, false)
-	end
-end
-
-local function actionUnitHealth(self, event, ...)
-	local unitid = ...
-	if UnitIsPlayer(unitid) then
-		return
-	end
-	local ts = GetTime()
-	if (LastTimeStamps.heal + 0.2) >= ts then
-		return
-	end
-	LastTimeStamps.heal = ts
-	local perc = (UnitHealth("target") * 100) / UnitHealthMax("target")
-	print(UnitHealthMax("target").."changed! "..unitid..GetUnitName(unitid)..perc)
-	if UnitHealthMax("target") > 0 then
-		local isKill = false
-		if IsKillLine1 and perc >= Fnp_SavedScaleList.killline1 then
-			isKill = true
-		end
-		if IsKillLine2 and perc >= Fnp_SavedScaleList.killline2 then
-			isKill = true
-		end
-		local frame = GetNamePlateForUnit(unitid)
-		if isKill then
-			showSwitchSingleUnit[curNpFlag](frame, false, false, true)
-		else
-			--TODO 这个刷新可能太频繁了。恢复显示机制。
-		end
+		HideAFrame[curNpFlag](frame)
 	end
 end
 
@@ -620,6 +681,7 @@ end
 function FilteredNamePlate_OnLoad()
 	isRegistered = false
 	isErrInLoad = false
+	MYNAME = UnitName("player")
 	FilteredNamePlate_Frame:RegisterEvent("PLAYER_ENTERING_WORLD")
 end
 
@@ -671,6 +733,11 @@ function FilteredNamePlate:FNP_EnableButtonChecked(frame, checked, ...)
 		if not FilteredNamePlate_Frame:IsShown() then return end
 		local info = ...
 		if info == "killline" then
+			if FnpEnableKeys.tankMod then
+				FilteredNamePlate_Frame_TankModCB:SetChecked(false)
+				FnpEnableKeys.tankMod = false
+				regUnitTargetEvents(false)
+			end
 			FnpEnableKeys.killlineMod = checked
 			IsKillLine1 = FnpEnableKeys.killlineMod and (Fnp_SavedScaleList.killline1 < 100)
 			IsKillLine2 = FnpEnableKeys.killlineMod and (Fnp_SavedScaleList.killline2 >= 0.01)
@@ -682,6 +749,14 @@ function FilteredNamePlate:FNP_EnableButtonChecked(frame, checked, ...)
 			end
 			regHealthEvents(FnpEnableKeys.killlineMod)
 		elseif info == "tank" then
+			if FnpEnableKeys.killlineMod then
+				FilteredNamePlate_Frame_KilllineModCB:SetChecked(false)
+				FnpEnableKeys.killlineMod = false
+				IsKillLine1 = false
+				IsKillLine2 = false
+				FilteredNamePlate_Menu4:Disable() -- modify --
+				regHealthEvents(FnpEnableKeys.killlineMod)
+			end
 			FnpEnableKeys.tankMod = checked
 			regUnitTargetEvents(FnpEnableKeys.tankMod)
 		end
@@ -735,14 +810,9 @@ function FilteredNamePlate:FNP_ChangeFrameVisibility(...)
 			FilteredNamePlate_Menu:Hide()
 		else
 			local oldChange = FilteredNamePlate.isSettingChanged
-			FilteredNamePlate_Frame_reloadUIBtn:Hide()
 			FilteredNamePlate_Frame_EnableCheckButton:SetChecked(Fnp_Enable);
-			FilteredNamePlate_Frame_TankModCB:SetChecked(FnpEnableKeys.tankMod);
-			FilteredNamePlate_Frame_KilllineModCB:SetChecked(FnpEnableKeys.killlineMod);
-			if not FnpEnableKeys.killlineMod then --TODO TODO
-				FilteredNamePlate_Menu4:Hide()
-				FilteredNamePlate_Frame_KilllineModCB:Hide()
-			end
+			-- FilteredNamePlate_Frame_TankModCB:SetChecked(FnpEnableKeys.tankMod);-- close tank ###
+			-- FilteredNamePlate_Frame_KilllineModCB:SetChecked(FnpEnableKeys.killlineMod);
 
 			FilteredNamePlate_Frame_OnlyShowScale:SetValue(Fnp_SavedScaleList.only * 100)
 			FilteredNamePlate_Frame_OnlyOtherShowScale:SetValue(Fnp_SavedScaleList.small * 100)
@@ -775,8 +845,8 @@ function FilteredNamePlate:FNP_ChangeFrameVisibility(...)
 			FilteredNamePlate_Menu5:UnlockHighlight()
 
 			FilteredNamePlate_Frame_EnableCheckButton:Hide()
-			FilteredNamePlate_Frame_TankModCB:Hide()
-			FilteredNamePlate_Frame_KilllineModCB:Hide()
+			-- FilteredNamePlate_Frame_TankModCB:Hide()
+			-- FilteredNamePlate_Frame_KilllineModCB:Hide()
 			FilteredNamePlate_Frame_uitype:Hide()
 			FilteredNamePlate_Frame_DropDownUIType:Hide()
 			
@@ -792,17 +862,17 @@ function FilteredNamePlate:FNP_ChangeFrameVisibility(...)
 
 			FilteredNamePlate_Frame_Slider_KL1:Hide()
 			FilteredNamePlate_Frame_Slider_KL2:Hide()
-			
-			FilteredNamePlate_Frame_HelpIcon:Hide()
+
 			FilteredNamePlate_Frame_ShareIcon:Hide()
 
 			FilteredNamePlate_Frame_AuthorText:Hide()
 			FilteredNamePlate_Frame_webText:Hide()
+			FilteredNamePlate_Frame_reloadUIBtn:Hide()
 			if info == "general" then
 				FilteredNamePlate_Menu1:LockHighlight()
 				FilteredNamePlate_Frame_EnableCheckButton:Show()
-				FilteredNamePlate_Frame_TankModCB:Show()
-				-- TODO 后续打开 FilteredNamePlate_Frame_KilllineModCB:Show()
+				-- FilteredNamePlate_Frame_TankModCB:Hide() -- close tank ###
+				-- FilteredNamePlate_Frame_KilllineModCB:Show()
 				FilteredNamePlate_Frame_uitype:Show()
 				FilteredNamePlate_Frame_DropDownUIType:Show()
 			elseif info == "filter" then
@@ -823,10 +893,10 @@ function FilteredNamePlate:FNP_ChangeFrameVisibility(...)
 				FilteredNamePlate_Frame_Slider_KL2:Show()
 			elseif info == "about" then
 				FilteredNamePlate_Menu5:LockHighlight()
-				FilteredNamePlate_Frame_HelpIcon:Show()
 				FilteredNamePlate_Frame_ShareIcon:Show()
 				FilteredNamePlate_Frame_AuthorText:Show()
 				FilteredNamePlate_Frame_webText:Show()
+				FilteredNamePlate_Frame_reloadUIBtn:Show()
 			end
 		end
 		ClickOnMenu(info)
