@@ -1,4 +1,10 @@
-﻿---0704---
+﻿---0801---
+兼容maoRUI,altzUI, CBLUI,SheStackUI ，EKPlates
+修改UI面板。
+内存增大到110KB。不过还是比较小。
+
+
+---0704---
 重构代码.
 尝试兼容EKPlate. 还有他的血条模式还没兼容.
 
