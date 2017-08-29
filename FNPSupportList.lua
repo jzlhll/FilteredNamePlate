@@ -14,12 +14,6 @@ FilteredNamePlate.UITypeCheckList = {
 	[8] = false,
 }
 
--- UIType  -> curNpFlag
--- 原生0,1		   0
--- 简单2,3,4,5	   1
--- EKNum 6	    	2
--- she7		        3
--- CBL 8		    4
 FilteredNamePlate.UITypeList = {
 	[0] = FNP_LOCALE_TEXT.FNP_ORIG_TITLE,
 	[1] = FNP_LOCALE_TEXT.FNP_ORIG_TITLE2,
@@ -34,6 +28,15 @@ FilteredNamePlate.UITypeList = {
 
 FilteredNamePlate.curScaleList = {}
 
+-- UIType  -> curNpFlag  curNpFlag1Type
+-- 原生0,1		   0	UnitFrame
+-- TidyPlates 简单2  1	carrier
+-- KUI        简单3  1	kui
+-- EUI/RayUI  简单4  1	UnitFrame
+-- NDUI	      简单5  1    unitFrame
+-- EKNum 6	    	2	 UnitFrame
+-- she7		        3	 UnitFrame
+-- CBL 8		    4	 UnitFrame
 function FilteredNamePlate:GenCurNpFlags()
 	local curNpFlag = 0 -- 上述UIType的下标
 	if Fnp_OtherNPFlag == 0 or Fnp_OtherNPFlag == 1 then

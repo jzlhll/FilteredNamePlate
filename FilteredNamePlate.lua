@@ -11,9 +11,6 @@ local isRegistered, isScaleInited, isErrInLoad, isNullOnlyList, isNullFilterList
 -- TODO local IsKillLine1, IsKillLine2, AllInfos, MYNAME
 local isInOnlySt -- #ALLMYINFOS#
 
---Fnnp_OtherNPFlag 0是默认 1是TidyPlate模式 2是Kui 3是EUI 4是NDUI. 5 EKPlate.
---curNNpFlag标记当前采用哪种缩放模式.1表SIMPLE_SCALE模式.2表示EK.0表示原生.
-
 local curNpFlag, curNpFlag1Type
 
 local function setCVarValues()
