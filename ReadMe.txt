@@ -1,4 +1,7 @@
-﻿---0801---
+﻿---0828---
+Support ruRU.
+
+---0801---
 兼容maoRUI,altzUI, CBLUI,SheStackUI ，EKPlates
 修改UI面板。
 内存增大到110KB。不过还是比较小。
