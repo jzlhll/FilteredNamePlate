@@ -1,8 +1,8 @@
 ﻿-- Prevent tainting global _.
 if GetLocale() == "enUS" then
 FNP_LOCALE_TEXT.FNP_ENABLE_TXT = "Enable";
-FNP_LOCALE_TEXT.FNP_ENABLE_TANK_TXT = "Tank Enable";
-FNP_LOCALE_TEXT.FNP_ENABLE_TANK_TXT_TOOLTIP = "You Tank: Which enemy is target is not yourself, will be treated as OnlyShow Unit.";
+-- FNP_LOCALE_TEXT.FNP_ENABLE_TANK_TXT = "Tank Enable";
+-- FNP_LOCALE_TEXT.FNP_ENABLE_TANK_TXT_TOOLTIP = "You Tank: Which enemy is target is not yourself, will be treated as OnlyShow Unit.";
 FNP_LOCALE_TEXT.FNP_ENABLE_KILLINE_TXT = "Execution Enable";
 FNP_LOCALE_TEXT.FNP_STRING_WEBSITE = "https://mods.curse.com/addons/wow/275422-filterednameplate";
 

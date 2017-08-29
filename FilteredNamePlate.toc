@@ -11,6 +11,7 @@
 ## DefaultState: Enabled
 ## LoadOnDemand: 0
 ## SavedVariables: Fnp_Enable, FnpEnableKeys, Fnp_FNameList, Fnp_ONameList, Fnp_OtherNPFlag, Fnp_SavedScaleList
+
 localization-zhCN.lua
 localization-enUS.lua
 localization-zhTW.lua

@@ -1,8 +1,8 @@
 -- Prevent tainting global _.
 if GetLocale() == "ruRU" then
 FNP_LOCALE_TEXT.FNP_ENABLE_TXT = "Включить";
-FNP_LOCALE_TEXT.FNP_ENABLE_TANK_TXT = "Включить танка";
-FNP_LOCALE_TEXT.FNP_ENABLE_TANK_TXT_TOOLTIP = "Вы танк: Враг - это цель, а не вы сами, будет рассматриваться как юнит только-показывать.";
+-- FNP_LOCALE_TEXT.FNP_ENABLE_TANK_TXT = "Включить танка";
+-- FNP_LOCALE_TEXT.FNP_ENABLE_TANK_TXT_TOOLTIP = "Вы танк: Враг - это цель, а не вы сами, будет рассматриваться как юнит только-показывать.";
 FNP_LOCALE_TEXT.FNP_ENABLE_KILLINE_TXT = "Включить добвание";
 FNP_LOCALE_TEXT.FNP_STRING_WEBSITE = "https://mods.curse.com/addons/wow/275422-filterednameplate";
 

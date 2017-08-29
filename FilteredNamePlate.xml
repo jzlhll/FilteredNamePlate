@@ -1,4 +1,5 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/..\FrameXML\UI.xsd">
+<Script file="FilteredNamePlateMenu.lua"/>
 <Script file="FilteredNamePlate.lua"/>
 <Frame name="FilteredNamePlate_Frame" hidden="true" parent="UIParent" toplevel="true" movable="true" frameStrata="HIGH" enableMouse="true" enableKeyboard="true">
 	<Size>
@@ -35,32 +36,8 @@
 				_G[self:GetName().."Text"]:SetText(FNP_LOCALE_TEXT.FNP_ENABLE_TXT);
 				</OnLoad>
 				<OnClick>
-					FilteredNamePlate:FNP_EnableButtonChecked(nil, self:GetChecked())
+					FilteredNamePlate:FNP_EnableButtonChecked(self:GetChecked(), "MASTER_BTN")
 				</OnClick>
-			</Scripts>
-		</CheckButton>
-		<!-- CheckButton name="$parent_TankModCB" inherits="OptionsCheckButtonTemplate" hidden="true">
-			<Anchors>
-				<Anchor point="TOPLEFT" relativeTo="$parent">
-				<Offset>
-					<AbsDimension x="70" y="-130" />
-				</Offset>
-				</Anchor>
-			</Anchors>
-			<Scripts>
-				<OnLoad>
-				_G[self:GetName().."Text"]:SetText(FNP_LOCALE_TEXT.FNP_ENABLE_TANK_TXT);
-				</OnLoad>
-				<OnClick>
-					FilteredNamePlate:FNP_EnableButtonChecked(self, self:GetChecked(), "tank")
-				</OnClick>
-				<OnEnter>
-                   GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
-				   GameTooltip:SetText(FNP_LOCALE_TEXT.FNP_ENABLE_TANK_TXT_TOOLTIP);
-             	</OnEnter>
-              	<OnLeave>
-                  GameTooltip:Hide()
-              	</OnLeave>
 			</Scripts>
 		</CheckButton>
 		<CheckButton name="$parent_KilllineModCB" inherits="OptionsCheckButtonTemplate">
@@ -76,10 +53,10 @@
 				_G[self:GetName().."Text"]:SetText(FNP_LOCALE_TEXT.FNP_ENABLE_KILLINE_TXT);
 				</OnLoad>
 				<OnClick>
-					FilteredNamePlate:FNP_EnableButtonChecked(self, self:GetChecked(), "killline")
+					FilteredNamePlate:FNP_EnableButtonChecked(self:GetChecked(), "KILL_LINE_BTN")
 				</OnClick>
 			</Scripts>
-		</CheckButton> -->
+		</CheckButton>
 		<!-- UIType start -->
 		<Frame name="$parent_DropDownUIType" inherits="UIDropDownMenuTemplate" id="1">
 			<Anchors>
