@@ -7,7 +7,7 @@ local string_find = string.find
 
 local isGeneralReged, isKillLineReged, isScaleInited, isErrInLoad, isNullOnlyList, isNullFilterList
 
-local IsKillLine1, IsKillLine2
+local IsKillLine1, IsKillLine2, AllInfos
 local isInOnlySt -- #ALLMYINFOS#
 
 local curNpFlag, curNpFlag1Type
@@ -89,6 +89,7 @@ local function registerMyEvents(self, event, ...)
 
 	if FnpEnableKeys.killlineMod and (isKillLineReged == nil or isKillLineReged == false) then
 		regHealthEvents(true)
+		AllInfos = {}
 		IsKillLine1 = FnpEnableKeys.killlineMod and (Fnp_SavedScaleList.killline1 < 100)
 		IsKillLine2 = FnpEnableKeys.killlineMod and (Fnp_SavedScaleList.killline2 >= 0.01)
 		isKillLineReged = true
@@ -279,11 +280,11 @@ local ShowAFrame = {
 	end,
 }
 
-local function resetUnitState()
+local function resetUnitState(restore)
 	for _, frame in pairs(GetNamePlates()) do
 		local foundUnit = (frame.namePlateUnitToken or (frame.UnitFrame and frame.UnitFrame.unit)) or (frame.unitFrame and frame.unitFrame.unit)
 		if foundUnit then
-			ShowAFrame[curNpFlag](frame, false, true, false)
+			ShowAFrame[curNpFlag](frame, false, restore, false)
 		end
 	end
 end
@@ -302,21 +303,24 @@ function FilteredNamePlate:actionUnitStateAfterChanged()
 
 	IsKillLine1 = FnpEnableKeys.killlineMod and (Fnp_SavedScaleList.killline1 < 100)
 	IsKillLine2 = FnpEnableKeys.killlineMod and (Fnp_SavedScaleList.killline2 >= 0.01)
+	AllInfos = {}
+	-- 我们只计算下这个，生效交给每次health change
 
 	isScaleInited = FilteredNamePlate:initScaleValues(curNpFlag, isScaleInited)
+	--仅显
+	isNullOnlyList = false
+	if getTableCount(Fnp_ONameList) == 0 then isNullOnlyList = true end
+	--过滤
+	isNullFilterList = false
+	if getTableCount(Fnp_FNameList) == 0 then isNullFilterList = true end
+
 	local matched = false
 	local matched2 = false
 
 	if Fnp_Enable == true then
-		--仅显
-		isNullOnlyList = false
-		if getTableCount(Fnp_ONameList) == 0 then isNullOnlyList = true end
-		--过滤
-		isNullFilterList = false
-		if getTableCount(Fnp_FNameList) == 0 then isNullFilterList = true end
 		local isHide = false
 		for _, frame in pairs(GetNamePlates()) do
-			if isNullOnlyList == true then
+			if isNullOnlyList == true then -- 如果没有仅显单位则过滤单位hide，其他show normal模式
 				matched2 = false
 				if isNullFilterList == false then
 					local foundUnit = (frame.namePlateUnitToken or (frame.UnitFrame and frame.UnitFrame.unit)) or (frame.unitFrame and frame.unitFrame.unit)
@@ -327,7 +331,7 @@ function FilteredNamePlate:actionUnitStateAfterChanged()
 				else
 					ShowAFrame[curNpFlag](frame, false, false, false) -- 全是普通情况
 				end
-			else
+			else						 -- 如果有仅显单位则
 				local foundUnit = (frame.namePlateUnitToken or (frame.UnitFrame and frame.UnitFrame.unit)) or (frame.unitFrame and frame.unitFrame.unit)
 				matched = false
 				if foundUnit then matched = isMatchedNameList(Fnp_ONameList, GetUnitName(foundUnit)) end
@@ -337,7 +341,7 @@ function FilteredNamePlate:actionUnitStateAfterChanged()
 				end
 			end
 		end
-		if isHide == true then
+		if isHide == true then -- onlyShow Mode
 			isInOnlySt = true
 			for _, frame in pairs(GetNamePlates()) do
 				local foundUnit = (frame.namePlateUnitToken or (frame.UnitFrame and frame.UnitFrame.unit)) or (frame.unitFrame and frame.unitFrame.unit)
@@ -347,17 +351,16 @@ function FilteredNamePlate:actionUnitStateAfterChanged()
 					-- 仅显模式仅显的怪
 					ShowAFrame[curNpFlag](frame, false, false, true)
 				else
-					if UnitIsPlayer(foundUnit) == false then HideAFrame[curNpFlag](frame) end
+					HideAFrame[curNpFlag](frame)
 				end
 			end
 		else
-			for _, frame in pairs(GetNamePlates()) do
-				-- 普通模式
-				ShowAFrame[curNpFlag](frame, false, false, false)
-			end	
+			resetUnitState(false)
 		end
-	else -- 已经关闭功能就全部显示
-		resetUnitState()
+	elseif FnpEnableKeys.killlineMod then
+		resetUnitState(false)
+	else
+		resetUnitState(true)
 	end
 end
 
@@ -388,7 +391,7 @@ local function actionUnitHealth(self, event, ...)
 	end
 	getUnitIdInfo(unitid, false)
 	local ts = GetTime()
-	if (AllInfos[unitid].healModTS + 0.2) >= ts then -- ###刷新血量监听频率
+	if (AllInfos[unitid].healModTS + 0.1) >= ts then -- ###刷新血量监听频率
 		return
 	end
 	AllInfos[unitid].healModTS = ts
@@ -411,7 +414,7 @@ end
 
 local function actionUnitAddedForce(unitid)
 	local addedname = UnitName(unitid)
-	--TODO getUnitIdInfo(unitid, true)
+	if AllInfos
 	--AllInfos[unitid].name = addedname  -- #ALLMYINFOS#
 
 	-- 0. 当前Add的单位名,是否match filter
