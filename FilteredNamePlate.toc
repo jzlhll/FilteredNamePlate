@@ -10,7 +10,7 @@
 ## Notes-ruRU: Помогает вам управлять индикаторами здоровья, более проще, и помогает ТОЛЬКО-ПОКАЗЫВАТЬ или СПИСОК ФИЛЬТРА, то что вам надо `Желч` Мастер.
 ## DefaultState: Enabled
 ## LoadOnDemand: 0
-## SavedVariables: Fnp_Enable, FnpEnableKeys, Fnp_FNameList, Fnp_ONameList, Fnp_OtherNPFlag, Fnp_SavedScaleList
+## SavedVariables: Fnp_Enable, FnpEnableKeys, Fnp_FNameList, Fnp_ONameList, Fnp_OtherNPFlag, Fnp_SavedScaleList, Fnp_CurVersion
 
 localization-zhCN.lua
 localization-enUS.lua

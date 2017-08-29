@@ -280,7 +280,7 @@
 			   </OnLeave>
 		   </Scripts>
         </Slider>
-		<Slider name="$parent_Slider_KL1" inherits="OptionsSliderTemplate" hidden="true">
+		<Slider name="$parent_Slider_KL1" inherits="OptionsSliderTemplate">
 			<Anchors>
 				<Anchor point="LEFT">
 				  <Offset>
@@ -313,7 +313,7 @@
 			   </OnLeave>
             </Scripts>
         </Slider>
-		<Slider name="$parent_Slider_KL2" inherits="OptionsSliderTemplate" hidden="true">
+		<Slider name="$parent_Slider_KL2" inherits="OptionsSliderTemplate">
 		   <Anchors>
 			   <Anchor point="LEFT">
 				  <Offset>

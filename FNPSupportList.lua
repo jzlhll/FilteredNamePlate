@@ -63,22 +63,6 @@ function FilteredNamePlate:GenCurNpFlags()
 	return curNpFlag, curNpFlag1Type
 end
 
-function FilteredNamePlate:InitSavedScaleList()
-    if Fnp_SavedScaleList == nil then
-        Fnp_SavedScaleList = {
-            normal = 1,
-            small = 0.25,
-            only = 1.4,
-			killline1 = 1.0,
-			killline2 = 0,
-        }
-    else -- V4 update to V5
-        if Fnp_SavedScaleList.only == nil then Fnp_SavedScaleList.only = 1.4 end
-		if Fnp_SavedScaleList.killline1 == nil then Fnp_SavedScaleList.killline1 = 1.0 end
-		if Fnp_SavedScaleList.killline2 == nil then Fnp_SavedScaleList.killline2 = 0 end
-    end
-end
-
 function FilteredNamePlate:ChangedSavedScaleList(flag)
      Fnp_SavedScaleList.only = 1.4
      Fnp_SavedScaleList.small = 0.25
@@ -246,3 +230,4 @@ function FilteredNamePlate:initScaleValues(curNpFlag, isScaleInited)
 	end
 	return isScaleInited
 end
+

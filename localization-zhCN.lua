@@ -1,5 +1,6 @@
 ﻿-- Prevent tainting global _.
 FNP_LOCALE_TEXT = {}
+FNP_LOCALE_TEXT.FNP_VERSION = "6.1"
 if GetLocale() == "zhCN" then
 FNP_LOCALE_TEXT.FNP_ENABLE_TXT = "启用";
 -- FNP_LOCALE_TEXT.FNP_ENABLE_TANK_TXT = "MT专用";
@@ -52,7 +53,7 @@ FNP_LOCALE_TEXT.FNP_PRINT_HELP3 = "\124cFF00CD00/fnp refresh \124r快速隐藏�
 FNP_LOCALE_TEXT.FNP_TEXT_SHARE = "队伍分享";
 --FNP_LOCALE_TEXT.FNP_TEXT_SHARE2 = "公会分享";
 FNP_LOCALE_TEXT.FNP_TEXT_INFO0 = "\124cFF00CD00如果设置没有生效, 或者改动过多, 仍有一些不正常, 尝试重载界面。V6: 自动开启 esc->界面->名字->显示所有姓名板.如果你不喜欢,请手动关闭而插件功能将会异常.\124r";
-FNP_LOCALE_TEXT.FNP_CHANGED_UITYPE = "修改了UI类型!下次有新怪进入视野,将会刷新效果! 如果效果不佳, 则重载界面";
+FNP_LOCALE_TEXT.FNP_CHANGED_UITYPE = "修改了UI类型，请重载界面！";
 
 FNP_LOCALE_TEXT.FNP_MENU_GENERAL = "一般";
 FNP_LOCALE_TEXT.FNP_MENU_FILTER = "过滤";

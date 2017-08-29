@@ -74,9 +74,7 @@ function FilteredNamePlate:FNP_EnableButtonChecked(checked, checkBtnName)
 		else
 			FilteredNamePlate_Menu4:Disable()
 		end
-		FilteredNamePlate.isSettingChanged = true
-		FilteredNamePlate_Frame_reloadUIBtn:Show()
-		FilteredNamePlate_Frame_takeEffectBtn:Show()
+		FilteredNamePlate:actionUnitStateAfterChanged()
 	elseif checkBtnName == "MASTER_BTN" then
 		Fnp_Enable = checked
 		FilteredNamePlate:actionUnitStateAfterChanged()
@@ -128,8 +126,7 @@ function FilteredNamePlate:FNP_ChangeFrameVisibility(...)
 		else
 			local oldChange = FilteredNamePlate.isSettingChanged
 			FilteredNamePlate_Frame_EnableCheckButton:SetChecked(Fnp_Enable);
-			-- FilteredNamePlate_Frame_TankModCB:SetChecked(FnpEnableKeys.tankMod);-- close tank ###
-			-- FilteredNamePlate_Frame_KilllineModCB:SetChecked(FnpEnableKeys.killlineMod);
+			FilteredNamePlate_Frame_KilllineModCB:SetChecked(FnpEnableKeys.killlineMod);
 
 			FilteredNamePlate_Frame_OnlyShowScale:SetValue(Fnp_SavedScaleList.only * 100)
 			FilteredNamePlate_Frame_OnlyOtherShowScale:SetValue(Fnp_SavedScaleList.small * 100)
@@ -142,9 +139,9 @@ function FilteredNamePlate:FNP_ChangeFrameVisibility(...)
 			FilteredNamePlate_Frame_FilteredModeEditBox:SetText(table.concat(Fnp_FNameList, ";"));
 
 			if FnpEnableKeys.killlineMod then
-				FilteredNamePlate_Menu4:Enable() -- modify --
+				FilteredNamePlate_Menu4:Enable()
 			else
-				FilteredNamePlate_Menu4:Disable() -- modify --
+				FilteredNamePlate_Menu4:Disable()
 			end
 
 			if oldChange == false then

@@ -5,18 +5,46 @@ local UnitName, GetUnitName = UnitName, GetUnitName
 local UnitHealth, UnitHealthMax = UnitHealth, UnitHealthMax
 local string_find = string.find
 
-local isRegistered, isScaleInited, isErrInLoad, isNullOnlyList, isNullFilterList
+local isGeneralReged, isKillLineReged, isScaleInited, isErrInLoad, isNullOnlyList, isNullFilterList
 
-local IsKillLine1, IsKillLine2, AllInfos, MYNAME
+local IsKillLine1, IsKillLine2
 local isInOnlySt -- #ALLMYINFOS#
 
 local curNpFlag, curNpFlag1Type
+
+FilteredNamePlate.FilterNp_Event_Genera_List = {
+	["NAME_PLATE_UNIT_ADDED"]         = actionUnitAdded,
+	["NAME_PLATE_UNIT_REMOVED"]       = actionUnitRemoved,
+
+	["UNIT_SPELLCAST_START"]          = actionUnitSpellCastStart,
+	["UNIT_SPELLCAST_CHANNEL_START"]  = actionUnitSpellCastStart,
+	["UNIT_SPELLCAST_STOP"]           = actionUnitSpellCastStop,
+	["UNIT_SPELLCAST_CHANNEL_STOP"]   = actionUnitSpellCastStop,
+};
+
+-- ["UNIT_TTARGET"]                   = actionUnitTTarget
+FilteredNamePlate.FilterNp_Event_Heal_List = {
+	["UNIT_HEALTH"]                   = actionUnitHealth,
+	["UNIT_MAXHEALTH"]                = actionUnitHealth,
+};
+
+FilteredNamePlate.FilterNp_Event_Enter_List = {
+	["PLAYER_ENTERING_WORLD"]         = registerMyEvents,
+};
 
 local function setCVarValues()
 	SetCVar("nameplateShowEnemies", 1)
 	SetCVar("nameplateShowEnemyMinions", 1)
 	SetCVar("nameplateShowEnemyMinus", 1)
 	SetCVar("nameplateShowAll", 1)
+end
+
+local function getTableCount(atab)
+	local count = 0
+    for pos, name in ipairs(atab) do
+        count = count + 1
+    end
+	return count
 end
 
 local function regHealthEvents(registed)
@@ -29,102 +57,53 @@ local function regHealthEvents(registed)
 	end
 end
 
-local function regUnitTargetEvents(registed)
+local function regGeneralEvents(registed)
 	if registed then
-		FilteredNamePlate_Frame:RegisterEvent("UNIT_TARGET", actionUnitTarget)
+		for k, v in pairs(FilteredNamePlate.FilterNp_Event_Genera_List) do
+			self:RegisterEvent(k,v)
+		end
 	else
-		FilteredNamePlate_Frame:UnregisterEvent("UNIT_TARGET", actionUnitTarget)
+		for k, v in pairs(FilteredNamePlate.FilterNp_Event_Genera_List) do
+			self:UnregisterEvent(k,v)
+        end
 	end
-end
-
-local function getTableCount(atab)
-	local count = 0
-    for pos, name in ipairs(atab) do
-        count = count + 1
-    end
-	return count
 end
 
 local function registerMyEvents(self, event, ...)
-	if isRegistered == true then return end
-	if Fnp_Enable == nil then
-		Fnp_Enable = false
-	end
-	
-	if FnpEnableKeys == nil then
-		FnpEnableKeys = {
-			killlineMod = false,
-		}
-	end
-
-	if FnpEnableKeys.killlineMod then
-		regHealthEvents(true)
-	end
-	
-	-- TODO AllInfos = {}
-
-	if Fnp_OtherNPFlag == nil then
-		Fnp_OtherNPFlag = 0
-	end
-
-	curNpFlag, curNpFlag1Type = FilteredNamePlate:GenCurNpFlags()
-
-	if Fnp_ONameList == nil then
-		Fnp_ONameList = {}
-		local thisname = "邪能炸药"
-		local localename = GetLocale()
-		if localename == "enUS" then
-			thisname = "Fel Explosive"
-		elseif localename == "zhTW" then
-			thisname = "魔化炸彈"
-		elseif localname == "ruRU" then
-			thisname = "Желч"
-		end
-		table.insert(Fnp_ONameList, thisname)
-	end
-
-	if Fnp_FNameList == nil then
-		Fnp_FNameList = {}
-	end
-
-	if isInOnlySt == nil then
-		isInOnlySt = false
-	end
-
-	FilteredNamePlate:InitSavedScaleList()
-
-	IsKillLine1 = FnpEnableKeys.killlineMod and (Fnp_SavedScaleList.killline1 < 100)
-	IsKillLine2 = FnpEnableKeys.killlineMod and (Fnp_SavedScaleList.killline2 >= 0.01)
-
-	regUnitTargetEvents(FnpEnableKeys.killlineMod)
-
-	isNullOnlyList = false
-	isNullFilterList = false
-	if getTableCount(Fnp_ONameList) == 0 then isNullOnlyList = true end
-	if getTableCount(Fnp_FNameList) == 0 then isNullFilterList = true end
-
+	isGeneralReged = false
+	isKillLineReged = false
+	isErrInLoad = false
 	isScaleInited = false
+	isInOnlySt = false
+	FilteredNamePlate.isSettingChanged = false
 
-	if Fnp_Enable == true then
-		FilteredNamePlate.isSettingChanged = false
-		for k, v in pairs(FilteredNamePlate.FilterNp_EventList) do
-			if k ~= "PLAYER_ENTERING_WORLD" and k ~= "UNIT_HEALTH" and k ~= "UNIT_MAXHEALTH" and k ~= "UNIT_TARGET" then
-				self:RegisterEvent(k,v)
-			end
-        end
-		isRegistered = true
+	if Fnp_Enable and (isGeneralReged == nil or isGeneralReged == false) then
+		curNpFlag, curNpFlag1Type = FilteredNamePlate:GenCurNpFlags()
+		isNullOnlyList = false
+		isNullFilterList = false
+		if getTableCount(Fnp_ONameList) == 0 then isNullOnlyList = true end
+		if getTableCount(Fnp_FNameList) == 0 then isNullFilterList = true end
+		regGeneralEvents(true)
+		isGeneralReged = true
+	end
+
+	if FnpEnableKeys.killlineMod and (isKillLineReged == nil or isKillLineReged == false) then
+		regHealthEvents(true)
+		IsKillLine1 = FnpEnableKeys.killlineMod and (Fnp_SavedScaleList.killline1 < 100)
+		IsKillLine2 = FnpEnableKeys.killlineMod and (Fnp_SavedScaleList.killline2 >= 0.01)
+		isKillLineReged = true
 	end
 end
 
 local function unRegisterMyEvents(self)
-	if isRegistered == true then
-		isRegistered = false
-		Fnp_Enable = false
-		for k, v in pairs(FilteredNamePlate.FilterNp_EventList) do
-			if k ~= "PLAYER_ENTERING_WORLD" and k ~= "UNIT_HEALTH" and k ~= "UNIT_MAXHEALTH" and k ~= "UNIT_TARGET" then
-				self:UnregisterEvent(k,v)
-			end
-        end
+	if isGeneralReged == true then
+		isGeneralReged = false
+		regGeneralEvents(false)
+	end
+
+	if isKillLineReged == true then
+		isKillLineReged = false
+		regHealthEvents(false)
 	end
 end
 
@@ -300,24 +279,34 @@ local ShowAFrame = {
 	end,
 }
 
+local function resetUnitState()
+	for _, frame in pairs(GetNamePlates()) do
+		local foundUnit = (frame.namePlateUnitToken or (frame.UnitFrame and frame.UnitFrame.unit)) or (frame.unitFrame and frame.unitFrame.unit)
+		if foundUnit then
+			ShowAFrame[curNpFlag](frame, false, true, false)
+		end
+	end
+end
+
 function FilteredNamePlate:actionUnitStateAfterChanged()
-	-- TODO IsKillLine1 = FnpEnableKeys.killlineMod and (Fnp_SavedScaleList.killline1 < 100)
-	-- TODO IsKillLine2 = FnpEnableKeys.killlineMod and (Fnp_SavedScaleList.killline2 >= 0.01)
-	-- TODO AllInfos = {}
 	local lastNp = curNpFlag
 	curNpFlag, curNpFlag1Type = FilteredNamePlate:GenCurNpFlags()
-	if not (curNpFlag == lastNp) then --UI类型有变
-		-- 需要有怪在周围重新 重新获取一下
-		isScaleInited = false
+	if not (curNpFlag == lastNp) then --UI类型有变,请重载,继续当做没有改变来工作
 		print(FNP_LOCALE_TEXT.FNP_CHANGED_UITYPE)
 		return
 	end
 
+	setCVarValues()
+
+	isInOnlySt = false
+
+	IsKillLine1 = FnpEnableKeys.killlineMod and (Fnp_SavedScaleList.killline1 < 100)
+	IsKillLine2 = FnpEnableKeys.killlineMod and (Fnp_SavedScaleList.killline2 >= 0.01)
+
 	isScaleInited = FilteredNamePlate:initScaleValues(curNpFlag, isScaleInited)
 	local matched = false
 	local matched2 = false
-	setCVarValues()
-	isInOnlySt = false
+
 	if Fnp_Enable == true then
 		--仅显
 		isNullOnlyList = false
@@ -368,53 +357,11 @@ function FilteredNamePlate:actionUnitStateAfterChanged()
 			end	
 		end
 	else -- 已经关闭功能就全部显示
-		for _, frame in pairs(GetNamePlates()) do
-			local foundUnit = (frame.namePlateUnitToken or (frame.UnitFrame and frame.UnitFrame.unit)) or (frame.unitFrame and frame.unitFrame.unit)
-			if foundUnit then
-				-- disable 还原了！
-				ShowAFrame[curNpFlag](frame, false, true, false)
-			end
-		end
-		-- unRegisterMyEvents(FilteredNamePlate_Frame)
+		resetUnitState()
 	end
-end
-
-local function getUnitIdInfo(unitid, reset)
-	if AllInfos[unitid] and (not reset) and AllInfos[unitid].inSee then
-		return
-	end
-	AllInfos[unitid] = nil
-	AllInfos[unitid] = {
-		tankModTS = 0,
-		healModTS = 0,
-		matchType = 0, -- 0 是无。1是onlyShow，2是filterShow
-		inSee = true,
-		trigger1 = 0, 
-		trigger2 = 0,
-	}  -- #ALLMYINFOS#
 end
 
 local function actionChangedByHeal(unitid, shouldBig, needShowBack)
-	if shouldBig then
-		local frame = GetNamePlateForUnit(unitid)
-		ShowAFrame[curNpFlag](frame, false, false, true)
-	else
-		if needShowBack then
-			local frame = GetNamePlateForUnit(unitid)
-			if isInOnlySt and AllInfos[unitid].matchType == 1 then
-				ShowAFrame[curNpFlag](frame, false, false, true) -- 仇恨回来了，恢复正常。但是是仅显目标则变大
-			elseif (not isInOnlySt) and AllInfos[unitid].matchType == 0 then
-				ShowAFrame[curNpFlag](frame, false, false, false) -- 仇恨回来了，恢复正常。
-			elseif (not isInOnlySt) and AllInfos[unitid].matchType == 1 then
-				print("Error not only Show but match 1 !!")
-			else
-				HideAFrame[curNpFlag](frame) -- 仇恨回来了，恢复正常。 但是这些情况应该变小Hide
-			end
-		end -- 如果是在UNIT_ADD传过来nil，将不处理，继续让Add函数处理即可
-	end
-end
-
-local function actionChangedByTarget(unitid, shouldBig, needShowBack)
 	if shouldBig then
 		local frame = GetNamePlateForUnit(unitid)
 		ShowAFrame[curNpFlag](frame, false, false, true)
@@ -459,28 +406,6 @@ local function actionUnitHealth(self, event, ...)
 		actionChangedByHeal(unitid, isKill, event)
 	else
 		AllInfos[unitid] = nil
-	end
-end
-
-local function actionUnitTarget(self, event, ...)
-	local unitid = ...
-	if UnitIsPlayer(unitid) then
-		return
-	end
-	getUnitIdInfo(unitid, false)
-	local ts = GetTime()
-	
-	if ((AllInfos[unitid].tankModTS + 0.5) >= ts) then -- ###刷新嘲讽频率
-		return
-	end
-
-	AllInfos[unitid].tankModTS = ts
-	local st = UnitThreatSituation("player", frame)
-	if st == nil then return end
-	if st == 0 then
-		actionChangedByTarget(unitid, true, event)
-	else
-		actionChangedByTarget(unitid, (UnitName(unitid.."target") ~= MYNAME), event)
 	end
 end
 
@@ -656,33 +581,63 @@ local function actionUnitSpellCastStop(self, event, ...)
 	end
 end
 
-FilteredNamePlate.FilterNp_EventList = {
-	["NAME_PLATE_UNIT_ADDED"]         = actionUnitAdded,
-	["NAME_PLATE_UNIT_REMOVED"]       = actionUnitRemoved,
-
-	["UNIT_SPELLCAST_START"]          = actionUnitSpellCastStart,
-	["UNIT_SPELLCAST_CHANNEL_START"]  = actionUnitSpellCastStart,
-	["UNIT_SPELLCAST_STOP"]           = actionUnitSpellCastStop,
-	["UNIT_SPELLCAST_CHANNEL_STOP"]   = actionUnitSpellCastStop,
-
-	["PLAYER_ENTERING_WORLD"]         = registerMyEvents,
-
-	["UNIT_HEALTH"]                   = actionUnitHealth,
-	["UNIT_MAXHEALTH"]                = actionUnitHealth,
-	["UNIT_TARGET"]                   = actionUnitTarget
-};
-
 function FilteredNamePlate_OnEvent(self, event, ...)
-	local handler = FilteredNamePlate.FilterNp_EventList[event]
+	local handler = FilteredNamePlate.FilterNp_Event_Genera_List[event] or FilteredNamePlate.FilterNp_Event_Heal_List[event] or FilteredNamePlate.FilterNp_Event_Enter_List[event]
 	if handler then
 	    handler(self, event, ...)
-	end
+	else
 end
 
 function FilteredNamePlate_OnLoad()
-	isRegistered = false
-	isErrInLoad = false
 	-- TODO MYNAME = UnitName("player")
+	---** first install, init values
+	if Fnp_Enable == nil then
+		Fnp_Enable = false
+	end
+	if FnpEnableKeys == nil or Fnp_CurVersion == nil then
+		FnpEnableKeys = {
+			killlineMod = false,
+		}
+	end
+	if Fnp_OtherNPFlag == nil then
+		Fnp_OtherNPFlag = 0
+	end
+
+	if Fnp_ONameList == nil then
+		Fnp_ONameList = {}
+		local thisname = "邪能炸药"
+		local localename = GetLocale()
+		if localename == "enUS" then
+			thisname = "Fel Explosive"
+		elseif localename == "zhTW" then
+			thisname = "魔化炸彈"
+		elseif localname == "ruRU" then
+			thisname = "Желч"
+		end
+		table.insert(Fnp_ONameList, thisname)
+	end
+
+	if Fnp_FNameList == nil then
+		Fnp_FNameList = {}
+	end
+
+	if Fnp_CurVersion == nil or Fnp_SavedScaleList == nil then
+        Fnp_SavedScaleList = {
+            normal = 1,
+            small = 0.25,
+            only = 1.4,
+			killline1 = 1.0,
+			killline2 = 0,
+        }
+		FilteredNamePlate:ChangedSavedScaleList(Fnp_OtherNPFlag)
+    end
+	-- TODO 以后增加新的参数根据版本号来处理
+	if Fnp_CurVersion ~= nil and (tonumber(Fnp_CurVersion) < tonumber(FNP_LOCALE_TEXT.FNP_VERSION)) then
+		print("Updated filteredNamePlate!")
+		Fnp_SavedScaleList.tankMod = 2.0
+	end
+	----
+	Fnp_CurVersion = FNP_LOCALE_TEXT.FNP_VERSION
 	FilteredNamePlate_Frame:RegisterEvent("PLAYER_ENTERING_WORLD")
 end
 
