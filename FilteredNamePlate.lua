@@ -8,7 +8,8 @@ local string_find = string.find
 local isGeneralReged, isKillLineReged, isScaleInited, isErrInLoad, isNullOnlyList, isNullFilterList
 
 local IsKillLine1, IsKillLine2, AllInfos
-local isInOnlySt -- #ALLMYINFOS#
+
+local isInOnlySt
 
 local curNpFlag, curNpFlag1Type
 
@@ -49,11 +50,13 @@ end
 
 local function regHealthEvents(registed)
 	if registed then
-		FilteredNamePlate_Frame:RegisterEvent("UNIT_HEALTH", actionUnitHealth)
-		FilteredNamePlate_Frame:RegisterEvent("UNIT_MAXHEALTH", actionUnitHealth)
+		for k, v in pairs(FilteredNamePlate.FilterNp_Event_Heal_List) do
+			self:RegisterEvent(k,v)
+		end
 	else
-		FilteredNamePlate_Frame:UnregisterEvent("UNIT_HEALTH", actionUnitHealth)
-		FilteredNamePlate_Frame:UnregisterEvent("UNIT_MAXHEALTH", actionUnitHealth)
+		for k, v in pairs(FilteredNamePlate.FilterNp_Event_Heal_List) do
+			self:UnregisterEvent(k,v)
+        end
 	end
 end
 
@@ -70,14 +73,7 @@ local function regGeneralEvents(registed)
 end
 
 local function registerMyEvents(self, event, ...)
-	isGeneralReged = false
-	isKillLineReged = false
-	isErrInLoad = false
-	isScaleInited = false
-	isInOnlySt = false
-	FilteredNamePlate.isSettingChanged = false
-
-	if Fnp_Enable and (isGeneralReged == nil or isGeneralReged == false) then
+	if (isGeneralReged == nil or isGeneralReged == false) then
 		curNpFlag, curNpFlag1Type = FilteredNamePlate:GenCurNpFlags()
 		isNullOnlyList = false
 		isNullFilterList = false
@@ -87,10 +83,10 @@ local function registerMyEvents(self, event, ...)
 		isGeneralReged = true
 	end
 
-	if FnpEnableKeys.killlineMod and (isKillLineReged == nil or isKillLineReged == false) then
+	if Fnp_Enable and FnpEnableKeys.killlineMod and (isKillLineReged == nil or isKillLineReged == false) then
 		regHealthEvents(true)
 		AllInfos = {}
-		IsKillLine1 = FnpEnableKeys.killlineMod and (Fnp_SavedScaleList.killline1 < 100)
+		IsKillLine1 = FnpEnableKeys.killlineMod and (Fnp_SavedScaleList.killline1 < 1.0)
 		IsKillLine2 = FnpEnableKeys.killlineMod and (Fnp_SavedScaleList.killline2 >= 0.01)
 		isKillLineReged = true
 	end
@@ -290,6 +286,7 @@ local function resetUnitState(restore)
 end
 
 function FilteredNamePlate:actionUnitStateAfterChanged()
+	if isErrInLoad then return print(FNP_LOCALE_TEXT.FNP_CHANGED_UITYPE) end
 	local lastNp = curNpFlag
 	curNpFlag, curNpFlag1Type = FilteredNamePlate:GenCurNpFlags()
 	if not (curNpFlag == lastNp) then --UI类型有变,请重载,继续当做没有改变来工作
@@ -298,20 +295,17 @@ function FilteredNamePlate:actionUnitStateAfterChanged()
 	end
 
 	setCVarValues()
-
+	-- reset global vars
 	isInOnlySt = false
-
-	IsKillLine1 = FnpEnableKeys.killlineMod and (Fnp_SavedScaleList.killline1 < 100)
+	FilteredNamePlate.isSettingChanged = false
+	IsKillLine1 = FnpEnableKeys.killlineMod and (Fnp_SavedScaleList.killline1 < 1.0)
 	IsKillLine2 = FnpEnableKeys.killlineMod and (Fnp_SavedScaleList.killline2 >= 0.01)
-	AllInfos = {}
 	-- 我们只计算下这个，生效交给每次health change
-
+	-- TODO
 	isScaleInited = FilteredNamePlate:initScaleValues(curNpFlag, isScaleInited)
-	--仅显
 	isNullOnlyList = false
-	if getTableCount(Fnp_ONameList) == 0 then isNullOnlyList = true end
-	--过滤
 	isNullFilterList = false
+	if getTableCount(Fnp_ONameList) == 0 then isNullOnlyList = true end
 	if getTableCount(Fnp_FNameList) == 0 then isNullFilterList = true end
 
 	local matched = false
@@ -414,7 +408,6 @@ end
 
 local function actionUnitAddedForce(unitid)
 	local addedname = UnitName(unitid)
-	if AllInfos
 	--AllInfos[unitid].name = addedname  -- #ALLMYINFOS#
 
 	-- 0. 当前Add的单位名,是否match filter
@@ -503,6 +496,8 @@ end
 ---------k k k---k k k---k k k-------------
 
 local function actionUnitAdded(self, event, ...)
+	if Fnp_Enable == false then return end
+
 	if isScaleInited == false then
 		isScaleInited = FilteredNamePlate:initScaleValues(curNpFlag, isScaleInited)
 		setCVarValues()
@@ -517,7 +512,7 @@ local function actionUnitAdded(self, event, ...)
 		end
 		return
 	end
-	if Fnp_Enable == false then return end
+	--TODO 是否移除
 	if isNullOnlyList == true and isNullFilterList == true then
 		return
 	end
@@ -534,6 +529,7 @@ local function actionUnitRemoved(self, event, ...)
 	-- if isNullOnlyList == true and isNullFilterList == true then
 	--	return
 	-- end
+	--TODO 是否移除
 	if isInOnlySt == false then
 		-- 当前处于没有仅显模式,表明所有血条都开着的
 		return
@@ -592,7 +588,15 @@ function FilteredNamePlate_OnEvent(self, event, ...)
 end
 
 function FilteredNamePlate_OnLoad()
-	-- TODO MYNAME = UnitName("player")
+	--** global vars reset
+	isErrInLoad = false
+	isGeneralReged = false
+	isKillLineReged = false
+	isScaleInited = false
+	isInOnlySt = false
+	FilteredNamePlate.isSettingChanged = false
+	-- MYNAME = UnitName("player")
+
 	---** first install, init values
 	if Fnp_Enable == nil then
 		Fnp_Enable = false
