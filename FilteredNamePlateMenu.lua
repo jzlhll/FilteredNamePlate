@@ -126,23 +126,23 @@ function FilteredNamePlate:FNP_ChangeFrameVisibility(...)
 		else
 			local oldChange = FilteredNamePlate.isSettingChanged
 			FilteredNamePlate_Frame_EnableCheckButton:SetChecked(Fnp_Enable);
-			FilteredNamePlate_Frame_KilllineModCB:SetChecked(FnpEnableKeys.killlineMod);
+			-- FilteredNamePlate_Frame_KilllineModCB:SetChecked(FnpEnableKeys.killlineMod);
 
 			FilteredNamePlate_Frame_OnlyShowScale:SetValue(Fnp_SavedScaleList.only * 100)
 			FilteredNamePlate_Frame_OnlyOtherShowScale:SetValue(Fnp_SavedScaleList.small * 100)
 			FilteredNamePlate_Frame_SystemScale:SetValue(Fnp_SavedScaleList.normal * 100)
 
-			FilteredNamePlate_Frame_Slider_KL1:SetValue(Fnp_SavedScaleList.killline1 * 100)
-			FilteredNamePlate_Frame_Slider_KL2:SetValue(Fnp_SavedScaleList.killline2 * 100)
+			--FilteredNamePlate_Frame_Slider_KL1:SetValue(Fnp_SavedScaleList.killline1 * 100)
+			--FilteredNamePlate_Frame_Slider_KL2:SetValue(Fnp_SavedScaleList.killline2 * 100)
 
 			FilteredNamePlate_Frame_OnlyShowModeEditBox:SetText(table.concat(Fnp_ONameList, ";"));
 			FilteredNamePlate_Frame_FilteredModeEditBox:SetText(table.concat(Fnp_FNameList, ";"));
 
-			if FnpEnableKeys.killlineMod then
-				FilteredNamePlate_Menu4:Enable()
-			else
-				FilteredNamePlate_Menu4:Disable()
-			end
+			-- if FnpEnableKeys.killlineMod then
+			--	FilteredNamePlate_Menu4:Enable()
+			--else
+			--	FilteredNamePlate_Menu4:Disable()
+			--end
 
 			if oldChange == false then
 				FilteredNamePlate_Frame_takeEffectBtn:Hide()
@@ -174,8 +174,8 @@ function FilteredNamePlate:FNP_ChangeFrameVisibility(...)
 			FilteredNamePlate_Frame_OnlyShowScale:Hide()
 			FilteredNamePlate_Frame_OnlyOtherShowScale:Hide()
 
-			FilteredNamePlate_Frame_Slider_KL1:Hide()
-			FilteredNamePlate_Frame_Slider_KL2:Hide()
+			--FilteredNamePlate_Frame_Slider_KL1:Hide()
+			--FilteredNamePlate_Frame_Slider_KL2:Hide()
 
 			FilteredNamePlate_Frame_ShareIcon:Hide()
 

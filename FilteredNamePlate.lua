@@ -5,33 +5,11 @@ local UnitName, GetUnitName = UnitName, GetUnitName
 local UnitHealth, UnitHealthMax = UnitHealth, UnitHealthMax
 local string_find = string.find
 
-local IsGeneralRegistered, IsKillLineRegistered, isScaleInited, isErrInLoad, isNullOnlyList, isNullFilterList
-
-local IsKillLine1, IsKillLine2, AllInfos
+local IsGeneralRegistered, SetupFlag
 
 local isInOnlySt
 
 local curNpFlag, curNpFlag1Type
-
-FilteredNamePlate.FilterNp_Event_General_List = {
-	["NAME_PLATE_UNIT_ADDED"]         = actionUnitAdded,
-	["NAME_PLATE_UNIT_REMOVED"]       = actionUnitRemoved,
-
-	["UNIT_SPELLCAST_START"]          = actionUnitSpellCastStart,
-	["UNIT_SPELLCAST_CHANNEL_START"]  = actionUnitSpellCastStart,
-	["UNIT_SPELLCAST_STOP"]           = actionUnitSpellCastStop,
-	["UNIT_SPELLCAST_CHANNEL_STOP"]   = actionUnitSpellCastStop,
-};
-
--- ["UNIT_TTARGET"]                   = actionUnitTTarget
-FilteredNamePlate.FilterNp_Event_Heal_List = {
-	["UNIT_HEALTH"]                   = actionUnitHealth,
-	["UNIT_MAXHEALTH"]                = actionUnitHealth,
-};
-
-FilteredNamePlate.FilterNp_Event_Enter_List = {
-	["PLAYER_ENTERING_WORLD"]         = registerMyEvents,
-};
 
 local function setCVarValues()
 	SetCVar("nameplateShowEnemies", 1)
@@ -48,59 +26,22 @@ local function getTableCount(atab)
 	return count
 end
 
-local function regHealthEvents(registed)
-	if registed then
-		for k, v in pairs(FilteredNamePlate.FilterNp_Event_Heal_List) do
-			self:RegisterEvent(k,v)
-		end
-	else
-		for k, v in pairs(FilteredNamePlate.FilterNp_Event_Heal_List) do
-			self:UnregisterEvent(k,v)
-        end
-	end
-end
-
-local function regGeneralEvents(registed)
-	if registed then
-		for k, v in pairs(FilteredNamePlate.FilterNp_Event_General_List) do
-			self:RegisterEvent(k,v)
-		end
-	else
-		for k, v in pairs(FilteredNamePlate.FilterNp_Event_General_List) do
-			self:UnregisterEvent(k,v)
-        end
-	end
-end
-
 local function registerMyEvents(self, event, ...)
 	if (IsGeneralRegistered == nil or IsGeneralRegistered == false) then
 		curNpFlag, curNpFlag1Type = FilteredNamePlate:GenCurNpFlags()
-		isNullOnlyList = false
-		isNullFilterList = false
-		if getTableCount(Fnp_ONameList) == 0 then isNullOnlyList = true end
-		if getTableCount(Fnp_FNameList) == 0 then isNullFilterList = true end
+		local function regGeneralEvents(registed)
+			if registed then
+				for k, v in pairs(FilteredNamePlate.FilterNp_Event_General_List) do
+					self:RegisterEvent(k,v)
+				end
+			else
+				for k, v in pairs(FilteredNamePlate.FilterNp_Event_General_List) do
+					self:UnregisterEvent(k,v)
+				end
+			end
+		end
 		regGeneralEvents(true)
 		IsGeneralRegistered = true
-	end
-
-	if Fnp_Enable and FnpEnableKeys.killlineMod and (IsKillLineRegistered == nil or IsKillLineRegistered == false) then
-		regHealthEvents(true)
-		AllInfos = {}
-		IsKillLine1 = FnpEnableKeys.killlineMod and (Fnp_SavedScaleList.killline1 < 1.0)
-		IsKillLine2 = FnpEnableKeys.killlineMod and (Fnp_SavedScaleList.killline2 >= 0.01)
-		IsKillLineRegistered = true
-	end
-end
-
-local function unRegisterMyEvents(self)
-	if IsGeneralRegistered == true then
-		IsGeneralRegistered = false
-		regGeneralEvents(false)
-	end
-
-	if IsKillLineRegistered == true then
-		IsKillLineRegistered = false
-		regHealthEvents(false)
 	end
 end
 
@@ -286,7 +227,15 @@ local function resetUnitState(restore)
 end
 
 function FilteredNamePlate:actionUnitStateAfterChanged()
-	if isErrInLoad then return print(FNP_LOCALE_TEXT.FNP_CHANGED_UITYPE) end
+	if SetupFlag == 10 then
+		print(L.FNP_PRINT_ERROR_UITYPE)
+		return
+	end
+	if SetupFlag == 0 then
+		--print("not init yet.")
+		return
+	end
+
 	local lastNp = curNpFlag
 	curNpFlag, curNpFlag1Type = FilteredNamePlate:GenCurNpFlags()
 	if not (curNpFlag == lastNp) then --UI类型有变,请重载,继续当做没有改变来工作
@@ -298,15 +247,7 @@ function FilteredNamePlate:actionUnitStateAfterChanged()
 	-- reset global vars{{
 	isInOnlySt = false
 	FilteredNamePlate.isSettingChanged = false
-	IsKillLine1 = FnpEnableKeys.killlineMod and (Fnp_SavedScaleList.killline1 < 1.0)
-	IsKillLine2 = FnpEnableKeys.killlineMod and (Fnp_SavedScaleList.killline2 >= 0.01)
-	-- 我们只计算下这个，生效交给每次health change
-	-- TODO
-	isScaleInited = FilteredNamePlate:initScaleValues(curNpFlag, isScaleInited)
-	isNullOnlyList = false
-	isNullFilterList = false
-	if getTableCount(Fnp_ONameList) == 0 then isNullOnlyList = true end
-	if getTableCount(Fnp_FNameList) == 0 then isNullFilterList = true end
+	FilteredNamePlate:reinitScaleValues(curNpFlag, true)
 	-- reset global vars}}
 
 	local matched = false
@@ -314,6 +255,10 @@ function FilteredNamePlate:actionUnitStateAfterChanged()
 
 	if Fnp_Enable == true then
 		local isHide = false
+		local isNullOnlyList = false
+		local isNullFilterList = false
+		if getTableCount(Fnp_ONameList) == 0 then isNullOnlyList = true end
+		if getTableCount(Fnp_FNameList) == 0 then isNullFilterList = true end
 		for _, frame in pairs(GetNamePlates()) do
 			if isNullOnlyList == true then -- 如果没有仅显单位则过滤单位hide，其他show normal模式
 				matched2 = false
@@ -352,58 +297,8 @@ function FilteredNamePlate:actionUnitStateAfterChanged()
 		else
 			resetUnitState(false)
 		end
-	elseif FnpEnableKeys.killlineMod then
-		resetUnitState(false)
 	else
 		resetUnitState(true)
-	end
-end
-
-local function actionChangedByHeal(unitid, shouldBig, needShowBack)
-	if shouldBig then
-		local frame = GetNamePlateForUnit(unitid)
-		ShowAFrame[curNpFlag](frame, false, false, true)
-	else
-		if needShowBack then
-			local frame = GetNamePlateForUnit(unitid)
-			if isInOnlySt and AllInfos[unitid].matchType == 1 then
-				ShowAFrame[curNpFlag](frame, false, false, true) -- 仇恨回来了，恢复正常。但是是仅显目标则变大
-			elseif (not isInOnlySt) and AllInfos[unitid].matchType == 0 then
-				ShowAFrame[curNpFlag](frame, false, false, false) -- 仇恨回来了，恢复正常。
-			elseif (not isInOnlySt) and AllInfos[unitid].matchType == 1 then
-				print("Error not only Show but match 1 !!")
-			else
-				HideAFrame[curNpFlag](frame) -- 仇恨回来了，恢复正常。 但是这些情况应该变小Hide
-			end
-		end -- 如果是在UNIT_ADD传过来nil，将不处理，继续让Add函数处理即可
-	end
-end
-
-local function actionUnitHealth(self, event, ...)
-	local unitid = ...
-	if UnitIsPlayer(unitid) then
-		return
-	end
-	getUnitIdInfo(unitid, false)
-	local ts = GetTime()
-	if (AllInfos[unitid].healModTS + 0.1) >= ts then -- ###刷新血量监听频率
-		return
-	end
-	AllInfos[unitid].healModTS = ts
-	local hmax = UnitHealthMax(unitid)
-	local curh = UnitHealth(unitid)
-	if hmax > 0 then
-		local perc = (curh * 100) / hmax
-		local isKill = false
-		if IsKillLine1 and perc >= Fnp_SavedScaleList.killline1 then
-			isKill = true
-		end
-		if (not isKill) and IsKillLine2 and perc <= Fnp_SavedScaleList.killline2 then
-			isKill = true
-		end
-		actionChangedByHeal(unitid, isKill, event)
-	else
-		AllInfos[unitid] = nil
 	end
 end
 
@@ -412,8 +307,7 @@ local function actionUnitAddedForce(unitid)
 	--AllInfos[unitid].name = addedname  -- #ALLMYINFOS#
 
 	-- 0. 当前Add的单位名,是否match filter
-	local curFilterMatch = false
-	if isNullFilterList == false then curFilterMatch = isMatchedNameList(Fnp_FNameList, addedname) end
+	local curFilterMatch = isMatchedNameList(Fnp_FNameList, addedname)
 	if curFilterMatch == true then
 		--AllInfos[unitid].matchType = 2  -- #ALLMYINFOS#
 		local frame = GetNamePlateForUnit(unitid)
@@ -494,40 +388,30 @@ end
 ---------k k k---k k k---k k k-------------
 
 local function actionUnitAdded(self, event, ...)
-	if Fnp_Enable == false then return end
-
-	if isScaleInited == false then
-		isScaleInited = FilteredNamePlate:initScaleValues(curNpFlag, isScaleInited)
-		setCVarValues()
-	end
-
-	if isScaleInited == false then
-		if isErrInLoad == false then
-			isErrInLoad = true
-			print(L.FNP_PRINT_ERROR_UITYPE)
-			print(L.FNP_PRINT_ERROR_UITYPE)
-			print(L.FNP_PRINT_ERROR_UITYPE)
-		end
-		return
-	end
-	--TODO 是否移除
-	if isNullOnlyList == true and isNullFilterList == true then
-		return
-	end
-
+	if Fnp_Enable == false or SetupFlag == 10 then return end
 	local unitid = ...
 	if UnitIsPlayer(unitid) then
 		return
 	end
+
+	if SetupFlag == 0 then
+		local inited = FilteredNamePlate:initScaleValues(curNpFlag, false) -- 第一次
+		if inited == false then
+			SetupFlag = 10 -- 错误永不再用，直到重载
+			print(L.FNP_PRINT_ERROR_UITYPE)
+			print(L.FNP_PRINT_ERROR_UITYPE)
+			print(L.FNP_PRINT_ERROR_UITYPE)
+			return
+		else
+			SetupFlag = 1
+		end
+		setCVarValues() -- 一次load执行一次
+	end
+
 	actionUnitAddedForce(unitid)
 end
 
 local function actionUnitRemoved(self, event, ...)
-	--这里不需要判断是否为空
-	-- if isNullOnlyList == true and isNullFilterList == true then
-	--	return
-	-- end
-	--TODO 是否移除
 	if isInOnlySt == false then
 		-- 当前处于没有仅显模式,表明所有血条都开着的
 		return
@@ -579,18 +463,18 @@ local function actionUnitSpellCastStop(self, event, ...)
 end
 
 function FilteredNamePlate_OnEvent(self, event, ...)
-	local handler = FilteredNamePlate.FilterNp_Event_General_List[event] or FilteredNamePlate.FilterNp_Event_Heal_List[event] or FilteredNamePlate.FilterNp_Event_Enter_List[event]
+	local handler = FilteredNamePlate.FilterNp_Event_General_List[event]
 	if handler then
 	    handler(self, event, ...)
-	else
+	elseif event == "PLAYER_ENTERING_WORLD" then
+		registerMyEvents(self, event, ...)
+	end
 end
 
 function FilteredNamePlate_OnLoad()
 	--** global vars reset
-	isErrInLoad = false
+	SetupFlag = 0
 	IsGeneralRegistered = false
-	IsKillLineRegistered = false
-	isScaleInited = false
 	isInOnlySt = false
 	FilteredNamePlate.isSettingChanged = false
 	-- MYNAME = UnitName("player")
@@ -631,18 +515,28 @@ function FilteredNamePlate_OnLoad()
             normal = 1,
             small = 0.25,
             only = 1.4,
-			killline1 = 1.0,
-			killline2 = 0,
+			killline = 100,
+			killline_r = 0,
         }
 		FilteredNamePlate:ChangedSavedScaleList(Fnp_OtherNPFlag)
     end
 	-- TODO 以后增加新的参数根据版本号来处理
-	if Fnp_CurVersion ~= nil and (tonumber(Fnp_CurVersion) < tonumber(FNP_LOCALE_TEXT.FNP_VERSION)) then
-		print("Updated filteredNamePlate!")
-		Fnp_SavedScaleList.tankMod = 2.0
-	end
+	--if Fnp_CurVersion ~= nil and (tonumber(Fnp_CurVersion) < tonumber(FNP_LOCALE_TEXT.FNP_VERSION)) then
+		-- print("Updated filteredNamePlate!")
+	--	Fnp_SavedScaleList.tankMod = 2.0
+	--end
 	----
 	Fnp_CurVersion = FNP_LOCALE_TEXT.FNP_VERSION
 	FilteredNamePlate_Frame:RegisterEvent("PLAYER_ENTERING_WORLD")
 end
 
+-- 必须放在最下面
+FilteredNamePlate.FilterNp_Event_General_List = {
+	["NAME_PLATE_UNIT_ADDED"]         = actionUnitAdded,
+	["NAME_PLATE_UNIT_REMOVED"]       = actionUnitRemoved,
+
+	["UNIT_SPELLCAST_START"]          = actionUnitSpellCastStart,
+	["UNIT_SPELLCAST_CHANNEL_START"]  = actionUnitSpellCastStart,
+	["UNIT_SPELLCAST_STOP"]           = actionUnitSpellCastStop,
+	["UNIT_SPELLCAST_CHANNEL_STOP"]   = actionUnitSpellCastStop,
+}
