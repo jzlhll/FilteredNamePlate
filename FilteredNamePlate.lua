@@ -5,7 +5,7 @@ local UnitName, GetUnitName = UnitName, GetUnitName
 local UnitHealth, UnitHealthMax = UnitHealth, UnitHealthMax
 local string_find = string.find
 
-local isGeneralReged, isKillLineReged, isScaleInited, isErrInLoad, isNullOnlyList, isNullFilterList
+local IsGeneralRegistered, IsKillLineRegistered, isScaleInited, isErrInLoad, isNullOnlyList, isNullFilterList
 
 local IsKillLine1, IsKillLine2, AllInfos
 
@@ -13,7 +13,7 @@ local isInOnlySt
 
 local curNpFlag, curNpFlag1Type
 
-FilteredNamePlate.FilterNp_Event_Genera_List = {
+FilteredNamePlate.FilterNp_Event_General_List = {
 	["NAME_PLATE_UNIT_ADDED"]         = actionUnitAdded,
 	["NAME_PLATE_UNIT_REMOVED"]       = actionUnitRemoved,
 
@@ -62,44 +62,44 @@ end
 
 local function regGeneralEvents(registed)
 	if registed then
-		for k, v in pairs(FilteredNamePlate.FilterNp_Event_Genera_List) do
+		for k, v in pairs(FilteredNamePlate.FilterNp_Event_General_List) do
 			self:RegisterEvent(k,v)
 		end
 	else
-		for k, v in pairs(FilteredNamePlate.FilterNp_Event_Genera_List) do
+		for k, v in pairs(FilteredNamePlate.FilterNp_Event_General_List) do
 			self:UnregisterEvent(k,v)
         end
 	end
 end
 
 local function registerMyEvents(self, event, ...)
-	if (isGeneralReged == nil or isGeneralReged == false) then
+	if (IsGeneralRegistered == nil or IsGeneralRegistered == false) then
 		curNpFlag, curNpFlag1Type = FilteredNamePlate:GenCurNpFlags()
 		isNullOnlyList = false
 		isNullFilterList = false
 		if getTableCount(Fnp_ONameList) == 0 then isNullOnlyList = true end
 		if getTableCount(Fnp_FNameList) == 0 then isNullFilterList = true end
 		regGeneralEvents(true)
-		isGeneralReged = true
+		IsGeneralRegistered = true
 	end
 
-	if Fnp_Enable and FnpEnableKeys.killlineMod and (isKillLineReged == nil or isKillLineReged == false) then
+	if Fnp_Enable and FnpEnableKeys.killlineMod and (IsKillLineRegistered == nil or IsKillLineRegistered == false) then
 		regHealthEvents(true)
 		AllInfos = {}
 		IsKillLine1 = FnpEnableKeys.killlineMod and (Fnp_SavedScaleList.killline1 < 1.0)
 		IsKillLine2 = FnpEnableKeys.killlineMod and (Fnp_SavedScaleList.killline2 >= 0.01)
-		isKillLineReged = true
+		IsKillLineRegistered = true
 	end
 end
 
 local function unRegisterMyEvents(self)
-	if isGeneralReged == true then
-		isGeneralReged = false
+	if IsGeneralRegistered == true then
+		IsGeneralRegistered = false
 		regGeneralEvents(false)
 	end
 
-	if isKillLineReged == true then
-		isKillLineReged = false
+	if IsKillLineRegistered == true then
+		IsKillLineRegistered = false
 		regHealthEvents(false)
 	end
 end
@@ -295,7 +295,7 @@ function FilteredNamePlate:actionUnitStateAfterChanged()
 	end
 
 	setCVarValues()
-	-- reset global vars
+	-- reset global vars{{
 	isInOnlySt = false
 	FilteredNamePlate.isSettingChanged = false
 	IsKillLine1 = FnpEnableKeys.killlineMod and (Fnp_SavedScaleList.killline1 < 1.0)
@@ -307,6 +307,7 @@ function FilteredNamePlate:actionUnitStateAfterChanged()
 	isNullFilterList = false
 	if getTableCount(Fnp_ONameList) == 0 then isNullOnlyList = true end
 	if getTableCount(Fnp_FNameList) == 0 then isNullFilterList = true end
+	-- reset global vars}}
 
 	local matched = false
 	local matched2 = false
@@ -454,9 +455,6 @@ local function actionUnitAddedForce(unitid)
 		end
 		isInOnlySt = true
 	end
-	if FnpEnableKeys.tankMod then
-		actionUnitTarget(nil, nil, unitid)
-	end
 end
 
 local function actionUnitRemovedForce(unitid)
@@ -581,7 +579,7 @@ local function actionUnitSpellCastStop(self, event, ...)
 end
 
 function FilteredNamePlate_OnEvent(self, event, ...)
-	local handler = FilteredNamePlate.FilterNp_Event_Genera_List[event] or FilteredNamePlate.FilterNp_Event_Heal_List[event] or FilteredNamePlate.FilterNp_Event_Enter_List[event]
+	local handler = FilteredNamePlate.FilterNp_Event_General_List[event] or FilteredNamePlate.FilterNp_Event_Heal_List[event] or FilteredNamePlate.FilterNp_Event_Enter_List[event]
 	if handler then
 	    handler(self, event, ...)
 	else
@@ -590,8 +588,8 @@ end
 function FilteredNamePlate_OnLoad()
 	--** global vars reset
 	isErrInLoad = false
-	isGeneralReged = false
-	isKillLineReged = false
+	IsGeneralRegistered = false
+	IsKillLineRegistered = false
 	isScaleInited = false
 	isInOnlySt = false
 	FilteredNamePlate.isSettingChanged = false
