@@ -42,7 +42,6 @@ local function registerMyEvents(self, event, ...)
 		end
 
 		if Fnp_ONameList == nil then
-			print("444")
 			Fnp_ONameList = {}
 			local thisname = "邪能炸药"
 			local localename = GetLocale()
@@ -76,11 +75,9 @@ local function registerMyEvents(self, event, ...)
 
 		--- old -> v6.1.1
 		Fnp_CurVersion = nil
-		print("Fnp_MyVersion "..Fnp_MyVersion)
 		--- v6.1.1 -> new
 		if Fnp_MyVersion ~= nil and Fnp_MyVersion < FNP_LOCALE_TEXT.FNP_VERSION then
 			Fnp_MyVersion = FNP_LOCALE_TEXT.FNP_VERSION
-			print("TODO TODO")
 		end
 		-----*** inited **}
 
@@ -535,7 +532,6 @@ function FilteredNamePlate_OnLoad()
 	FilteredNamePlate.isSettingChanged = false
 	-- MYNAME = UnitName("player")
 	FilteredNamePlate_Frame:RegisterEvent("PLAYER_ENTERING_WORLD")
-	print("giestttt")
 end
 
 -- 必须放在最下面
