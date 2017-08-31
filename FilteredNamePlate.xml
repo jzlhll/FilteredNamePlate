@@ -197,7 +197,7 @@
 			   </OnLoad>
 			   <OnValueChanged>
 			   	  _G[self:GetName().."Text"]:SetText(FNP_LOCALE_TEXT.FNP_DEFAULT_SCALE_TXT.."("..string.format("%.0f", self:GetValue()).."%)");
-				  Fnp_SavedScaleList.normal = string.format("%.2f", self:GetValue() / 100)
+				  Fnp_SavedScaleList.normal = tonumber(string.format("%.2f", self:GetValue() / 100))
 				  if FilteredNamePlate_Frame:IsShown() then
 				  	  FilteredNamePlate.isSettingChanged = true
 				  	  FilteredNamePlate_Frame_takeEffectBtn:Show()
@@ -230,7 +230,7 @@
 			   </OnLoad>
 			   <OnValueChanged>
 			      _G[self:GetName().."Text"]:SetText(FNP_LOCALE_TEXT.FNP_ONLYSHOW_SCALE_TXT.."("..string.format("%.0f", self:GetValue()).."%)");
-				  Fnp_SavedScaleList.only = string.format("%.2f", self:GetValue() / 100)
+				  Fnp_SavedScaleList.only = tonumber(string.format("%.2f", self:GetValue() / 100))
 				  if FilteredNamePlate_Frame:IsShown() then
 				      FilteredNamePlate.isSettingChanged = true
 				      FilteredNamePlate_Frame_takeEffectBtn:Show()
@@ -265,7 +265,7 @@
 				  _G[self:GetName().."Text"]:SetText(FNP_LOCALE_TEXT.FNP_ONLYSHOW_OTHER_SCALE_TXT.."("..string.format("%.0f", self:GetValue()).."%)");
 				  <!-- FilteredNamePlate_AdvancedFrame_show_TextOnlyOther:SetText("OnyShow Exclude Scale".."("..string.format("%.0f", self:GetValue()).."%)");
 				  -->
-				  Fnp_SavedScaleList.small = string.format("%.2f", self:GetValue() / 100)
+				  Fnp_SavedScaleList.small = tonumber(string.format("%.2f", self:GetValue() / 100))
 				  if FilteredNamePlate_Frame:IsShown() then
 				      FilteredNamePlate.isSettingChanged = true
 				      FilteredNamePlate_Frame_takeEffectBtn:Show()
@@ -403,7 +403,7 @@
 					</Anchor>
 				</Anchors>
 			</Texture>
-			<FontString name="$parent_Header_Text" inherits="GameFontNormal" text="FNP v6.1">
+			<FontString name="$parent_Header_Text" inherits="GameFontNormal" text="FNP v6.1.1">
 				<Anchors>
 					<Anchor point="TOP" relativeTo="$parent_Header">
 						<Offset>

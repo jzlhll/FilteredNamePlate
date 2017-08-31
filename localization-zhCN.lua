@@ -1,7 +1,7 @@
 ﻿-- Prevent tainting global _.
 
 FNP_LOCALE_TEXT = {}
-FNP_LOCALE_TEXT.FNP_VERSION = "6.1"
+FNP_LOCALE_TEXT.FNP_VERSION = "6.1.1"
 
 if GetLocale() == "zhCN" then
 FNP_LOCALE_TEXT.FNP_ENABLE_TXT = "启用";
