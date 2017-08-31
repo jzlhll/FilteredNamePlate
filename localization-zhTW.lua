@@ -1,4 +1,5 @@
 ﻿-- Prevent tainting global _.
+
 if GetLocale() == "zhTW" then
 FNP_LOCALE_TEXT.FNP_ENABLE_TXT = "啟用";
 -- FNP_LOCALE_TEXT.FNP_ENABLE_TANK_TXT = "坦克專用";

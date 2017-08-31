@@ -1,4 +1,4 @@
-## Interface: 70200
+## Interface: 70300
 ## Title: FilteredNamePlate-FNP
 ## Title-zhTW: 过滤姓名板-FNP
 ## Title-zhCN: 过滤姓名板-FNP
@@ -11,12 +11,10 @@
 ## DefaultState: Enabled
 ## LoadOnDemand: 0
 ## SavedVariables: Fnp_Enable, FnpEnableKeys, Fnp_FNameList, Fnp_ONameList, Fnp_OtherNPFlag, Fnp_SavedScaleList, Fnp_CurVersion
-
 localization-zhCN.lua
-localization-enUS.lua
 localization-zhTW.lua
 localization-ruRU.lua
-
+localization-enUS.lua
 FNPSupportList.lua
 
 FilteredNamePlate.xml
