@@ -181,7 +181,11 @@ function FilteredNamePlate:FNP_ChangeFrameVisibility(...)
 
 			FilteredNamePlate_Frame_AuthorText:Hide()
 			FilteredNamePlate_Frame_webText:Hide()
-			FilteredNamePlate_Frame_reloadUIBtn:Hide()
+			if FilteredNamePlate.isSettingChanged then
+				FilteredNamePlate_Frame_reloadUIBtn:Show()
+			else
+				FilteredNamePlate_Frame_reloadUIBtn:Hide()
+			end
 			if info == "general" then
 				FilteredNamePlate_Menu1:LockHighlight()
 				FilteredNamePlate_Frame_EnableCheckButton:Show()

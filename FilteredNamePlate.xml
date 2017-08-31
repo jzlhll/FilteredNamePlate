@@ -166,7 +166,7 @@
 			<Anchors>
 				<Anchor point="RIGTH" relativeTo="$parent" relativePoint="BOTTOMRIGHT">
 				<Offset>
-					<AbsDimension x="-150" y="98" />
+					<AbsDimension x="-225" y="130" />
 				</Offset>
 				</Anchor>
 			</Anchors>
@@ -375,7 +375,7 @@
 			<Anchors>
 				<Anchor point="TOPLEFT" relativeTo="FilteredNamePlate_Frame_takeEffectBtn">
 				<Offset>
-					<AbsDimension x="-80" y="0" />
+					<AbsDimension x="-160" y="0" />
 				</Offset>
 				</Anchor>
 			</Anchors>
