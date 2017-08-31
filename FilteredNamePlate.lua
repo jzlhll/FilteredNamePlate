@@ -28,6 +28,62 @@ end
 
 local function registerMyEvents(self, event, ...)
 	if (IsGeneralRegistered == nil or IsGeneralRegistered == false) then
+		---**{ first install, init values must be after received ENTER_WORLD
+		if Fnp_Enable == nil then
+			Fnp_Enable = false
+		end
+		if FnpEnableKeys == nil then
+			FnpEnableKeys = {
+				killlineMod = false,
+			}
+		end
+		if Fnp_OtherNPFlag == nil then
+			Fnp_OtherNPFlag = 0
+		end
+
+		if Fnp_ONameList == nil then
+			print("444")
+			Fnp_ONameList = {}
+			local thisname = "邪能炸药"
+			local localename = GetLocale()
+			if localename == "enUS" then
+				thisname = "Fel Explosive"
+			elseif localename == "zhTW" then
+				thisname = "魔化炸彈"
+			elseif localname == "ruRU" then
+				thisname = "Желч"
+			end
+			table.insert(Fnp_ONameList, thisname)
+		end
+
+		if Fnp_FNameList == nil then
+			Fnp_FNameList = {}
+		end
+		if Fnp_MyVersion == nil or Fnp_SavedScaleList == nil then
+			Fnp_SavedScaleList = nil
+			Fnp_SavedScaleList = {
+				normal = 1,
+				small = 0.25,
+				only = 1.4,
+				killline = 100,
+				killline_r = 0,
+			}
+			FilteredNamePlate:ChangedSavedScaleList(Fnp_OtherNPFlag)
+		end
+		if Fnp_MyVersion == nil then
+			Fnp_MyVersion = FNP_LOCALE_TEXT.FNP_VERSION
+		end
+
+		--- old -> v6.1.1
+		Fnp_CurVersion = nil
+		print("Fnp_MyVersion "..Fnp_MyVersion)
+		--- v6.1.1 -> new
+		if Fnp_MyVersion ~= nil and Fnp_MyVersion < FNP_LOCALE_TEXT.FNP_VERSION then
+			Fnp_MyVersion = FNP_LOCALE_TEXT.FNP_VERSION
+			print("TODO TODO")
+		end
+		-----*** inited **}
+
 		curNpFlag, curNpFlag1Type = FilteredNamePlate:GenCurNpFlags()
 		local function regGeneralEvents(registed)
 			if registed then
@@ -478,56 +534,8 @@ function FilteredNamePlate_OnLoad()
 	isInOnlySt = false
 	FilteredNamePlate.isSettingChanged = false
 	-- MYNAME = UnitName("player")
-
-	---** first install, init values
-	if Fnp_Enable == nil then
-		Fnp_Enable = false
-	end
-	if FnpEnableKeys == nil or Fnp_CurVersion == nil then
-		FnpEnableKeys = {
-			killlineMod = false,
-		}
-	end
-	if Fnp_OtherNPFlag == nil then
-		Fnp_OtherNPFlag = 0
-	end
-
-	if Fnp_ONameList == nil then
-		Fnp_ONameList = {}
-		local thisname = "邪能炸药"
-		local localename = GetLocale()
-		if localename == "enUS" then
-			thisname = "Fel Explosive"
-		elseif localename == "zhTW" then
-			thisname = "魔化炸彈"
-		elseif localname == "ruRU" then
-			thisname = "Желч"
-		end
-		table.insert(Fnp_ONameList, thisname)
-	end
-
-	if Fnp_FNameList == nil then
-		Fnp_FNameList = {}
-	end
-
-	if Fnp_CurVersion == nil or Fnp_SavedScaleList == nil then
-        Fnp_SavedScaleList = {
-            normal = 1,
-            small = 0.25,
-            only = 1.4,
-			killline = 100,
-			killline_r = 0,
-        }
-		FilteredNamePlate:ChangedSavedScaleList(Fnp_OtherNPFlag)
-    end
-	-- TODO 以后增加新的参数根据版本号来处理
-	--if Fnp_CurVersion ~= nil and (tonumber(Fnp_CurVersion) < tonumber(FNP_LOCALE_TEXT.FNP_VERSION)) then
-		-- print("Updated filteredNamePlate!")
-	--	Fnp_SavedScaleList.tankMod = 2.0
-	--end
-	----
-	Fnp_CurVersion = FNP_LOCALE_TEXT.FNP_VERSION
 	FilteredNamePlate_Frame:RegisterEvent("PLAYER_ENTERING_WORLD")
+	print("giestttt")
 end
 
 -- 必须放在最下面
