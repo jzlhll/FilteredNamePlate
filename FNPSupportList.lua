@@ -1,7 +1,7 @@
 local _
 local GetNamePlateForUnit , GetNamePlates = C_NamePlate.GetNamePlateForUnit, C_NamePlate.GetNamePlates
 local UnitName, GetUnitName = UnitName, GetUnitName
-FilteredNamePlate = LibStub("AceAddon-3.0"):NewAddon("FilteredNamePlate", "AceEvent-3.0")
+FilteredNamePlate = {}
 FilteredNamePlate.UITypeCheckList = {
 	[0] = false,
 	[1] = false,
