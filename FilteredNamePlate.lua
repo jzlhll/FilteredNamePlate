@@ -409,18 +409,23 @@ local function actionUnitRemovedForce(unitid)
 	-- if AllInfos and AllInfos[unitid] then
 	--	AllInfos[unitid].inSee = false -- #ALLMYINFOS#
 	-- end
-	local curOnlyMatch = isMatchedNameList(Fnp_ONameList, UnitName(unitid))
+	local removedName = UnitName(unitid)
+	local curOnlyMatch = isMatchedNameList(Fnp_ONameList, removedName)
+
 	if curOnlyMatch == true then
 		-- 移除单位是需要仅显的,而此时肯定已经仅显,
 		--于是我们判断剩余的是否还含有,如果还有就什么也不动.如果没有了,就恢复显示
 		local matched = false
-		local name = ""
 		for _, frame in pairs(GetNamePlates()) do
 			local foundUnit = (frame.namePlateUnitToken or (frame.UnitFrame and frame.UnitFrame.unit)) or (frame.unitFrame and frame.unitFrame.unit)
+			local name
 			if foundUnit then
-				matched = isMatchedNameList(Fnp_ONameList, GetUnitName(foundUnit))
-				if matched == true then
-					return --have & return
+				name = GetUnitName(foundUnit)
+				if name ~= removedName or foundUnit ~= unitid then
+					matched = isMatchedNameList(Fnp_ONameList, GetUnitName(foundUnit))
+					if matched == true then
+						return --have & return
+					end
 				end
 			end
 		end
