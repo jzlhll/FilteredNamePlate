@@ -50,7 +50,7 @@ local function registerMyEvents(self, event, ...)
 			elseif localename == "zhTW" then
 				thisname = "魔化炸彈"
 			elseif localname == "ruRU" then
-				thisname = "Желч"
+				thisname = "Взрывчатка Скверны"
 			end
 			table.insert(Fnp_ONameList, thisname)
 		end
@@ -58,6 +58,7 @@ local function registerMyEvents(self, event, ...)
 		if Fnp_FNameList == nil then
 			Fnp_FNameList = {}
 		end
+		-- version 6.1.1 added & help to reset the error Struct of Fnnp_SavedScaleList
 		if Fnp_MyVersion == nil or Fnp_SavedScaleList == nil then
 			Fnp_SavedScaleList = nil
 			Fnp_SavedScaleList = {
@@ -72,10 +73,7 @@ local function registerMyEvents(self, event, ...)
 		if Fnp_MyVersion == nil then
 			Fnp_MyVersion = FNP_LOCALE_TEXT.FNP_VERSION
 		end
-
-		--- old -> v6.1.1
-		Fnp_CurVersion = nil
-		--- v6.1.1 -> new
+		Fnp_CurVersion = nil -- 短期内不删除
 		if Fnp_MyVersion ~= nil and Fnp_MyVersion < FNP_LOCALE_TEXT.FNP_VERSION then
 			Fnp_MyVersion = FNP_LOCALE_TEXT.FNP_VERSION
 		end

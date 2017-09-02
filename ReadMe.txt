@@ -1,4 +1,8 @@
-﻿---0901---
+﻿-- 0902 ---
+解决ShestakUI类似的UI，移除Unit delay导致的问题。
+更新一些字串。
+
+---0901---
 suport 7.3 
 FIX some bugs
 simple my code.
