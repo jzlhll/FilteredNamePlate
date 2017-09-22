@@ -223,9 +223,9 @@
 		   <Scripts>
 			   <OnLoad>
 				  _G[self:GetName().."Text"]:SetText(FNP_LOCALE_TEXT.FNP_ONLYSHOW_SCALE_TXT);
-				  _G[self:GetName().."High"]:SetText(FNP_LOCALE_TEXT.FNP_TXT_BIG.."200%");
+				  _G[self:GetName().."High"]:SetText(FNP_LOCALE_TEXT.FNP_TXT_BIG.."130%");
 				  _G[self:GetName().."Low"]:SetText(FNP_LOCALE_TEXT.FNP_TXT_SMALL.."100%");
-				  self:SetMinMaxValues(100, 200);
+				  self:SetMinMaxValues(100, 130);
 				  self:SetValueStep(1);
 			   </OnLoad>
 			   <OnValueChanged>
@@ -256,9 +256,9 @@
 		   <Scripts>
 			   <OnLoad>
 				  _G[self:GetName().."Text"]:SetText(FNP_LOCALE_TEXT.FNP_ONLYSHOW_OTHER_SCALE_TXT);
-				  _G[self:GetName().."High"]:SetText(FNP_LOCALE_TEXT.FNP_TXT_BIG.."100%");
-				  _G[self:GetName().."Low"]:SetText(FNP_LOCALE_TEXT.FNP_TXT_SMALL.."15%");
-				  self:SetMinMaxValues(15, 100);
+				  _G[self:GetName().."High"]:SetText(FNP_LOCALE_TEXT.FNP_TXT_BIG.."50%");
+				  _G[self:GetName().."Low"]:SetText(FNP_LOCALE_TEXT.FNP_TXT_SMALL.."5%");
+				  self:SetMinMaxValues(5, 50);
 				  self:SetValueStep(1);
 			   </OnLoad>
 			   <OnValueChanged>

@@ -18,8 +18,6 @@ function SlashCmdList.FilteredNamePlate(msg)
 			FilteredNamePlate_Frame_EnableCheckButton:SetChecked(true)
 			FilteredNamePlate:FNP_EnableButtonChecked(FilteredNamePlate_Frame, true)
 		end
-	elseif msg == "refresh" then
-		FilteredNamePlate:actionUnitStateAfterChanged()
 	end
 end
 
