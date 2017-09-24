@@ -89,6 +89,7 @@ function FilteredNamePlate:reinitScaleValues(curNpFlag1Type, isScaleInited)
 	if isScaleInited == false then return end
 	local SPELL_SCALE = 0.5
 	if curNpFlag1Type == 1 then
+		SPELL_SCALE = 0.65
 		FilteredNamePlate.curScaleList.normal = FilteredNamePlate.curScaleList.SYSTEM * Fnp_SavedScaleList.normal
 		FilteredNamePlate.curScaleList.small = FilteredNamePlate.curScaleList.normal * Fnp_SavedScaleList.small
 		FilteredNamePlate.curScaleList.middle = FilteredNamePlate.curScaleList.normal * SPELL_SCALE
