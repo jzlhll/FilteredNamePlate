@@ -129,7 +129,7 @@ function FilteredNamePlate:initScaleValues(curNpFlag1Type, curNpFlag)
 	for _, frame in pairs(GetNamePlates()) do
 		local foundUnit = (frame.namePlateUnitToken or (frame.UnitFrame and frame.UnitFrame.unit))
 		if curNpFlag == 7 then
-			foundUnit = frame and frame.ouf
+			foundUnit = frame and frame.unitFrame
 		elseif curNpFlag == 5 then
 			foundUnit = (frame.unitFrame and frame.unitFrame.unit)
 		end
@@ -213,8 +213,8 @@ function FilteredNamePlate:initScaleValues(curNpFlag1Type, curNpFlag)
 				}
 
 				sys = 1
-				if frame.ouf.Name then
-					local face,size,flag = frame.ouf.Name:GetFont()
+				if frame.unitFrame.Name then
+					local face,size,flag = frame.unitFrame.Name:GetFont()
 					FilteredNamePlate.curScaleList.NAME_FONT = size
 					FilteredNamePlate.curScaleList.fontFace = face
 					FilteredNamePlate.curScaleList.fontFlag = flag
