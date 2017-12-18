@@ -76,7 +76,7 @@ function FilteredNamePlate:ChangedSavedScaleList(flag)
      Fnp_SavedScaleList.small = 0.25
      --配置不同UI下 small的默认比例
 	if flag == 9 then
-		Fnp_SavedScaleList.small = 0.25
+		Fnp_SavedScaleList.small = 0.1
 		Fnp_SavedScaleList.only = 1.2
 	elseif flag == 7 then
 		Fnp_SavedScaleList.small = 0.4
