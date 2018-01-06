@@ -531,10 +531,12 @@ end
 
 function FilteredNamePlate_OnEvent(self, event, ...)
 	local handler = FilteredNamePlate.FilterNp_Event_General_List[event]
+	if not handler then handler = FilteredNamePlate.RaidCombatHelperRegs[event] end
 	if handler then
 	    handler(self, event, ...)
 	elseif event == "PLAYER_ENTERING_WORLD" then
 		registerMyEvents(self, event, ...)
+		FilteredNamePlate:RegisterBoomM3(FnpEnableKeys.enable_m3boom)
 	end
 end
 

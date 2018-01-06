@@ -2,6 +2,7 @@
 
 FNP_LOCALE_TEXT = {}
 FNP_LOCALE_TEXT.FNP_VERSION = 640
+FNP_LOCALE_TEXT.FNP_PRINT_M3_BOOM = "\124cFF00CD00/fnp enable_m3boom \124r 开启或关闭M3议会踩雷提示";
 
 if GetLocale() == "zhCN" then
 FNP_LOCALE_TEXT.FNP_ENABLE_TXT = "启用";

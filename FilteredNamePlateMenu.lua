@@ -8,6 +8,7 @@ function SlashCmdList.FilteredNamePlate(msg)
 		print(L.FNP_PRINT_HELP1)
 		print(L.FNP_PRINT_HELP2)
 		print(L.FNP_PRINT_HELP3)
+		print(L.FNP_PRINT_M3_BOOM)
 	elseif msg == "options" or msg == "opt" then
 		FilteredNamePlate:FNP_ChangeFrameVisibility()
 	elseif msg == "change" or msg == "ch" then
@@ -18,6 +19,8 @@ function SlashCmdList.FilteredNamePlate(msg)
 			FilteredNamePlate_Frame_EnableCheckButton:SetChecked(true)
 			FilteredNamePlate:FNP_EnableButtonChecked(FilteredNamePlate_Frame, true)
 		end
+	elseif msg == "enable_m3boom" then
+		FilteredNamePlate:MsgPathInto()
 	end
 end
 
