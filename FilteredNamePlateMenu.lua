@@ -2,6 +2,7 @@ SLASH_FilteredNamePlate1 = "/fnp"
 
 local isInitedDrop
 local L = FNP_LOCALE_TEXT
+
 function SlashCmdList.FilteredNamePlate(msg)
 	if msg == "" then
 		print(L.FNP_PRINT_HELP0)
@@ -22,6 +23,10 @@ function SlashCmdList.FilteredNamePlate(msg)
 	elseif msg == "enable_m3boom" then
 		FilteredNamePlate:MsgPathInto()
 	end
+end
+
+function FilteredNamePlate:CreateACopyFrame(str)
+	FilteredNamePlate:ExportATab(str)
 end
 
 function FilteredNamePlate:AvailabilityDropDown_OnShow(frame)

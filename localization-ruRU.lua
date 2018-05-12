@@ -39,7 +39,7 @@ FNP_LOCALE_TEXT.FNP_FILTER_LIST_TXT = "Список фильтров";
 FNP_LOCALE_TEXT.FNP_STRING_UI_TYPE = "Тип ПИ\n(изменение после перегрузки /rl /reload)";
 FNP_LOCALE_TEXT.FNP_STRING_NOTE = "используйте ; для, добавления имен";
 
-FNP_LOCALE_TEXT.FNP_STRING_AUTHOR_VER = "Автор:Allan версия:7.3.0.20170924";
+FNP_LOCALE_TEXT.FNP_STRING_AUTHOR_VER = "Автор:Allan версия:7.3.0.20180512";
 
 FNP_LOCALE_TEXT.FNP_PRINT_ERROR_UITYPE = "\124cFF00CD00[ /fnp ]Ошибка！Ваш тип ПИ не соответствует, пожалуйста проверьте тип ПИ, на соответствие и перезагрузитеПИ!！\124r";
 FNP_LOCALE_TEXT.FNP_PRINT_UITYPE_CHANGED = "\124cFF00CD00UI тип ПИ изменем，пожалуйста перезагрузитеПИ !\124r";
@@ -57,4 +57,6 @@ FNP_LOCALE_TEXT.FNP_MENU_FILTER = "ФИЛЬТР";
 FNP_LOCALE_TEXT.FNP_MENU_SIZE = "РАЗМЕР";
 FNP_LOCALE_TEXT.FNP_MENU_KILLLINE = "ДОБИВАНИЕ";
 FNP_LOCALE_TEXT.FNP_MENU_ABOUT = "ОБ";
+FNP_LOCALE_TEXT.FNP_TPTP_NOT_SUPPORT = ">8.7.2 modify tptp code";
+FNP_LOCALE_TEXT.COPY_WEB = "Copy web";
 end

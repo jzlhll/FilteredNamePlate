@@ -19,16 +19,16 @@ FilteredNamePlate.UITypeCheckList = {
 }
 
 FilteredNamePlate.UITypeList = {
-	[0] = FNP_LOCALE_TEXT.FNP_ORIG_TITLE,
+	[0] = FNP_LOCALE_TEXT.FNP_ORIG_TITLE.."/ElvUI",
 	[1] = FNP_LOCALE_TEXT.FNP_ORIG_TITLE2,
 	[2] = "TidyPlates",
 	[3] = "Kui_NamePlates",
-	[4] = "ElvUI/RayUI",
+	[4] = "RayUI",
 	[5] = "EUI/NDUI",
 	[6] = FNP_LOCALE_TEXT.FNP_EKNUM_TITLE,
 	[7] = "ShestackUI",
 	[8] = "CblUI",
-	[9] = "TPTP",
+	[9] = "TPTP "..FNP_LOCALE_TEXT.FNP_TPTP_NOT_SUPPORT,
 }
 
 FilteredNamePlate.curScaleList = {}
