@@ -31,9 +31,12 @@ end
 local function registerMyEvents(self, event, ...)
 	if (IsGeneralRegistered == nil or IsGeneralRegistered == false) then
 		---**{ first install, init values must be after received ENTER_WORLD
-		if Fnp_Enable == nil then
-			Fnp_Enable = false
+		if FnpEnableKeys == nil then
+			FnpEnableKeys = {}
+			FnpEnableKeys["onlyShowEnable"] = false
+			FnpEnableKeys["GsEnable"] = false
 		end
+
 		if FnpEnableKeys == nil then
 			FnpEnableKeys = {
 				killlineMod = false,
@@ -314,7 +317,7 @@ function FilteredNamePlate:actionUnitStateAfterChanged()
 	local matched = false
 	local matched2 = false
 
-	if Fnp_Enable == true then
+	if FnpEnableKeys["onlyShowEnable"] == true then
 		local isHide = false
 		local isNullOnlyList = false
 		local isNullFilterList = false
@@ -453,7 +456,7 @@ local function actionUnitRemovedForce(unitid)
 end
 ---------k k k---k k k---k k k-------------
 local function actionUnitAdded(self, event, ...)
-	if Fnp_Enable == false or SetupFlag == 10 then return end
+	if FnpEnableKeys["onlyShowEnable"] == false or SetupFlag == 10 then return end
 	local unitid = ...
 	if UnitIsPlayer(unitid) then
 		return

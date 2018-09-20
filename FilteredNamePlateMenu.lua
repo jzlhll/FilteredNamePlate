@@ -12,14 +12,6 @@ function SlashCmdList.FilteredNamePlate(msg)
 		print(L.FNP_PRINT_M3_BOOM)
 	elseif msg == "options" or msg == "opt" then
 		FilteredNamePlate:FNP_ChangeFrameVisibility()
-	elseif msg == "change" or msg == "ch" then
-		if Fnp_Enable == true then
-			FilteredNamePlate_Frame_EnableCheckButton:SetChecked(false)
-			FilteredNamePlate:FNP_EnableButtonChecked(FilteredNamePlate_Frame, false)
-		else
-			FilteredNamePlate_Frame_EnableCheckButton:SetChecked(true)
-			FilteredNamePlate:FNP_EnableButtonChecked(FilteredNamePlate_Frame, true)
-		end
 	elseif msg == "enable_m3boom" then
 		FilteredNamePlate:MsgPathInto()
 	end
@@ -82,7 +74,7 @@ function FilteredNamePlate:FNP_EnableButtonChecked(checked, checkBtnName)
 		end
 		FilteredNamePlate:actionUnitStateAfterChanged()
 	elseif checkBtnName == "MASTER_BTN" then
-		Fnp_Enable = checked
+		FnpEnableKeys["onlyShowEnable"] = checked
 		FilteredNamePlate:actionUnitStateAfterChanged()
 	end
 end
@@ -131,7 +123,8 @@ function FilteredNamePlate:FNP_ChangeFrameVisibility(...)
 			FilteredNamePlate_Menu:Hide()
 		else
 			local oldChange = FilteredNamePlate.isSettingChanged
-			FilteredNamePlate_Frame_EnableCheckButton:SetChecked(Fnp_Enable);
+			FilteredNamePlate_Frame_EnableCheckButton:SetChecked(FnpEnableKeys["onlyShowEnable"]);
+			FilteredNamePlate_Frame_EnableGsCheckButton:SetChecked(FnpEnableKeys["GsEnable"]);
 			-- FilteredNamePlate_Frame_KilllineModCB:SetChecked(FnpEnableKeys.killlineMod);
 
 			FilteredNamePlate_Frame_OnlyShowScale:SetValue(Fnp_SavedScaleList.only * 100)
@@ -163,6 +156,7 @@ function FilteredNamePlate:FNP_ChangeFrameVisibility(...)
 			FilteredNamePlate_Menu3:UnlockHighlight()
 			FilteredNamePlate_Menu4:UnlockHighlight()
 			FilteredNamePlate_Frame_EnableCheckButton:Hide()
+			FilteredNamePlate_Frame_EnableGsCheckButton:Hide()
 			-- FilteredNamePlate_Frame_TankModCB:Hide()
 			-- FilteredNamePlate_Frame_KilllineModCB:Hide()
 			FilteredNamePlate_Frame_uitype:Hide()
@@ -193,6 +187,7 @@ function FilteredNamePlate:FNP_ChangeFrameVisibility(...)
 			if info == "general" then
 				FilteredNamePlate_Menu1:LockHighlight()
 				FilteredNamePlate_Frame_EnableCheckButton:Show()
+				FilteredNamePlate_Frame_EnableGsCheckButton:Show()
 				FilteredNamePlate_Frame_ShareIcon:Show()
 				-- FilteredNamePlate_Frame_TankModCB:Hide() -- close tank ###
 				-- FilteredNamePlate_Frame_KilllineModCB:Show()

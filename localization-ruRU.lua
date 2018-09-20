@@ -1,6 +1,7 @@
 -- Prevent tainting global _.
 if GetLocale() == "ruRU" then
 FNP_LOCALE_TEXT.FNP_ENABLE_TXT = "Включить";
+FNP_LOCALE_TEXT.FNP_GS_ENABLE_TXT = "симбиония Включить";
 -- FNP_LOCALE_TEXT.FNP_ENABLE_TANK_TXT = "Включить танка";
 -- FNP_LOCALE_TEXT.FNP_ENABLE_TANK_TXT_TOOLTIP = "Вы танк: Враг - это цель, а не вы сами, будет рассматриваться как юнит только-показывать.";
 FNP_LOCALE_TEXT.FNP_ENABLE_KILLINE_TXT = "Включить добвание";
@@ -48,7 +49,6 @@ FNP_LOCALE_TEXT.FNP_PRINT_HELP1 = "\124cFF00CD00/fnp options или /fnp opt \12
 FNP_LOCALE_TEXT.FNP_PRINT_HELP2 = "\124cFF00CD00/fnp change или /fnp ch \124r быстрое включение или отключение";
 FNP_LOCALE_TEXT.FNP_PRINT_HELP3 = "\124cFF00CD00/fnp refresh \124rбыстро скрывать применение юнитов";
 
-FNP_LOCALE_TEXT.FNP_TEXT_SHARE = "Поделиться";
 FNP_LOCALE_TEXT.FNP_TEXT_INFO0 = "\124cFF00CD00Если настройка не действует, или она все еще имеет некоторые недостатки, попробуйте перезагрузить. автоматически открыть клавишу ESC-> Интерфейс ->Всегда отображать индикаторы. Если вы не предпочитаете, то вручную выключите, далее FNP будет нормальный.\124r";
 FNP_LOCALE_TEXT.FNP_CHANGED_UITYPE = "Тип ПИ изменем, пожалуйста, ПерезагрузитеПИ";
 
@@ -57,6 +57,5 @@ FNP_LOCALE_TEXT.FNP_MENU_FILTER = "ФИЛЬТР";
 FNP_LOCALE_TEXT.FNP_MENU_SIZE = "РАЗМЕР";
 FNP_LOCALE_TEXT.FNP_MENU_KILLLINE = "ДОБИВАНИЕ";
 FNP_LOCALE_TEXT.FNP_MENU_ABOUT = "ОБ";
-FNP_LOCALE_TEXT.FNP_TPTP_NOT_SUPPORT = ">8.7.2 modify tptp code";
 FNP_LOCALE_TEXT.COPY_WEB = "Copy web";
 end

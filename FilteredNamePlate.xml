@@ -42,6 +42,26 @@
 				</OnClick>
 			</Scripts>
 		</CheckButton>
+		<CheckButton name="$parent_EnableGsCheckButton" inherits="OptionsCheckButtonTemplate">
+			<Size>
+				<AbsDimension x="40" y="40" />
+			</Size>
+			<Anchors>
+				<Anchor point="TOPLEFT" relativeTo="$parent">
+				<Offset>
+					<AbsDimension x="40" y="-120" />
+				</Offset>
+				</Anchor>
+			</Anchors>
+			<Scripts>
+				<OnLoad>
+				_G[self:GetName().."Text"]:SetText(FNP_LOCALE_TEXT.FNP_GS_ENABLE_TXT);
+				</OnLoad>
+				<OnClick>
+					FilteredNamePlate:FNP_EnableButtonChecked(self:GetChecked(), "GS_BTN")
+				</OnClick>
+			</Scripts>
+		</CheckButton>
 		<!-- CheckButton name="$parent_KilllineModCB" inherits="OptionsCheckButtonTemplate">
 			<Anchors>
 				<Anchor point="TOPLEFT" relativeTo="$parent">
@@ -169,26 +189,6 @@
 				<Anchor point="RIGTH" relativeTo="$parent" relativePoint="BOTTOMRIGHT">
 				<Offset>
 					<AbsDimension x="-80" y="115" />
-				</Offset>
-				</Anchor>
-			</Anchors>
-			<Scripts>
-				<OnLoad>
-				_G[self:GetName().."Text"]:SetText(FNP_LOCALE_TEXT.FNP_TEXT_SHARE);
-				</OnLoad>
-				<OnClick>
-					SendChatMessage(FNP_LOCALE_TEXT.FNP_STRING_WEBSITE, "PARTY")
-				</OnClick>
-			</Scripts>
-		</Button>
-		<Button name="$parent_VisitWebIcon" inherits="OptionsButtonTemplate" text="">
-			<Size>
-				<AbsDimension x="65" y="35" />
-			</Size>
-			<Anchors>
-				<Anchor point="RIGTH" relativeTo="$parent" relativePoint="BOTTOMRIGHT">
-				<Offset>
-					<AbsDimension x="-80" y="150" />
 				</Offset>
 				</Anchor>
 			</Anchors>

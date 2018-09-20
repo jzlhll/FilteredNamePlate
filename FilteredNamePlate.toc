@@ -1,4 +1,4 @@
-## Interface: 80000
+﻿## Interface: 80000
 ## Title: FilteredNamePlate-FNP
 ## Title-zhTW: 过滤姓名板-FNP
 ## Title-zhCN: 过滤姓名板-FNP
@@ -10,7 +10,7 @@
 ## Notes-ruRU: Помогает вам управлять индикаторами здоровья, более проще, и помогает ТОЛЬКО-ПОКАЗЫВАТЬ или СПИСОК ФИЛЬТРА, то что вам надо `Взрывчатка Скверны` Мастер.
 ## DefaultState: Enabled
 ## LoadOnDemand: 0
-## SavedVariables: Fnp_Enable, FnpEnableKeys, Fnp_FNameList, Fnp_ONameList, Fnp_OtherNPFlag, Fnp_SavedScaleList, Fnp_MyVersion
+## SavedVariables: FnpEnableKeys, Fnp_FNameList, Fnp_ONameList, Fnp_OtherNPFlag, Fnp_SavedScaleList, Fnp_MyVersion
 localization-zhCN.lua
 localization-zhTW.lua
 localization-ruRU.lua
@@ -19,3 +19,4 @@ FNPSupportList.lua
 
 FilteredNamePlate.xml
 FilteredNamePlateMenu.xml
+## AU_Info:{"sv":false,"time":"1533310962","name":"filterednameplate","loctm":1537387884}

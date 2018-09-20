@@ -19,16 +19,15 @@ FilteredNamePlate.UITypeCheckList = {
 }
 
 FilteredNamePlate.UITypeList = {
-	[0] = FNP_LOCALE_TEXT.FNP_ORIG_TITLE.."/ElvUI",
+	[0] = FNP_LOCALE_TEXT.FNP_ORIG_TITLE,
 	[1] = FNP_LOCALE_TEXT.FNP_ORIG_TITLE2,
 	[2] = "TidyPlates",
 	[3] = "Kui_NamePlates",
 	[4] = "RayUI",
-	[5] = "EUI/NDUI",
+	[5] = "EUI/NDUI/ElvUI",
 	[6] = FNP_LOCALE_TEXT.FNP_EKNUM_TITLE,
 	[7] = "ShestackUI",
 	[8] = "CblUI",
-	[9] = "TPTP "..FNP_LOCALE_TEXT.FNP_TPTP_NOT_SUPPORT,
 }
 
 FilteredNamePlate.curScaleList = {}
@@ -42,7 +41,6 @@ FilteredNamePlate.curScaleList = {}
 -- EKNum         6	  2	      UnitFrame
 -- she         7	  3	      UnitFrame
 -- CBL          8	  4	      UnitFrame
--- TPTP        9	  1	      TP_Carrier
 function FilteredNamePlate:GenCurNpFlags()
 	local typeFlag = 0 -- 上述UIType的下标
 	if Fnp_OtherNPFlag == 0 or Fnp_OtherNPFlag == 1 then

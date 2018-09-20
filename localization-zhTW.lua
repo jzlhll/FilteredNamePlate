@@ -1,7 +1,8 @@
 ﻿-- Prevent tainting global _.
 
 if GetLocale() == "zhTW" then
-FNP_LOCALE_TEXT.FNP_ENABLE_TXT = "啟用";
+FNP_LOCALE_TEXT.FNP_ENABLE_TXT = "僅顯啟用";
+FNP_LOCALE_TEXT.FNP_GS_ENABLE_TXT = "共生啟用";
 -- FNP_LOCALE_TEXT.FNP_ENABLE_TANK_TXT = "坦克專用";
 -- FNP_LOCALE_TEXT.FNP_ENABLE_TANK_TXT_TOOLTIP = "自己是坦克：目標不是自己的怪物將被當做僅顯單位。";
 FNP_LOCALE_TEXT.FNP_ENABLE_KILLINE_TXT = "斬殺啟用";
@@ -13,7 +14,7 @@ FNP_LOCALE_TEXT.FNP_ORIG_TITLE = "源生/有愛/大腳/maoR";
 FNP_LOCALE_TEXT.FNP_ORIG_TITLE2 = "EK條形/老農/魔盒";
 FNP_LOCALE_TEXT.FNP_EKNUM_TITLE = "EK數字/AltzUI";
 FNP_LOCALE_TEXT.FNP_TOOLTIP_ORIG = "如果你使用原生, 如大腳,有愛等, 請勾選此項。";
-FNP_LOCALE_TEXT.FNP_TOOLTIP_EUI_RAYUI = "如果你使用了EUI或RayUI, 請勾選此項。";
+FNP_LOCALE_TEXT.FNP_TOOLTIP_EUI_RAYUI = "如果你使用了EUI或RayUI,ElvUI, 請勾選此項。";
 FNP_LOCALE_TEXT.FNP_TOOLTIP_NDUI = "如果你使用了NDUI, 請勾選此項。";
 FNP_LOCALE_TEXT.FNP_TOOLTIP_EK = "如果你使用了EkPlates, 請勾選此項。";
 
@@ -49,8 +50,6 @@ FNP_LOCALE_TEXT.FNP_PRINT_HELP1 = "\124cFF00CD00/fnp options 或 /fnp opt \124r�
 FNP_LOCALE_TEXT.FNP_PRINT_HELP2 = "\124cFF00CD00/fnp change 或 /fnp ch \124r快速切換開關";
 FNP_LOCALE_TEXT.FNP_PRINT_HELP3 = "\124cFF00CD00/fnp refresh \124r快速隱藏當前施法的單位";
 
-FNP_LOCALE_TEXT.FNP_TEXT_SHARE = "隊伍分享";
---FNP_LOCALE_TEXT.FNP_TEXT_SHARE2 = "公會分享";
 FNP_LOCALE_TEXT.FNP_TEXT_INFO0 = "\124cFF00CD00如果設置后沒有生效, 或者仍有一些不正常，嘗試重載界面. 自動開啟esc->界面->名字-顯示所有姓名板.如果你不喜歡,請手動關閉而插件功能將會異常.\124r";
 FNP_LOCALE_TEXT.FNP_CHANGED_UITYPE = "修改了UI類型!请重載界面！";
 
@@ -59,6 +58,5 @@ FNP_LOCALE_TEXT.FNP_MENU_FILTER = "過濾";
 FNP_LOCALE_TEXT.FNP_MENU_SIZE = "大小";
 FNP_LOCALE_TEXT.FNP_MENU_KILLLINE = "斬殺";
 FNP_LOCALE_TEXT.FNP_MENU_ABOUT = "關於";
-FNP_LOCALE_TEXT.FNP_TPTP_NOT_SUPPORT = "(8.7.2后请看网址)";
 FNP_LOCALE_TEXT.COPY_WEB = "拷貝網址";
 end
