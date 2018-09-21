@@ -65,16 +65,11 @@ end
 function FilteredNamePlate:FNP_EnableButtonChecked(checked, checkBtnName)
 	if FilteredNamePlate_Frame == nil then return end
 	if not FilteredNamePlate_Frame:IsShown() then return end
-	if checkBtnName == "KILL_LINE_BTN" then
-		FnpEnableKeys.killlineMod = checked
-		if FnpEnableKeys.killlineMod then
-			FilteredNamePlate_Menu4:Enable()
-		else
-			FilteredNamePlate_Menu4:Disable()
-		end
-		FilteredNamePlate:actionUnitStateAfterChanged()
-	elseif checkBtnName == "MASTER_BTN" then
+	if checkBtnName == "MASTER_BTN" then
 		FnpEnableKeys["onlyShowEnable"] = checked
+		FilteredNamePlate:actionUnitStateAfterChanged()
+	elseif checkBtnName == "GS_BTN" then
+		FnpEnableKeys["GsEnable"] = checked
 		FilteredNamePlate:actionUnitStateAfterChanged()
 	end
 end
@@ -157,6 +152,7 @@ function FilteredNamePlate:FNP_ChangeFrameVisibility(...)
 			FilteredNamePlate_Menu4:UnlockHighlight()
 			FilteredNamePlate_Frame_EnableCheckButton:Hide()
 			FilteredNamePlate_Frame_EnableGsCheckButton:Hide()
+			FilteredNamePlate_Frame_GsHelpBtn:Hide()
 			-- FilteredNamePlate_Frame_TankModCB:Hide()
 			-- FilteredNamePlate_Frame_KilllineModCB:Hide()
 			FilteredNamePlate_Frame_uitype:Hide()
@@ -188,6 +184,7 @@ function FilteredNamePlate:FNP_ChangeFrameVisibility(...)
 				FilteredNamePlate_Menu1:LockHighlight()
 				FilteredNamePlate_Frame_EnableCheckButton:Show()
 				FilteredNamePlate_Frame_EnableGsCheckButton:Show()
+				FilteredNamePlate_Frame_GsHelpBtn:Show()
 				FilteredNamePlate_Frame_ShareIcon:Show()
 				-- FilteredNamePlate_Frame_TankModCB:Hide() -- close tank ###
 				-- FilteredNamePlate_Frame_KilllineModCB:Show()

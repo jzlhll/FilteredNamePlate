@@ -2,8 +2,9 @@ local _
 local L = FNP_LOCALE_TEXT
 local GetNamePlateForUnit , GetNamePlates, UnitThreatSituation = C_NamePlate.GetNamePlateForUnit, C_NamePlate.GetNamePlates, UnitThreatSituation
 local UnitName, GetUnitName = UnitName, GetUnitName
-local UnitHealth, UnitHealthMax = UnitHealth, UnitHealthMax
+local UnitBuff = UnitBuff
 local string_find = string.find
+local tab_insert = table.insert
 
 local IsGeneralRegistered, SetupFlag
 
@@ -37,11 +38,6 @@ local function registerMyEvents(self, event, ...)
 			FnpEnableKeys["GsEnable"] = false
 		end
 
-		if FnpEnableKeys == nil then
-			FnpEnableKeys = {
-				killlineMod = false,
-			}
-		end
 		if Fnp_OtherNPFlag == nil then
 			Fnp_OtherNPFlag = 0
 		end
@@ -100,6 +96,60 @@ local function registerMyEvents(self, event, ...)
 		regGeneralEvents(true)
 		IsGeneralRegistered = true
 	end
+end
+
+local function GetUnitBuffDispel(unit)
+	local retTab = {
+		has = false,
+		icon = {},
+		type = {}
+	}
+	local i = 1
+	while i <= 40 do
+		local name, icon, count, debuffClass, dur, exp, _, _, _, spellId = UnitBuff(unit, i)
+		if name then
+			retTab.has = true
+			tab_insert(retTab.icon, icon)
+			tab_insert(retTab.type, debuffClass)
+		else
+			break
+		end
+		i = i + 1
+	end
+	return retTab
+end
+
+local function isMatchedUnitGsChildName(tName)
+	local matched = tName and (tName == "戈霍恩之嗣")
+	--print("matchGSName "..tName..tostring(matched))
+end
+
+local function isMatchedUnitGsRemove(unit)
+	if not unit then return false end
+	local tab = GetUnitBuffDispel(unit)
+	if tab.has then
+		print("add has show")
+		local ic = FilteredNamePlate:OneIconCreate(unit)
+		FilteredNamePlate:OneIconStatus(ic, frame, true)
+		print("add has show mine")
+	else
+		print("add has no")
+	end
+	return false
+end
+
+local function isMatchedUnitGs(unit, frame)
+	if not unit then return false end
+	local tab = GetUnitBuffDispel(unit)
+	if tab.has then
+		print("add has show")
+		local ic = FilteredNamePlate:OneIconCreate(unit)
+		FilteredNamePlate:OneIconStatus(ic, frame, true)
+		print("add has show mine")
+	else
+		print("add has no")
+	end
+	return false
 end
 
 local function isMatchedNameList(tabList, tName)
@@ -328,7 +378,11 @@ function FilteredNamePlate:actionUnitStateAfterChanged()
 				matched2 = false
 				if isNullFilterList == false then
 					local foundUnit = (frame.namePlateUnitToken or (frame.UnitFrame and frame.UnitFrame.unit)) or (frame.unitFrame and frame.unitFrame.unit)
-					if foundUnit then matched2 = isMatchedNameList(Fnp_FNameList, GetUnitName(foundUnit)) end
+					if foundUnit then 
+						matched2 = isMatchedNameList(Fnp_FNameList, GetUnitName(foundUnit))
+						isMatchedUnitGs(foundUnit, frame)
+						isMatchedUnitGsChildName()
+					end
 				end
 				if matched2 == true then
 					HideAFrame[majorNpFlag](frame)
@@ -338,7 +392,11 @@ function FilteredNamePlate:actionUnitStateAfterChanged()
 			else						 -- 如果有仅显单位则
 				local foundUnit = (frame.namePlateUnitToken or (frame.UnitFrame and frame.UnitFrame.unit)) or (frame.unitFrame and frame.unitFrame.unit)
 				matched = false
-				if foundUnit then matched = isMatchedNameList(Fnp_ONameList, GetUnitName(foundUnit)) end
+				if foundUnit then
+					matched = isMatchedNameList(Fnp_ONameList, GetUnitName(foundUnit))
+					isMatchedUnitGs(foundUnit, frame)
+					isMatchedUnitGsChildName()
+				end
 				if matched == true then
 					isHide = true
 					break
@@ -350,7 +408,11 @@ function FilteredNamePlate:actionUnitStateAfterChanged()
 			for _, frame in pairs(GetNamePlates()) do
 				local foundUnit = (frame.namePlateUnitToken or (frame.UnitFrame and frame.UnitFrame.unit)) or (frame.unitFrame and frame.unitFrame.unit)
 				matched = false
-				if foundUnit then matched = isMatchedNameList(Fnp_ONameList, GetUnitName(foundUnit)) end
+				if foundUnit then
+					matched = isMatchedNameList(Fnp_ONameList, GetUnitName(foundUnit))
+					isMatchedUnitGs(foundUnit, frame)
+					isMatchedUnitGsChildName()
+				end
 				if matched == true then
 					-- 仅显模式仅显的怪
 					ShowAFrame[majorNpFlag](frame, false, false, true)
@@ -367,7 +429,13 @@ function FilteredNamePlate:actionUnitStateAfterChanged()
 end
 
 local function actionUnitAddedForce(unitid)
+	--print("unit Add force "..unitid)
+	local frame = GetNamePlateForUnit(unitid)
+	local foundUnit = (frame.namePlateUnitToken or (frame.UnitFrame and frame.UnitFrame.unit)) or (frame.unitFrame and frame.unitFrame.unit)
+	
 	local addedname = UnitName(unitid)
+	isMatchedUnitGs(unitid, frame)
+	isMatchedUnitGsChildName(addedname)
 	--AllInfos[unitid].name = addedname  -- #ALLMYINFOS#
 
 	-- 0. 当前Add的单位名,是否match filter
@@ -422,7 +490,8 @@ local function actionUnitRemovedForce(unitid)
 	-- end
 	local removedName = UnitName(unitid)
 	local curOnlyMatch = isMatchedNameList(Fnp_ONameList, removedName)
-
+	isMatchedUnitGsRemove(unitid)
+	isMatchedUnitGsChildName(addedname)
 	if curOnlyMatch == true then
 		-- 移除单位是需要仅显的,而此时肯定已经仅显,
 		--于是我们判断剩余的是否还含有,如果还有就什么也不动.如果没有了,就恢复显示
@@ -455,8 +524,24 @@ local function actionUnitRemovedForce(unitid)
 	end
 end
 ---------k k k---k k k---k k k-------------
+local function actionUnitAura(msg, event, ...)
+	if (FnpEnableKeys["onlyShowEnable"] == false and FnpEnableKeys["GsEnable"] == false) or SetupFlag == 10 then return end
+	local unitid = ...
+	if UnitIsPlayer(unitid) then
+		return
+	end
+
+	local tab = GetUnitBuffDispel(unitid)
+	if tab.has then
+		print("haass")
+	else
+		print("has no")
+	end
+	tab = nil
+end
+
 local function actionUnitAdded(self, event, ...)
-	if FnpEnableKeys["onlyShowEnable"] == false or SetupFlag == 10 then return end
+	if (FnpEnableKeys["onlyShowEnable"] == false and FnpEnableKeys["GsEnable"] == false) or SetupFlag == 10 then return end
 	local unitid = ...
 	if UnitIsPlayer(unitid) then
 		return
@@ -539,7 +624,6 @@ function FilteredNamePlate_OnEvent(self, event, ...)
 	    handler(self, event, ...)
 	elseif event == "PLAYER_ENTERING_WORLD" then
 		registerMyEvents(self, event, ...)
-		FilteredNamePlate:RegisterBoomM3(FnpEnableKeys.enable_m3boom)
 	end
 end
 
@@ -562,4 +646,6 @@ FilteredNamePlate.FilterNp_Event_General_List = {
 	["UNIT_SPELLCAST_CHANNEL_START"]  = actionUnitSpellCastStart,
 	["UNIT_SPELLCAST_STOP"]           = actionUnitSpellCastStop,
 	["UNIT_SPELLCAST_CHANNEL_STOP"]   = actionUnitSpellCastStop,
+
+	["UNIT_AURA"]                     = actionUnitAura,
 }
