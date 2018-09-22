@@ -12,8 +12,6 @@ function SlashCmdList.FilteredNamePlate(msg)
 		print(L.FNP_PRINT_M3_BOOM)
 	elseif msg == "options" or msg == "opt" then
 		FilteredNamePlate:FNP_ChangeFrameVisibility()
-	elseif msg == "enable_m3boom" then
-		FilteredNamePlate:MsgPathInto()
 	end
 end
 
@@ -70,7 +68,7 @@ function FilteredNamePlate:FNP_EnableButtonChecked(checked, checkBtnName)
 		FilteredNamePlate:actionUnitStateAfterChanged()
 	elseif checkBtnName == "GS_BTN" then
 		FnpEnableKeys["GsEnable"] = checked
-		FilteredNamePlate:actionUnitStateAfterChanged()
+		FilteredNamePlate:GsIconsCheckedAfterChanged()
 	end
 end
 
@@ -120,27 +118,25 @@ function FilteredNamePlate:FNP_ChangeFrameVisibility(...)
 			local oldChange = FilteredNamePlate.isSettingChanged
 			FilteredNamePlate_Frame_EnableCheckButton:SetChecked(FnpEnableKeys["onlyShowEnable"]);
 			FilteredNamePlate_Frame_EnableGsCheckButton:SetChecked(FnpEnableKeys["GsEnable"]);
-			-- FilteredNamePlate_Frame_KilllineModCB:SetChecked(FnpEnableKeys.killlineMod);
 
 			FilteredNamePlate_Frame_OnlyShowScale:SetValue(Fnp_SavedScaleList.only * 100)
 			FilteredNamePlate_Frame_OnlyOtherShowScale:SetValue(Fnp_SavedScaleList.small * 100)
 			FilteredNamePlate_Frame_SystemScale:SetValue(Fnp_SavedScaleList.normal * 100)
 
-			--FilteredNamePlate_Frame_Slider_KL1:SetValue(Fnp_SavedScaleList.killline1 * 100)
-			--FilteredNamePlate_Frame_Slider_KL2:SetValue(Fnp_SavedScaleList.killline2 * 100)
+			FilteredNamePlate_Frame_Slider_GSSize:SetValue(Fnp_SavedScaleList.gsScaleSize)
 
 			FilteredNamePlate_Frame_OnlyShowModeEditBox:SetText(table.concat(Fnp_ONameList, ";"));
 			FilteredNamePlate_Frame_FilteredModeEditBox:SetText(table.concat(Fnp_FNameList, ";"));
-
-			-- if FnpEnableKeys.killlineMod then
-			--	FilteredNamePlate_Menu4:Enable()
-			--else
-			--	FilteredNamePlate_Menu4:Disable()
-			--end
-
+			if FnpEnableKeys["constBoxTab"] then
+				FilteredNamePlate_Frame_ConstBox:SetText(table.concat(FnpEnableKeys["constBoxTab"], ";"));
+			end
+			if FnpEnableKeys["DynamicBoxTab"] then
+				FilteredNamePlate_Frame_DynamicBox:SetText(table.concat(FnpEnableKeys["DynamicBoxTab"], ";"));
+			end
 			if oldChange == false then
 				FilteredNamePlate_Frame_takeEffectBtn:Hide()
 			end
+
 			FilteredNamePlate_Frame:Show()
 			FilteredNamePlate_Menu:Show()
 		end
@@ -152,9 +148,7 @@ function FilteredNamePlate:FNP_ChangeFrameVisibility(...)
 			FilteredNamePlate_Menu4:UnlockHighlight()
 			FilteredNamePlate_Frame_EnableCheckButton:Hide()
 			FilteredNamePlate_Frame_EnableGsCheckButton:Hide()
-			FilteredNamePlate_Frame_GsHelpBtn:Hide()
-			-- FilteredNamePlate_Frame_TankModCB:Hide()
-			-- FilteredNamePlate_Frame_KilllineModCB:Hide()
+
 			FilteredNamePlate_Frame_uitype:Hide()
 			FilteredNamePlate_Frame_DropDownUIType:Hide()
 			
@@ -162,14 +156,18 @@ function FilteredNamePlate:FNP_ChangeFrameVisibility(...)
 			FilteredNamePlate_Frame_FilteredModeEditBox:Hide()
 			FilteredNamePlate_Frame_OnlyShows_Text:Hide()
 			FilteredNamePlate_Frame_Filters_Text:Hide()
+
+			FilteredNamePlate_Frame_ConstBuff_Text:Hide()
+			FilteredNamePlate_Frame_DynamicBuff_Text:Hide()
+			FilteredNamePlate_Frame_ConstBuffBox:Hide()
+			FilteredNamePlate_Frame_DynamicBuffBox:Hide()
+
 			FilteredNamePlate_Frame_note:Hide()
 
 			FilteredNamePlate_Frame_SystemScale:Hide()
 			FilteredNamePlate_Frame_OnlyShowScale:Hide()
 			FilteredNamePlate_Frame_OnlyOtherShowScale:Hide()
-
-			--FilteredNamePlate_Frame_Slider_KL1:Hide()
-			--FilteredNamePlate_Frame_Slider_KL2:Hide()
+			FilteredNamePlate_Frame_Slider_GSSize:Hide()
 
 			FilteredNamePlate_Frame_ShareIcon:Hide()
 
@@ -184,7 +182,6 @@ function FilteredNamePlate:FNP_ChangeFrameVisibility(...)
 				FilteredNamePlate_Menu1:LockHighlight()
 				FilteredNamePlate_Frame_EnableCheckButton:Show()
 				FilteredNamePlate_Frame_EnableGsCheckButton:Show()
-				FilteredNamePlate_Frame_GsHelpBtn:Show()
 				FilteredNamePlate_Frame_ShareIcon:Show()
 				-- FilteredNamePlate_Frame_TankModCB:Hide() -- close tank ###
 				-- FilteredNamePlate_Frame_KilllineModCB:Show()
@@ -204,10 +201,13 @@ function FilteredNamePlate:FNP_ChangeFrameVisibility(...)
 				FilteredNamePlate_Frame_SystemScale:Show()
 				FilteredNamePlate_Frame_OnlyShowScale:Show()
 				FilteredNamePlate_Frame_OnlyOtherShowScale:Show()
-			elseif info == "killline" then
+				FilteredNamePlate_Frame_Slider_GSSize:Show()
+			elseif info == "icon" then
 				FilteredNamePlate_Menu4:LockHighlight()
-				FilteredNamePlate_Frame_Slider_KL1:Show()
-				FilteredNamePlate_Frame_Slider_KL2:Show()
+				FilteredNamePlate_Frame_ConstBuff_Text:Show()
+				FilteredNamePlate_Frame_DynamicBuff_Text:Show()
+				FilteredNamePlate_Frame_ConstBuffBox:Show()
+				FilteredNamePlate_Frame_DynamicBuffBox:Show()
 			end
 		end
 		ClickOnMenu(info)

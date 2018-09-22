@@ -1,7 +1,7 @@
 -- Prevent tainting global _.
 if GetLocale() == "ruRU" then
 FNP_LOCALE_TEXT.FNP_ENABLE_TXT = "Включить";
-FNP_LOCALE_TEXT.FNP_GS_ENABLE_TXT = "симбиония Включить";
+FNP_LOCALE_TEXT.FNP_GS_ENABLE_TXT = "значок Включить";
 -- FNP_LOCALE_TEXT.FNP_ENABLE_TANK_TXT = "Включить танка";
 -- FNP_LOCALE_TEXT.FNP_ENABLE_TANK_TXT_TOOLTIP = "Вы танк: Враг - это цель, а не вы сами, будет рассматриваться как юнит только-показывать.";
 FNP_LOCALE_TEXT.FNP_ENABLE_KILLINE_TXT = "Включить добвание";
@@ -24,17 +24,14 @@ FNP_LOCALE_TEXT.FNP_ONLYSHOW_OTHER_SCALE_TOOLTIP = "Масштабировать
 FNP_LOCALE_TEXT.FNP_ONLYSHOW_SCALE_TXT = "Масштаб юнитов только-показывать";
 FNP_LOCALE_TEXT.FNP_ONLYSHOW_SCALE_TOOLTIP = "Масштабировать только-показывать юнитов,\nкогда работает только показывать";
 
-FNP_LOCALE_TEXT.FNP_KILLLINE = "Пре-добивание 100% до ";
-FNP_LOCALE_TEXT.FNP_KILLLINE_TOOLTIP = "ОЗ%-та противника для добивания на 100%-тах, от вашего ожидаемого значения.";
-FNP_LOCALE_TEXT.FNP_KILLLINE2 = "Добивание 0% до ";
-FNP_LOCALE_TEXT.FNP_KILLLINE_TOOLTIP2 = "ОЗ%-та противника для добивания от вашего, ожидаемого значения до смерти.";
-
 FNP_LOCALE_TEXT.FNP_TAKEEFFECT_BTN = "Вступ.вс";
 FNP_LOCALE_TEXT.FNP_RELOAD_BTN = "ПерезагрПИ";
 
 FNP_LOCALE_TEXT.FNP_TXT_BIG = "Больше";
 FNP_LOCALE_TEXT.FNP_TXT_SMALL = "Меньше";
 
+FNP_LOCALE_TEXT.FNP_CONST_BUFF_TXT = "Const Buffs";
+FNP_LOCALE_TEXT.FNP_DYNAMIC_BUFF_TXT = "Dynamic Buffs";
 FNP_LOCALE_TEXT.FNP_ONLYSHOW_LIST_TXT = "Список только-показывать";
 FNP_LOCALE_TEXT.FNP_FILTER_LIST_TXT = "Список фильтров";
 FNP_LOCALE_TEXT.FNP_STRING_UI_TYPE = "Тип ПИ\n(изменение после перегрузки /rl /reload)";
@@ -55,7 +52,7 @@ FNP_LOCALE_TEXT.FNP_CHANGED_UITYPE = "Тип ПИ изменем, пожалуй
 FNP_LOCALE_TEXT.FNP_MENU_GENERAL = "ГЛАВНОЕ";
 FNP_LOCALE_TEXT.FNP_MENU_FILTER = "ФИЛЬТР";
 FNP_LOCALE_TEXT.FNP_MENU_SIZE = "РАЗМЕР";
-FNP_LOCALE_TEXT.FNP_MENU_KILLLINE = "ДОБИВАНИЕ";
+FNP_LOCALE_TEXT.FNP_MENU_ICON = "значок";
 FNP_LOCALE_TEXT.FNP_MENU_ABOUT = "ОБ";
 FNP_LOCALE_TEXT.COPY_WEB = "Copy web";
 end

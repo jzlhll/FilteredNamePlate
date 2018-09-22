@@ -4,7 +4,6 @@ local GetNamePlateForUnit , GetNamePlates, UnitThreatSituation = C_NamePlate.Get
 local UnitName, GetUnitName = UnitName, GetUnitName
 local UnitBuff = UnitBuff
 local string_find = string.find
-local tab_insert = table.insert
 
 local IsGeneralRegistered, SetupFlag
 
@@ -27,129 +26,6 @@ local function getTableCount(atab)
         count = count + 1
     end
 	return count
-end
-
-local function registerMyEvents(self, event, ...)
-	if (IsGeneralRegistered == nil or IsGeneralRegistered == false) then
-		---**{ first install, init values must be after received ENTER_WORLD
-		if FnpEnableKeys == nil then
-			FnpEnableKeys = {}
-			FnpEnableKeys["onlyShowEnable"] = false
-			FnpEnableKeys["GsEnable"] = false
-		end
-
-		if Fnp_OtherNPFlag == nil then
-			Fnp_OtherNPFlag = 0
-		end
-
-		if Fnp_ONameList == nil then
-			Fnp_ONameList = {}
-			local thisname = "邪能炸药"
-			local localename = GetLocale()
-			if localename == "enUS" then
-				thisname = "Fel Explosive"
-			elseif localename == "zhTW" then
-				thisname = "魔化炸彈"
-			elseif localname == "ruRU" then
-				thisname = "Взрывчатка Скверны"
-			end
-			table.insert(Fnp_ONameList, thisname)
-		end
-
-		if Fnp_FNameList == nil then
-			Fnp_FNameList = {}
-		end
-		-- version 6.1.1 added & help to reset the error Struct of Fnnp_SavedScaleList
-		if Fnp_MyVersion == nil or Fnp_SavedScaleList == nil then
-			Fnp_SavedScaleList = nil
-			Fnp_SavedScaleList = {
-				normal = 1,
-				small = 0.25,
-				only = 1.4,
-				killline = 100,
-				killline_r = 0,
-			}
-			FilteredNamePlate:ChangedSavedScaleList(Fnp_OtherNPFlag)
-		end
-		if Fnp_MyVersion == nil then
-			Fnp_MyVersion = FNP_LOCALE_TEXT.FNP_VERSION
-		end
-		Fnp_CurVersion = nil -- 短期内不删除
-		if Fnp_MyVersion ~= nil and Fnp_MyVersion ~= FNP_LOCALE_TEXT.FNP_VERSION then
-			FilteredNamePlate:ChangedSavedScaleList(Fnp_OtherNPFlag)
-			Fnp_MyVersion = FNP_LOCALE_TEXT.FNP_VERSION
-		end
-		-----*** inited **}
-
-		majorNpFlag, majorFrName = FilteredNamePlate:GenCurNpFlags()
-		local function regGeneralEvents(registed)
-			if registed then
-				for k, v in pairs(FilteredNamePlate.FilterNp_Event_General_List) do
-					self:RegisterEvent(k,v)
-				end
-			else
-				for k, v in pairs(FilteredNamePlate.FilterNp_Event_General_List) do
-					self:UnregisterEvent(k,v)
-				end
-			end
-		end
-		regGeneralEvents(true)
-		IsGeneralRegistered = true
-	end
-end
-
-local function GetUnitBuffDispel(unit)
-	local retTab = {
-		has = false,
-		icon = {},
-		type = {}
-	}
-	local i = 1
-	while i <= 40 do
-		local name, icon, count, debuffClass, dur, exp, _, _, _, spellId = UnitBuff(unit, i)
-		if name then
-			retTab.has = true
-			tab_insert(retTab.icon, icon)
-			tab_insert(retTab.type, debuffClass)
-		else
-			break
-		end
-		i = i + 1
-	end
-	return retTab
-end
-
-local function isMatchedUnitGsChildName(tName)
-	local matched = tName and (tName == "戈霍恩之嗣")
-	--print("matchGSName "..tName..tostring(matched))
-end
-
-local function isMatchedUnitGsRemove(unit)
-	if not unit then return false end
-	local tab = GetUnitBuffDispel(unit)
-	if tab.has then
-		print("add has show")
-		local ic = FilteredNamePlate:OneIconCreate(unit)
-		FilteredNamePlate:OneIconStatus(ic, frame, true)
-		print("add has show mine")
-	else
-		print("add has no")
-	end
-	return false
-end
-
-local function isMatchedUnitGs(unit, frame)
-	if not unit then return false end
-	local tab = GetUnitBuffDispel(unit)
-	if tab.has then
-		print("add has show")
-		local ic = FilteredNamePlate:OneIconCreate(unit)
-		FilteredNamePlate:OneIconStatus(ic, frame, true)
-		print("add has show mine")
-	else
-		print("add has no")
-	end
-	return false
 end
 
 local function isMatchedNameList(tabList, tName)
@@ -380,8 +256,6 @@ function FilteredNamePlate:actionUnitStateAfterChanged()
 					local foundUnit = (frame.namePlateUnitToken or (frame.UnitFrame and frame.UnitFrame.unit)) or (frame.unitFrame and frame.unitFrame.unit)
 					if foundUnit then 
 						matched2 = isMatchedNameList(Fnp_FNameList, GetUnitName(foundUnit))
-						isMatchedUnitGs(foundUnit, frame)
-						isMatchedUnitGsChildName()
 					end
 				end
 				if matched2 == true then
@@ -394,8 +268,6 @@ function FilteredNamePlate:actionUnitStateAfterChanged()
 				matched = false
 				if foundUnit then
 					matched = isMatchedNameList(Fnp_ONameList, GetUnitName(foundUnit))
-					isMatchedUnitGs(foundUnit, frame)
-					isMatchedUnitGsChildName()
 				end
 				if matched == true then
 					isHide = true
@@ -410,8 +282,6 @@ function FilteredNamePlate:actionUnitStateAfterChanged()
 				matched = false
 				if foundUnit then
 					matched = isMatchedNameList(Fnp_ONameList, GetUnitName(foundUnit))
-					isMatchedUnitGs(foundUnit, frame)
-					isMatchedUnitGsChildName()
 				end
 				if matched == true then
 					-- 仅显模式仅显的怪
@@ -429,13 +299,7 @@ function FilteredNamePlate:actionUnitStateAfterChanged()
 end
 
 local function actionUnitAddedForce(unitid)
-	--print("unit Add force "..unitid)
-	local frame = GetNamePlateForUnit(unitid)
-	local foundUnit = (frame.namePlateUnitToken or (frame.UnitFrame and frame.UnitFrame.unit)) or (frame.unitFrame and frame.unitFrame.unit)
-	
 	local addedname = UnitName(unitid)
-	isMatchedUnitGs(unitid, frame)
-	isMatchedUnitGsChildName(addedname)
 	--AllInfos[unitid].name = addedname  -- #ALLMYINFOS#
 
 	-- 0. 当前Add的单位名,是否match filter
@@ -490,8 +354,7 @@ local function actionUnitRemovedForce(unitid)
 	-- end
 	local removedName = UnitName(unitid)
 	local curOnlyMatch = isMatchedNameList(Fnp_ONameList, removedName)
-	isMatchedUnitGsRemove(unitid)
-	isMatchedUnitGsChildName(addedname)
+
 	if curOnlyMatch == true then
 		-- 移除单位是需要仅显的,而此时肯定已经仅显,
 		--于是我们判断剩余的是否还含有,如果还有就什么也不动.如果没有了,就恢复显示
@@ -523,25 +386,9 @@ local function actionUnitRemovedForce(unitid)
 		isInOnlySt = false
 	end
 end
----------k k k---k k k---k k k-------------
-local function actionUnitAura(msg, event, ...)
-	if (FnpEnableKeys["onlyShowEnable"] == false and FnpEnableKeys["GsEnable"] == false) or SetupFlag == 10 then return end
-	local unitid = ...
-	if UnitIsPlayer(unitid) then
-		return
-	end
-
-	local tab = GetUnitBuffDispel(unitid)
-	if tab.has then
-		print("haass")
-	else
-		print("has no")
-	end
-	tab = nil
-end
-
+------------event-------------
 local function actionUnitAdded(self, event, ...)
-	if (FnpEnableKeys["onlyShowEnable"] == false and FnpEnableKeys["GsEnable"] == false) or SetupFlag == 10 then return end
+	if FnpEnableKeys["onlyShowEnable"] == false or SetupFlag == 10 then return end
 	local unitid = ...
 	if UnitIsPlayer(unitid) then
 		return
@@ -617,12 +464,84 @@ local function actionUnitSpellCastStop(self, event, ...)
 	end
 end
 
+local function registerMyEvents(self, event, ...)
+	if (IsGeneralRegistered == nil or IsGeneralRegistered == false) then
+		---**{ first install, init values must be after received ENTER_WORLD
+		if Fnp_OtherNPFlag == nil then
+			Fnp_OtherNPFlag = 0
+		end
+
+		if Fnp_ONameList == nil then
+			Fnp_ONameList = {}
+			local thisname = "邪能炸药"
+			local localename = GetLocale()
+			if localename == "enUS" then
+				thisname = "Fel Explosive"
+			elseif localename == "zhTW" then
+				thisname = "魔化炸彈"
+			elseif localname == "ruRU" then
+				thisname = "Взрывчатка Скверны"
+			end
+			table.insert(Fnp_ONameList, thisname)
+		end
+
+		if Fnp_FNameList == nil then
+			Fnp_FNameList = {}
+		end
+		-- version 6.1.1 added & help to reset the error Struct of Fnnp_SavedScaleList
+		if Fnp_MyVersion == nil or Fnp_SavedScaleList == nil then
+			Fnp_SavedScaleList = nil
+			Fnp_SavedScaleList = {
+				normal = 1,
+				small = 0.25,
+				only = 1.4,
+				killline = 100,
+				killline_r = 0,
+			}
+
+			FilteredNamePlate:ChangedSavedScaleList(Fnp_OtherNPFlag)
+		end
+
+		if Fnp_SavedScaleList.gsScaleSize == nil then
+			Fnp_SavedScaleList.gsScaleSize = 25
+		end
+
+		if Fnp_MyVersion == nil then
+			Fnp_MyVersion = FNP_LOCALE_TEXT.FNP_VERSION
+		end
+		Fnp_CurVersion = nil -- 短期内不删除
+		if Fnp_MyVersion ~= nil and Fnp_MyVersion ~= FNP_LOCALE_TEXT.FNP_VERSION then
+			FilteredNamePlate:ChangedSavedScaleList(Fnp_OtherNPFlag)
+			Fnp_MyVersion = FNP_LOCALE_TEXT.FNP_VERSION
+		end
+		-----*** inited **}
+
+		majorNpFlag, majorFrName = FilteredNamePlate:GenCurNpFlags()
+		local function regGeneralEvents(registed)
+			if registed then
+				for k, v in pairs(FilteredNamePlate.FilterNp_Event_General_List) do
+					self:RegisterEvent(k,v)
+				end
+			else
+				for k, v in pairs(FilteredNamePlate.FilterNp_Event_General_List) do
+					self:UnregisterEvent(k,v)
+				end
+			end
+		end
+		regGeneralEvents(true)
+		IsGeneralRegistered = true
+	end
+end
+
 function FilteredNamePlate_OnEvent(self, event, ...)
 	local handler = FilteredNamePlate.FilterNp_Event_General_List[event]
-	if not handler then handler = FilteredNamePlate.RaidCombatHelperRegs[event] end
 	if handler then
 	    handler(self, event, ...)
 	elseif event == "PLAYER_ENTERING_WORLD" then
+		if FnpEnableKeys == nil then
+			FnpEnableKeys = {}
+			FnpEnableKeys["onlyShowEnable"] = false
+		end
 		registerMyEvents(self, event, ...)
 	end
 end
@@ -635,6 +554,8 @@ function FilteredNamePlate_OnLoad()
 	FilteredNamePlate.isSettingChanged = false
 	-- MYNAME = UnitName("player")
 	FilteredNamePlate_Frame:RegisterEvent("PLAYER_ENTERING_WORLD")
+	-- TODO 追加其他模块
+	FilteredNamePlate:GsIconsRegistEvent()
 end
 
 -- 必须放在最下面
@@ -646,6 +567,4 @@ FilteredNamePlate.FilterNp_Event_General_List = {
 	["UNIT_SPELLCAST_CHANNEL_START"]  = actionUnitSpellCastStart,
 	["UNIT_SPELLCAST_STOP"]           = actionUnitSpellCastStop,
 	["UNIT_SPELLCAST_CHANNEL_STOP"]   = actionUnitSpellCastStop,
-
-	["UNIT_AURA"]                     = actionUnitAura,
 }

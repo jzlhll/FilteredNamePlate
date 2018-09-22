@@ -19,4 +19,3 @@ FNPSupportList.lua
 
 FilteredNamePlate.xml
 FilteredNamePlateMenu.xml
-## AU_Info:{"sv":false,"time":"1533310962","name":"filterednameplate","loctm":1537387884}

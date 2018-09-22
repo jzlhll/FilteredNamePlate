@@ -1,7 +1,7 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/..\FrameXML\UI.xsd">
 <Frame name="FilteredNamePlate_Menu" hidden="true" parent="UIParent" toplevel="true" movable="true" frameStrata="HIGH" enableMouse="true" enableKeyboard="true">
 	<Size>
-		<AbsDimension x="80" y="450" />
+		<AbsDimension x="80" y="500" />
 	</Size>
 	<Anchors>
 		<Anchor point="TOPLEFT" relativeTo="FilteredNamePlate_Frame" relativePoint="TOPLEFT">
@@ -76,7 +76,7 @@
 			</Scripts>
 			<HighlightTexture file="Interface\Buttons\ButtonHilight-Square" alphaMode="ADD"/>
 		</Button>
-		<Button name="$parent4" inherits="OptionsButtonTemplate" Hidden="true">
+		<Button name="$parent4" inherits="OptionsButtonTemplate" hidden="true">
 			<Size>
 				<AbsDimension x="60" y="40" />
 			</Size>
@@ -89,7 +89,7 @@
 			</Anchors>
 			<Scripts>
 				<OnClick>
-					FilteredNamePlate:FNP_ChangeFrameVisibility("killline")
+					FilteredNamePlate:FNP_ChangeFrameVisibility("icon")
 				</OnClick>
 			</Scripts>
 			<HighlightTexture file="Interface\Buttons\ButtonHilight-Square" alphaMode="ADD"/>
@@ -102,7 +102,7 @@
 			FilteredNamePlate_Menu1:SetText(FNP_LOCALE_TEXT.FNP_MENU_GENERAL)
 			FilteredNamePlate_Menu2:SetText(FNP_LOCALE_TEXT.FNP_MENU_FILTER)
 			FilteredNamePlate_Menu3:SetText(FNP_LOCALE_TEXT.FNP_MENU_SIZE)
-			FilteredNamePlate_Menu4:SetText(FNP_LOCALE_TEXT.FNP_MENU_KILLLINE)
+			FilteredNamePlate_Menu4:SetText(FNP_LOCALE_TEXT.FNP_MENU_ICON)
 		</OnLoad>
 	</Scripts>
 </Frame>

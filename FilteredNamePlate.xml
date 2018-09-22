@@ -2,11 +2,10 @@
 <Script file="FilteredNamePlateMenu.lua"/>
 <Script file="FilteredNamePlate.lua"/>
 <Script file="FilteredNamePlateHelp.lua"/>
-<Script file="RaidCombatHelper.lua"/>
-<Script file="FnpOneIcon.lua"/>
+<Script file="FnpGsIcons.lua"/>
 <Frame name="FilteredNamePlate_Frame" hidden="true" parent="UIParent" toplevel="true" movable="true" frameStrata="HIGH" enableMouse="true" enableKeyboard="true">
 	<Size>
-		<AbsDimension x="260" y="450" />
+		<AbsDimension x="280" y="500" />
 	</Size>
 	<Anchors>
 		<Anchor point="CENTER" />
@@ -64,46 +63,52 @@
 			</Scripts>
 		</CheckButton>
 
-		<Button name="$parent_GsHelpBtn" inherits="OptionsButtonTemplate" text="New">
+		<CheckButton name="$parent_EnableMagicCheckButton" inherits="OptionsCheckButtonTemplate" hidden="true">
 			<Size>
-				<AbsDimension x="50" y="30" />
+				<AbsDimension x="40" y="40" />
 			</Size>
-			<Anchors>
-				<Anchor point="RIGTH" relativeTo="$parent" relativePoint="TOPRIGHT">
-				<Offset>
-					<AbsDimension x="-80" y="-105" />
-				</Offset>
-				</Anchor>
-			</Anchors>
-			<Scripts>
-				<OnClick>
-					print("FNP提示: 勾上该项，共生怪也走仅显逻辑。")
-				</OnClick>
-			</Scripts>
-		</Button>
-		<!-- CheckButton name="$parent_KilllineModCB" inherits="OptionsCheckButtonTemplate">
 			<Anchors>
 				<Anchor point="TOPLEFT" relativeTo="$parent">
 				<Offset>
-					<AbsDimension x="70" y="-180" />
+					<AbsDimension x="40" y="-130" />
 				</Offset>
 				</Anchor>
 			</Anchors>
 			<Scripts>
 				<OnLoad>
-				_G[self:GetName().."Text"]:SetText(FNP_LOCALE_TEXT.FNP_ENABLE_KILLINE_TXT);
+				_G[self:GetName().."Text"]:SetText("魔法监控");
 				</OnLoad>
 				<OnClick>
-					FilteredNamePlate:FNP_EnableButtonChecked(self:GetChecked(), "KILL_LINE_BTN")
+					FilteredNamePlate:FNP_EnableButtonChecked(self:GetChecked(), "GS_BTN")
 				</OnClick>
 			</Scripts>
-		</CheckButton -->
+		</CheckButton>
+		<CheckButton name="$parent_EnableKNCheckButton" inherits="OptionsCheckButtonTemplate"  hidden="true">
+			<Size>
+				<AbsDimension x="40" y="40" />
+			</Size>
+			<Anchors>
+				<Anchor point="TOPLEFT" relativeTo="$parent">
+				<Offset>
+					<AbsDimension x="40" y="-160" />
+				</Offset>
+				</Anchor>
+			</Anchors>
+			<Scripts>
+				<OnLoad>
+				_G[self:GetName().."Text"]:SetText("狂怒监控");
+				</OnLoad>
+				<OnClick>
+					FilteredNamePlate:FNP_EnableButtonChecked(self:GetChecked(), "GS_BTN")
+				</OnClick>
+			</Scripts>
+		</CheckButton>
 		<!-- UIType start -->
 		<Frame name="$parent_DropDownUIType" inherits="UIDropDownMenuTemplate" id="1">
 			<Anchors>
 				<Anchor point="CENTER" relativeTo="$parent_EnableCheckButton" relativePoint="TOPLEFT">
 					<Offset>
-						<AbsDimension x="60" y="-130"/>
+						<AbsDimension x="60" y="-240"/>
 					</Offset>
 				</Anchor>
 			</Anchors>
@@ -151,6 +156,37 @@
                 <FontString inherits="ChatFontNormal" />
         </EditBox>
 
+		<EditBox name="$parent_ConstBuffBox" letters="300" autoFocus="false" multiLine="true" hidden="true">
+                <Layers>
+                    <Layer level="BACKGROUND">
+                        <Texture>
+                            <Color r=".2" g=".2" b=".2" a="1"/>
+                        </Texture>
+                    </Layer>
+                </Layers>
+                <Size>
+                    <AbsDimension x="150" y="80" />
+                </Size>
+                <Anchors>
+                    <Anchor point="TOPLEFT" relativeTo="$parent_EnableCheckButton" relativePoint="BOTTOMLEFT">
+                        <Offset>
+                            <AbsDimension x="0" y="-50" />
+                        </Offset>
+                    </Anchor>
+                </Anchors>
+                <Scripts>
+                    <OnEnterPressed>
+                        self:ClearFocus();
+						FilteredNamePlate:FNP_ModeEditBoxWriten("cb", self:GetText())
+                    </OnEnterPressed>
+                    <OnEscapePressed>
+                        self:ClearFocus();
+						FilteredNamePlate:FNP_ModeEditBoxWritenEsc()
+                    </OnEscapePressed>
+                </Scripts>
+                <FontString inherits="ChatFontNormal" />
+        </EditBox>
+
 		<EditBox name="$parent_FilteredModeEditBox" letters="300" autoFocus="false" multiLine="true" hidden="true">
                 <Layers>
                     <Layer level="BACKGROUND">
@@ -183,6 +219,38 @@
                 </Scripts>
                 <FontString inherits="ChatFontNormal" />
         </EditBox>
+
+		<EditBox name="$parent_DynamicBuffBox" letters="300" autoFocus="false" multiLine="true" hidden="true">
+                <Layers>
+                    <Layer level="BACKGROUND">
+                        <Texture>
+                            <Color r=".2" g=".2" b=".2" a="1"/>
+                        </Texture>
+                    </Layer>
+                </Layers>
+                <Size>
+                    <AbsDimension x="150" y="80" />
+                </Size>
+                <Anchors>
+                    <Anchor point="TOPLEFT" relativeTo="$parent_OnlyShowModeEditBox" relativePoint="BOTTOMLEFT">
+                        <Offset>
+                            <AbsDimension x="0" y="-80" />
+                        </Offset>
+                    </Anchor>
+                </Anchors>
+                <Scripts>
+                    <OnEnterPressed>
+                        self:ClearFocus();
+						FilteredNamePlate:FNP_ModeEditBoxWriten("db", self:GetText())
+                    </OnEnterPressed>
+                    <OnEscapePressed>
+                        self:ClearFocus();
+						FilteredNamePlate:FNP_ModeEditBoxWritenEsc()
+                    </OnEscapePressed>
+                </Scripts>
+                <FontString inherits="ChatFontNormal" />
+        </EditBox>
+
 		<Button name="$parent_CloseIcon" inherits="OptionsButtonTemplate" text="X">
 			<Size>
 				<AbsDimension x="35" y="35" />
@@ -224,7 +292,7 @@
 			<Anchors>
 				<Anchor point="LEFT">
 				  <Offset>
-					 <AbsDimension x="40" y="110" />
+					 <AbsDimension x="40" y="150" />
 				  </Offset>
 			   </Anchor>
             </Anchors>
@@ -257,7 +325,7 @@
 		   <Anchors>
 			   <Anchor point="LEFT">
 				  <Offset>
-					 <AbsDimension x="40" y="0" />
+					 <AbsDimension x="40" y="60" />
 				  </Offset>
 			   </Anchor>
 		   </Anchors>
@@ -290,7 +358,7 @@
 		   <Anchors>
 			   <Anchor point="LEFT">
 				  <Offset>
-					 <AbsDimension x="40" y="-80" />
+					 <AbsDimension x="40" y="-20" />
 				  </Offset>
 			   </Anchor>
 		   </Anchors>
@@ -321,40 +389,29 @@
 			   </OnLeave>
 		   </Scripts>
         </Slider>
-		<!-- Slider name="$parent_Slider_KL1" inherits="OptionsSliderTemplate">
+		<Slider name="$parent_Slider_GSSize" inherits="OptionsSliderTemplate" hidden="true">
 			<Anchors>
 				<Anchor point="LEFT">
 				  <Offset>
-					 <AbsDimension x="40" y="110" />
+					 <AbsDimension x="40" y="-100" />
 				  </Offset>
 			   </Anchor>
             </Anchors>
             <Scripts>
 			   <OnLoad>
-				  _G[self:GetName().."Text"]:SetText(FNP_LOCALE_TEXT.FNP_KILLLINE);
-				  _G[self:GetName().."High"]:SetText(FNP_LOCALE_TEXT.FNP_TXT_BIG.."100%");
-				  _G[self:GetName().."Low"]:SetText(FNP_LOCALE_TEXT.FNP_TXT_SMALL.."60%");
-				  self:SetMinMaxValues(60, 100);
+				  _G[self:GetName().."Text"]:SetText(FNP_LOCALE_TEXT.FNP_GS_SLIDE_TXT);
+				  _G[self:GetName().."High"]:SetText(FNP_LOCALE_TEXT.FNP_TXT_BIG.."38");
+				  _G[self:GetName().."Low"]:SetText(FNP_LOCALE_TEXT.FNP_TXT_SMALL.."24");
+				  self:SetMinMaxValues(24, 38);
 				  self:SetValueStep(1);
 			   </OnLoad>
 			   <OnValueChanged>
-			   	  _G[self:GetName().."Text"]:SetText(FNP_LOCALE_TEXT.FNP_KILLLINE..string.format("%.0f", self:GetValue()).."%");
-				  Fnp_SavedScaleList.killline1 = self:GetValue() / 100
-				  if FilteredNamePlate_Frame:IsShown() then
-				  	  FilteredNamePlate.isSettingChanged = true
-				  	  FilteredNamePlate_Frame_takeEffectBtn:Show()
-				  end
+			   		_G[self:GetName().."Text"]:SetText(FNP_LOCALE_TEXT.FNP_GS_SLIDE_TXT..string.format("%.0f", self:GetValue()));
+					Fnp_SavedScaleList.gsScaleSize = tonumber(string.format("%.0f", self:GetValue()))
 			   </OnValueChanged>
-			   <OnEnter>
-				  GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
-				  GameTooltip:SetText(FNP_LOCALE_TEXT.FNP_KILLLINE_TOOLTIP);
-			   </OnEnter>
-			   <OnLeave>
-				  GameTooltip:Hide();
-			   </OnLeave>
             </Scripts>
         </Slider>
-		<Slider name="$parent_Slider_KL2" inherits="OptionsSliderTemplate">
+		<!-- Slider name="$parent_Slider_KL2" inherits="OptionsSliderTemplate">
 		   <Anchors>
 			   <Anchor point="LEFT">
 				  <Offset>
@@ -471,6 +528,26 @@
 					</Anchor>
 				</Anchors>
 			</FontString>
+
+			<FontString name="$parent_ConstBuff_Text" inherits="GameFontNormal" text="" hidden="true">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parent_OnlyShowModeEditBox" relativePoint="TOPLEFT">
+					<Offset>
+						<AbsDimension x="5" y="25" />
+					</Offset>
+					</Anchor>
+				</Anchors>
+			</FontString>
+			<FontString name="$parent_DynamicBuff_Text" inherits="GameFontNormal" hidden="true" text="">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parent_FilteredModeEditBox" relativePoint="TOPLEFT">
+					<Offset>
+						<AbsDimension x="5" y="25" />
+					</Offset>
+					</Anchor>
+				</Anchors>
+			</FontString>
+
 			<FontString name="$parent_uitype" inherits="GameFontNormal" text="">
 				<Anchors>
 					<Anchor point="BOTTOMLEFT" relativeTo="$parent_DropDownUIType">
@@ -524,6 +601,8 @@
 			FilteredNamePlate_Frame_webText:SetFont(GameFontNormal:GetFont(), 12)
 			FilteredNamePlate_Frame_OnlyShows_Text:SetText(FNP_LOCALE_TEXT.FNP_ONLYSHOW_LIST_TXT);
 			FilteredNamePlate_Frame_Filters_Text:SetText(FNP_LOCALE_TEXT.FNP_FILTER_LIST_TXT);
+			FilteredNamePlate_Frame_ConstBuff_Text:SetText(FNP_LOCALE_TEXT.FNP_CONST_BUFF_TXT);
+			FilteredNamePlate_Frame_DynamicBuff_Text:SetText(FNP_LOCALE_TEXT.FNP_DYNAMIC_BUFF_TXT);
 			FilteredNamePlate_Frame_uitype:SetText(FNP_LOCALE_TEXT.FNP_STRING_UI_TYPE);
 			FilteredNamePlate_Frame_note:SetText(FNP_LOCALE_TEXT.FNP_STRING_NOTE);
 		</OnLoad>
