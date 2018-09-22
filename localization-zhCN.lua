@@ -1,7 +1,7 @@
 ﻿-- Prevent tainting global _.
 
 FNP_LOCALE_TEXT = {}
-FNP_LOCALE_TEXT.FNP_VERSION = 642
+FNP_LOCALE_TEXT.FNP_VERSION = 650
 
 FNP_LOCALE_TEXT.FNP_GS_SLIDE_TXT = "共生图标大小";
 
@@ -43,7 +43,7 @@ FNP_LOCALE_TEXT.FNP_FILTER_LIST_TXT = "过滤列表";
 FNP_LOCALE_TEXT.FNP_STRING_UI_TYPE = "UI类型(改变需重载/rl /reload)";
 FNP_LOCALE_TEXT.FNP_STRING_NOTE = "列表框用英文的分号';'追加名字";
 
-FNP_LOCALE_TEXT.FNP_STRING_AUTHOR_VER = "作者:克尔苏加德 部落 峰巅的击进\n版本:8.0.0.20180803";
+FNP_LOCALE_TEXT.FNP_STRING_AUTHOR_VER = "作者:克尔苏加德 部落 峰巅的击进\n版本:8.0.0.20180923";
 
 FNP_LOCALE_TEXT.FNP_PRINT_ERROR_UITYPE = "\124cFF00CD00[ /fnp ]错误！您设置的UI类型可能不匹配。请正确设置并重载界面！\124r";
 FNP_LOCALE_TEXT.FNP_PRINT_UITYPE_CHANGED = "\124cFF00CD00你修改了插件类型，请确保你勾选的是正确的，否则血条异常！";

@@ -37,7 +37,7 @@ FNP_LOCALE_TEXT.FNP_FILTER_LIST_TXT = "Список фильтров";
 FNP_LOCALE_TEXT.FNP_STRING_UI_TYPE = "Тип ПИ\n(изменение после перегрузки /rl /reload)";
 FNP_LOCALE_TEXT.FNP_STRING_NOTE = "используйте ; для, добавления имен";
 
-FNP_LOCALE_TEXT.FNP_STRING_AUTHOR_VER = "Автор:Allan версия:8.0.0.20180803";
+FNP_LOCALE_TEXT.FNP_STRING_AUTHOR_VER = "Автор:Allan версия:8.0.0.20180923";
 
 FNP_LOCALE_TEXT.FNP_PRINT_ERROR_UITYPE = "\124cFF00CD00[ /fnp ]Ошибка！Ваш тип ПИ не соответствует, пожалуйста проверьте тип ПИ, на соответствие и перезагрузитеПИ!！\124r";
 FNP_LOCALE_TEXT.FNP_PRINT_UITYPE_CHANGED = "\124cFF00CD00UI тип ПИ изменем，пожалуйста перезагрузитеПИ !\124r";
