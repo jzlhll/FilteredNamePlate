@@ -1,7 +1,7 @@
 local tabins = table.insert
 local rgev = rgev
 local gnp = C_NamePlate.GetNamePlateForUnit
-local ub = UnitBuff
+local ua = UnitAura
 local gun = GetUnitName
 local BASE = CreateFrame("Frame", nil, UIParent)
 
@@ -10,6 +10,7 @@ BASE:SetIgnoreParentScale(true)
 local icontab = {}
 
 local isreg = false
+local isNeedWork = false
 
 local function isGsChild(unit)
 	local n = gun(unit)
@@ -21,9 +22,9 @@ local function IsUnitGs(unit)
 	local ret = false
 	local i = 1
 	while i <= 40 do
-		local name, icon, count, debuffClass, dur, exp, _, _, _, spellId = ub(unit, i)
-		if name then -- 不能合并
-			if spellId == 277242 then -- TODO 改成spellID
+		local _, _, _, _, _, _, _, _, _, spellId = ua(unit, i)
+		if spellId then -- 不能合并
+			if spellId == 277242 then -- TODO 改成spellID 277242
 				ret = true
 				break
 			end
@@ -62,15 +63,38 @@ local function GsIconsOnEvent(self, event, ...)
 end
 
 function FilteredNamePlate:GsIconsRegistEvent()
-    if not isreg then
+	if not isreg then
 		isreg = true
 		rgev(true)
 		BASE:SetScript("OnEvent", GsIconsOnEvent)
-    end
+	end
+end
+
+local function canp()
+	for k,v in pairs(icontab) do
+		if v then
+			v:ClearAllPoints()
+			v:Hide()
+			v = nil
+		end
+	end
+	icontab = {}
+end
+
+function doanp()
+	canp()
+	for _, frame in pairs(C_NamePlate.GetNamePlates()) do
+		local foundUnit = (frame.namePlateUnitToken or 
+				(frame.UnitFrame and frame.UnitFrame.unit)) or (frame.unitFrame and frame.unitFrame.unit)
+		if foundUnit and IsUnitGs(foundUnit) then
+			ois(foundUnit, gnp(foundUnit))
+		end
+	end
 end
 
 local function actionUnitAdded(self, event, ...)
 	if not FnpEnableKeys["GsEnable"] then return end
+	if not isNeedWork then return end
 	local unitid = ...
 	if UnitIsPlayer(unitid) then
 		return
@@ -83,11 +107,13 @@ end
 
 local function actionUnitRemoved(self, event, ...)
 	if not FnpEnableKeys["GsEnable"] then return end
+	if not isNeedWork then return end
 	local unitid = ...
 	if UnitIsPlayer(unitid) then
 		return
 	end
 	oih(unitid)
+	doanp()
 end
 
 function rgev(registed)
@@ -104,20 +130,24 @@ end
 
 function FilteredNamePlate:GsIconsCheckedAfterChanged()
 	if not FnpEnableKeys["GsEnable"] then
-		for k,v in pairs(icontab) do
-			if v then
-				v:ClearAllPoints()
-				v:Hide()
-				v = nil
-			end
-		end
-		icontab = {}
+		canp()
 	else
 		print("\124cFF00CD00FNP提示：如果你在共生怪面前，不会立刻生效，请远离重新靠近。或者，快捷键关闭和打开一次血条即可。\124r")
 	end
 end
 
+local function actionChangeArea()
+	-- challengeMapID = C_ChallengeMode.GetActiveChallengeMapID()
+	local challegeLevel = C_ChallengeMode.GetActiveKeystoneInfo()
+	isNeedWork = challegeLevel and (challegeLevel > 9)
+end
+
 FilteredNamePlate.GsIconsEventList = {
+	["CHALLENGE_MODE_START"]          = actionChangeArea,
+	["CHALLENGE_MODE_RESET"]          = actionChangeArea,
+	["ZONE_CHANGED_NEW_AREA"]		  = actionChangeArea,
+	["PLAYER_ENTERING_WORLD"]		  = actionChangeArea,
+	
 	["NAME_PLATE_UNIT_ADDED"]         = actionUnitAdded,
 	["NAME_PLATE_UNIT_REMOVED"]       = actionUnitRemoved,
 }
