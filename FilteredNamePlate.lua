@@ -470,19 +470,28 @@ local function registerMyEvents(self, event, ...)
 		if Fnp_OtherNPFlag == nil then
 			Fnp_OtherNPFlag = 0
 		end
-
+		local thisname = "爆炸物"
+		local localename = GetLocale()
+		if localename == "enUS" then
+			thisname = "Fel Explosive"
+		elseif localename == "zhTW" then
+			thisname = "炸藥"
+		end
 		if Fnp_ONameList == nil then
 			Fnp_ONameList = {}
-			local thisname = "邪能炸药"
-			local localename = GetLocale()
-			if localename == "enUS" then
-				thisname = "Fel Explosive"
-			elseif localename == "zhTW" then
-				thisname = "魔化炸彈"
-			elseif localname == "ruRU" then
-				thisname = "Взрывчатка Скверны"
-			end
 			table.insert(Fnp_ONameList, thisname)
+		else
+			--低于这个版本升级上来的 修改老数据
+			if Fnp_MyVersion ~= nil and Fnp_MyVersion <= 650 then
+				for k,v in ipairs(Fnp_ONameList) do
+					if v == thisname then
+						table.remove(Fnp_ONameList, k)
+						break
+					end
+				end
+
+				table.insert(Fnp_ONameList, thisname)
+			end
 		end
 
 		if Fnp_FNameList == nil then
@@ -506,10 +515,17 @@ local function registerMyEvents(self, event, ...)
 			Fnp_SavedScaleList.gsScaleSize = 25
 		end
 
+		if Fnp_SavedScaleList.gsIconTop == nil then
+			Fnp_SavedScaleList.gsIconTop = -5
+		end
+
+		if Fnp_SavedScaleList.gsIconLeft == nil then
+			Fnp_SavedScaleList.gsIconLeft = 0
+		end
+
 		if Fnp_MyVersion == nil then
 			Fnp_MyVersion = FNP_LOCALE_TEXT.FNP_VERSION
 		end
-		Fnp_CurVersion = nil -- 短期内不删除
 		if Fnp_MyVersion ~= nil and Fnp_MyVersion ~= FNP_LOCALE_TEXT.FNP_VERSION then
 			FilteredNamePlate:ChangedSavedScaleList(Fnp_OtherNPFlag)
 			Fnp_MyVersion = FNP_LOCALE_TEXT.FNP_VERSION

@@ -39,7 +39,7 @@ end
 local function ois(unitid, frame)
     local texture = BASE:CreateTexture("AllanCustIcon"..tostring(unitid), "OVERLAY")
     texture:ClearAllPoints()
-    texture:SetPoint("BOTTOM", frame, "TOP", 0, -5)
+    texture:SetPoint("BOTTOM", frame, "TOP", Fnp_SavedScaleList.gsIconLeft, Fnp_SavedScaleList.gsIconTop)
     texture:SetTexture("Interface\\Addons\\FilterednamePlate\\gs.tga")
     texture:SetSize(Fnp_SavedScaleList.gsScaleSize, Fnp_SavedScaleList.gsScaleSize)
     texture:Show()

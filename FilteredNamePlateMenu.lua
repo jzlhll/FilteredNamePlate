@@ -124,6 +124,8 @@ function FilteredNamePlate:FNP_ChangeFrameVisibility(...)
 			FilteredNamePlate_Frame_SystemScale:SetValue(Fnp_SavedScaleList.normal * 100)
 
 			FilteredNamePlate_Frame_Slider_GSSize:SetValue(Fnp_SavedScaleList.gsScaleSize)
+			FilteredNamePlate_Frame_Slider_GSLEFT:SetValue(Fnp_SavedScaleList.gsIconTop)
+			FilteredNamePlate_Frame_Slider_GSTOP:SetValue(Fnp_SavedScaleList.gsIconLeft)
 
 			FilteredNamePlate_Frame_OnlyShowModeEditBox:SetText(table.concat(Fnp_ONameList, ";"));
 			FilteredNamePlate_Frame_FilteredModeEditBox:SetText(table.concat(Fnp_FNameList, ";"));
@@ -163,13 +165,17 @@ function FilteredNamePlate:FNP_ChangeFrameVisibility(...)
 			FilteredNamePlate_Frame_DynamicBuffBox:Hide()
 
 			FilteredNamePlate_Frame_note:Hide()
+			FilteredNamePlate_Frame_GSAlertInPage:Hide()
 
 			FilteredNamePlate_Frame_SystemScale:Hide()
 			FilteredNamePlate_Frame_OnlyShowScale:Hide()
 			FilteredNamePlate_Frame_OnlyOtherShowScale:Hide()
 			FilteredNamePlate_Frame_Slider_GSSize:Hide()
+			FilteredNamePlate_Frame_Slider_GSTOP:Hide()
+			FilteredNamePlate_Frame_Slider_GSLEFT:Hide()
 
 			FilteredNamePlate_Frame_ShareIcon:Hide()
+			FilteredNamePlate_Frame_ShareAUIcon:Hide()
 
 			FilteredNamePlate_Frame_AuthorText:Hide()
 			FilteredNamePlate_Frame_webText:Hide()
@@ -183,6 +189,7 @@ function FilteredNamePlate:FNP_ChangeFrameVisibility(...)
 				FilteredNamePlate_Frame_EnableCheckButton:Show()
 				FilteredNamePlate_Frame_EnableGsCheckButton:Show()
 				FilteredNamePlate_Frame_ShareIcon:Show()
+				if GetLocale() == "zhCN" then FilteredNamePlate_Frame_ShareAUIcon:Show() end
 				-- FilteredNamePlate_Frame_TankModCB:Hide() -- close tank ###
 				-- FilteredNamePlate_Frame_KilllineModCB:Show()
 				FilteredNamePlate_Frame_uitype:Show()
@@ -202,6 +209,9 @@ function FilteredNamePlate:FNP_ChangeFrameVisibility(...)
 				FilteredNamePlate_Frame_OnlyShowScale:Show()
 				FilteredNamePlate_Frame_OnlyOtherShowScale:Show()
 				FilteredNamePlate_Frame_Slider_GSSize:Show()
+				FilteredNamePlate_Frame_Slider_GSTOP:Show()
+				FilteredNamePlate_Frame_Slider_GSLEFT:Show()
+				FilteredNamePlate_Frame_GSAlertInPage:Show()
 			elseif info == "icon" then
 				FilteredNamePlate_Menu4:LockHighlight()
 				FilteredNamePlate_Frame_ConstBuff_Text:Show()

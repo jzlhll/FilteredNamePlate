@@ -270,12 +270,12 @@
 		</Button>
 		<Button name="$parent_ShareIcon" inherits="OptionsButtonTemplate" text="">
 			<Size>
-				<AbsDimension x="65" y="35" />
+				<AbsDimension x="90" y="35" />
 			</Size>
 			<Anchors>
 				<Anchor point="RIGTH" relativeTo="$parent" relativePoint="BOTTOMRIGHT">
 				<Offset>
-					<AbsDimension x="-80" y="115" />
+					<AbsDimension x="-110" y="115" />
 				</Offset>
 				</Anchor>
 			</Anchors>
@@ -288,11 +288,31 @@
 				</OnClick>
 			</Scripts>
 		</Button>
+		<Button name="$parent_ShareAUIcon" inherits="OptionsButtonTemplate" text="">
+			<Size>
+				<AbsDimension x="110" y="35" />
+			</Size>
+			<Anchors>
+				<Anchor point="RIGTH" relativeTo="$parent" relativePoint="BOTTOMRIGHT">
+				<Offset>
+					<AbsDimension x="-240" y="115" />
+				</Offset>
+				</Anchor>
+			</Anchors>
+			<Scripts>
+				<OnLoad>
+				_G[self:GetName().."Text"]:SetText("我的插件更新器");
+				</OnLoad>
+				<OnClick>
+					FilteredNamePlate:CreateACopyFrame("http://bbs.nga.cn/read.php?tid=14810934")
+				</OnClick>
+			</Scripts>
+		</Button>
 		<Slider name="$parent_SystemScale" inherits="OptionsSliderTemplate" hidden="true">
 			<Anchors>
 				<Anchor point="LEFT">
 				  <Offset>
-					 <AbsDimension x="40" y="150" />
+					 <AbsDimension x="40" y="180" />
 				  </Offset>
 			   </Anchor>
             </Anchors>
@@ -325,7 +345,7 @@
 		   <Anchors>
 			   <Anchor point="LEFT">
 				  <Offset>
-					 <AbsDimension x="40" y="60" />
+					 <AbsDimension x="40" y="100" />
 				  </Offset>
 			   </Anchor>
 		   </Anchors>
@@ -358,7 +378,7 @@
 		   <Anchors>
 			   <Anchor point="LEFT">
 				  <Offset>
-					 <AbsDimension x="40" y="-20" />
+					 <AbsDimension x="40" y="20" />
 				  </Offset>
 			   </Anchor>
 		   </Anchors>
@@ -393,16 +413,16 @@
 			<Anchors>
 				<Anchor point="LEFT">
 				  <Offset>
-					 <AbsDimension x="40" y="-100" />
+					 <AbsDimension x="40" y="-70" />
 				  </Offset>
 			   </Anchor>
             </Anchors>
             <Scripts>
 			   <OnLoad>
 				  _G[self:GetName().."Text"]:SetText(FNP_LOCALE_TEXT.FNP_GS_SLIDE_TXT);
-				  _G[self:GetName().."High"]:SetText(FNP_LOCALE_TEXT.FNP_TXT_BIG.."38");
-				  _G[self:GetName().."Low"]:SetText(FNP_LOCALE_TEXT.FNP_TXT_SMALL.."24");
-				  self:SetMinMaxValues(24, 38);
+				  _G[self:GetName().."High"]:SetText(FNP_LOCALE_TEXT.FNP_TXT_BIG.."35");
+				  _G[self:GetName().."Low"]:SetText(FNP_LOCALE_TEXT.FNP_TXT_SMALL.."20");
+				  self:SetMinMaxValues(20, 35);
 				  self:SetValueStep(1);
 			   </OnLoad>
 			   <OnValueChanged>
@@ -411,6 +431,52 @@
 			   </OnValueChanged>
             </Scripts>
         </Slider>
+		<Slider name="$parent_Slider_GSTOP" inherits="OptionsSliderTemplate" hidden="true">
+			<Anchors>
+				<Anchor point="LEFT">
+				  <Offset>
+					 <AbsDimension x="40" y="-140" />
+				  </Offset>
+			   </Anchor>
+            </Anchors>
+            <Scripts>
+			   <OnLoad>
+				  _G[self:GetName().."Text"]:SetText(FNP_LOCALE_TEXT.FNP_GS_SIDE_TOP);
+				  _G[self:GetName().."High"]:SetText(FNP_LOCALE_TEXT.FNP_TXT_BIG.."60");
+				  _G[self:GetName().."Low"]:SetText(FNP_LOCALE_TEXT.FNP_TXT_SMALL.."-20");
+				  self:SetMinMaxValues(-20, 60);
+				  self:SetValueStep(1);
+			   </OnLoad>
+			   <OnValueChanged>
+			   		_G[self:GetName().."Text"]:SetText(FNP_LOCALE_TEXT.FNP_GS_SIDE_TOP..string.format("%.0f", self:GetValue()));
+					Fnp_SavedScaleList.gsIconTop = tonumber(string.format("%.0f", self:GetValue()))
+			   </OnValueChanged>
+            </Scripts>
+        </Slider>
+
+		<Slider name="$parent_Slider_GSLEFT" inherits="OptionsSliderTemplate" hidden="true">
+			<Anchors>
+				<Anchor point="LEFT">
+				  <Offset>
+					 <AbsDimension x="40" y="-210" />
+				  </Offset>
+			   </Anchor>
+            </Anchors>
+            <Scripts>
+			   <OnLoad>
+				  _G[self:GetName().."Text"]:SetText(FNP_LOCALE_TEXT.FNP_GS_SIDE_LEFT);
+				  _G[self:GetName().."High"]:SetText(FNP_LOCALE_TEXT.FNP_TXT_BIG.."70");
+				  _G[self:GetName().."Low"]:SetText(FNP_LOCALE_TEXT.FNP_TXT_SMALL.."-70");
+				  self:SetMinMaxValues(-70, 70);
+				  self:SetValueStep(1);
+			   </OnLoad>
+			   <OnValueChanged>
+			   		_G[self:GetName().."Text"]:SetText(FNP_LOCALE_TEXT.FNP_GS_SIDE_LEFT..string.format("%.0f", self:GetValue()));
+					Fnp_SavedScaleList.gsIconLeft = tonumber(string.format("%.0f", self:GetValue()))
+			   </OnValueChanged>
+            </Scripts>
+        </Slider>
+
 		<!-- Slider name="$parent_Slider_KL2" inherits="OptionsSliderTemplate">
 		   <Anchors>
 			   <Anchor point="LEFT">
@@ -501,7 +567,7 @@
 					</Anchor>
 				</Anchors>
 			</Texture>
-			<FontString name="$parent_Header_Text" inherits="GameFontNormal" text="FNP v6.5.1">
+			<FontString name="$parent_Header_Text" inherits="GameFontNormal" text="FNP v6.6.0">
 				<Anchors>
 					<Anchor point="TOP" relativeTo="$parent_Header">
 						<Offset>
@@ -561,7 +627,7 @@
 				<Anchors>
 					<Anchor point="BOTTOMLEFT" relativeTo="$parent">
 						<Offset>
-							<AbsDimension x="20" y="63" />
+							<AbsDimension x="10" y="63" />
 						</Offset>
 					</Anchor>
 				</Anchors>
@@ -590,6 +656,18 @@
 					</Anchor>
 				</Anchors>
 			</FontString>
+			<FontString name="$parent_GSAlertInPage" inherits="GameFontNormalSmall" text="" multiLine="true" hidden="true">
+				<Size>
+					<AbsDimension x="0" y="50" />
+				</Size>
+				<Anchors>
+					<Anchor point="BOTTOMLEFT" relativeTo="$parent" relativePoint="BOTTOMLEFT">
+						<Offset>
+							<AbsDimension x="10" y="195" />
+						</Offset>
+					</Anchor>
+				</Anchors>
+			</FontString>
 		</Layer>
 	</Layers>
 	<Scripts>
@@ -605,6 +683,7 @@
 			FilteredNamePlate_Frame_DynamicBuff_Text:SetText(FNP_LOCALE_TEXT.FNP_DYNAMIC_BUFF_TXT);
 			FilteredNamePlate_Frame_uitype:SetText(FNP_LOCALE_TEXT.FNP_STRING_UI_TYPE);
 			FilteredNamePlate_Frame_note:SetText(FNP_LOCALE_TEXT.FNP_STRING_NOTE);
+			FilteredNamePlate_Frame_GSAlertInPage:SetText(FNP_LOCALE_TEXT.FNP_GS_ALERT_WORDS);
 		</OnLoad>
 		<OnEvent>
 			FilteredNamePlate_OnEvent(self,event,...);
