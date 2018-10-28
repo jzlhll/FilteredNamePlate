@@ -319,9 +319,9 @@
             <Scripts>
 			   <OnLoad>
 				  _G[self:GetName().."Text"]:SetText(FNP_LOCALE_TEXT.FNP_DEFAULT_SCALE_TXT);
-				  _G[self:GetName().."High"]:SetText(FNP_LOCALE_TEXT.FNP_TXT_BIG.."200%");
-				  _G[self:GetName().."Low"]:SetText(FNP_LOCALE_TEXT.FNP_TXT_SMALL.."50%");
-				  self:SetMinMaxValues(50, 200);
+				  _G[self:GetName().."High"]:SetText(FNP_LOCALE_TEXT.FNP_TXT_BIG.."120%");
+				  _G[self:GetName().."Low"]:SetText(FNP_LOCALE_TEXT.FNP_TXT_SMALL.."80%");
+				  self:SetMinMaxValues(80, 120);
 				  self:SetValueStep(1);
 			   </OnLoad>
 			   <OnValueChanged>
