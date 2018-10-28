@@ -61,7 +61,8 @@ local HideAFrame = {
 	[5] = function(frame) -- all the scaled one
 		if frame == nil then return end
 		if frame[majorFrName] then
-			frame[majorFrName]:SetScale(FilteredNamePlate.curScaleList.small)
+			-- frame[majorFrName]:SetScale(FilteredNamePlate.curScaleList.small)
+			--print("hide scale "..tostring(FilteredNamePlate.curScaleList.small))
 			frame[majorFrName].healthBar:Hide()
 		end
 	end,
@@ -143,7 +144,7 @@ local ShowAFrame = {
 	end,
 	[5] = function(frame, isOnlyShowSpellCast, restore, isOnlyUnit)
 		if frame and frame[majorFrName] then
-			if restore == true then
+			--[[if restore == true then
 				frame[majorFrName]:SetScale(FilteredNamePlate.curScaleList.SYSTEM)
 			elseif isOnlyShowSpellCast == false then
 				if isOnlyUnit == true then
@@ -154,6 +155,8 @@ local ShowAFrame = {
 			else
 				frame[majorFrName]:SetScale(FilteredNamePlate.curScaleList.middle)
 			end
+			print("show scale "..tostring(frame[majorFrName]:GetScale()))
+			--]]
 			frame[majorFrName].healthBar:Show()
 		end
 	end,
