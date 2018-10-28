@@ -58,6 +58,13 @@ local HideAFrame = {
 			frame[majorFrName]:SetScale(FilteredNamePlate.curScaleList.small)
 		end
 	end,
+	[5] = function(frame) -- all the scaled one
+		if frame == nil then return end
+		if frame[majorFrName] then
+			frame[majorFrName]:SetScale(FilteredNamePlate.curScaleList.small)
+			frame[majorFrName].healthBar:Hide()
+		end
+	end,
 	[2] = function(frame) --ek number
 		if frame == nil then return end
 		if frame.UnitFrame then
@@ -132,6 +139,22 @@ local ShowAFrame = {
 			else
 				frame[majorFrName]:SetScale(FilteredNamePlate.curScaleList.middle)
 			end
+		end
+	end,
+	[5] = function(frame, isOnlyShowSpellCast, restore, isOnlyUnit)
+		if frame and frame[majorFrName] then
+			if restore == true then
+				frame[majorFrName]:SetScale(FilteredNamePlate.curScaleList.SYSTEM)
+			elseif isOnlyShowSpellCast == false then
+				if isOnlyUnit == true then
+					frame[majorFrName]:SetScale(FilteredNamePlate.curScaleList.only)
+				else
+					frame[majorFrName]:SetScale(FilteredNamePlate.curScaleList.normal)
+				end
+			else
+				frame[majorFrName]:SetScale(FilteredNamePlate.curScaleList.middle)
+			end
+			frame[majorFrName].healthBar:Show()
 		end
 	end,
 	[2] = function(frame, isOnlyShowSpellCast, restore, isOnlyUnit)

@@ -319,9 +319,9 @@
             <Scripts>
 			   <OnLoad>
 				  _G[self:GetName().."Text"]:SetText(FNP_LOCALE_TEXT.FNP_DEFAULT_SCALE_TXT);
-				  _G[self:GetName().."High"]:SetText(FNP_LOCALE_TEXT.FNP_TXT_BIG.."150%");
+				  _G[self:GetName().."High"]:SetText(FNP_LOCALE_TEXT.FNP_TXT_BIG.."200%");
 				  _G[self:GetName().."Low"]:SetText(FNP_LOCALE_TEXT.FNP_TXT_SMALL.."50%");
-				  self:SetMinMaxValues(50, 150);
+				  self:SetMinMaxValues(50, 200);
 				  self:SetValueStep(1);
 			   </OnLoad>
 			   <OnValueChanged>
@@ -517,7 +517,7 @@
 			<Anchors>
 				<Anchor point="BOTTOMLEFT" relativeTo="$parent">
 				<Offset>
-					<AbsDimension x="10" y="80" />
+					<AbsDimension x="10" y="120" />
 				</Offset>
 				</Anchor>
 			</Anchors>
@@ -567,7 +567,7 @@
 					</Anchor>
 				</Anchors>
 			</Texture>
-			<FontString name="$parent_Header_Text" inherits="GameFontNormal" text="FNP v6.6.0">
+			<FontString name="$parent_Header_Text" inherits="GameFontNormal" text="FNP v6.6.2">
 				<Anchors>
 					<Anchor point="TOP" relativeTo="$parent_Header">
 						<Offset>

@@ -4,13 +4,17 @@ local isInitedDrop
 local L = FNP_LOCALE_TEXT
 
 function SlashCmdList.FilteredNamePlate(msg)
-	if msg == "" then
+	if msg == nil or msg == "" then
 		print(L.FNP_PRINT_HELP0)
 		print(L.FNP_PRINT_HELP1)
 		print(L.FNP_PRINT_HELP2)
 		print(L.FNP_PRINT_HELP3)
 		print(L.FNP_PRINT_M3_BOOM)
-	elseif msg == "options" or msg == "opt" then
+		return
+	end
+
+	msg = string.lower(msg)
+	if msg == "options" or msg == "opt" then
 		FilteredNamePlate:FNP_ChangeFrameVisibility()
 	end
 end

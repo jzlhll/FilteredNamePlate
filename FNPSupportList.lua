@@ -15,6 +15,7 @@ FilteredNamePlate.UITypeCheckList = {
 	[6] = false,
 	[7] = false,
 	[8] = false,
+	[9] = false,
 }
 
 FilteredNamePlate.UITypeList = {
@@ -27,6 +28,7 @@ FilteredNamePlate.UITypeList = {
 	[6] = FNP_LOCALE_TEXT.FNP_EKNUM_TITLE,
 	[7] = "ShestackUI",
 	[8] = "CblUI",
+	[9] = "Plater",
 }
 
 FilteredNamePlate.curScaleList = {}
@@ -50,6 +52,8 @@ function FilteredNamePlate:GenCurNpFlags()
 		typeFlag = 3
 	elseif Fnp_OtherNPFlag == 8 then
 		typeFlag = 4
+	elseif Fnp_OtherNPFlag == 9 then
+		typeFlag = 5
 	else -- 最简模型
 		typeFlag = 1
 	end
@@ -61,8 +65,6 @@ function FilteredNamePlate:GenCurNpFlags()
 		typeName = "kui"
 	elseif Fnp_OtherNPFlag == 5 then
 		typeName = "unitFrame"
-	elseif Fnp_OtherNPFlag == 9 then
-		typeName = "TP_Carrier"
 	end
 
 	return typeFlag, typeName
@@ -73,8 +75,8 @@ function FilteredNamePlate:ChangedSavedScaleList(flag)
      Fnp_SavedScaleList.small = 0.25
      --配置不同UI下 small的默认比例
 	if flag == 9 then
-		Fnp_SavedScaleList.small = 0.1
-		Fnp_SavedScaleList.only = 1.2
+		Fnp_SavedScaleList.small = 0.5
+		Fnp_SavedScaleList.only = 1.3
 	elseif flag == 7 then
 		Fnp_SavedScaleList.small = 0.4
 		Fnp_SavedScaleList.only = 1.2
