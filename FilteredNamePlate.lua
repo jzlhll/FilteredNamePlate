@@ -78,14 +78,9 @@ local HideAFrame = {
 	end,
 	[3] = function(frame) --sheStack
 		if frame == nil then return end
-		if frame.unitFrame then
-			if frame.unitFrame.Name then
-				frame.unitFrame.Name:SetFont(FilteredNamePlate.curScaleList.fontFace, FilteredNamePlate.curScaleList.small_name_font, FilteredNamePlate.curScaleList.fontFlag)
-			end
-			if frame.unitFrame.Level then
-				frame.unitFrame.Level:SetFont(FilteredNamePlate.curScaleList.fontFace, FilteredNamePlate.curScaleList.small_name_font, FilteredNamePlate.curScaleList.fontFlag)
-			end
-			if frame.unitFrame.Health then frame.unitFrame.Health:Hide() end
+		if frame.UnitFrame then
+			frame.UnitFrame.name:SetWidth(FilteredNamePlate.curScaleList.name.small)
+			frame.UnitFrame.castBar:SetHeight(FilteredNamePlate.curScaleList.bars.cast_midHeight)
 		end
 	end,
 	[4] = function(frame) --cbl
@@ -186,23 +181,27 @@ local ShowAFrame = {
 		end
 	end,
 	[3] = function(frame, isOnlyShowSpellCast, restore, isOnlyUnit)
-		if frame and frame.unitFrame then
+		if frame and frame.UnitFrame then
 			if restore == true then
-				frame.unitFrame.Level:SetFont(FilteredNamePlate.curScaleList.fontFace, FilteredNamePlate.curScaleList.NAME_FONT, FilteredNamePlate.curScaleList.fontFlag)
-				frame.unitFrame.Name:SetFont(FilteredNamePlate.curScaleList.fontFace, FilteredNamePlate.curScaleList.NAME_FONT, FilteredNamePlate.curScaleList.fontFlag)
-				frame.unitFrame.Health:Show()
-			elseif isOnlyShowSpellCast == false then
-				frame.unitFrame.Health:Show()
-				if isOnlyUnit then
-					frame.unitFrame.Level:SetFont(FilteredNamePlate.curScaleList.fontFace, FilteredNamePlate.curScaleList.only_name_font, FilteredNamePlate.curScaleList.fontFlag)
-					frame.unitFrame.Name:SetFont(FilteredNamePlate.curScaleList.fontFace, FilteredNamePlate.curScaleList.only_name_font, FilteredNamePlate.curScaleList.fontFlag)
-				else
-					frame.unitFrame.Level:SetFont(FilteredNamePlate.curScaleList.fontFace, FilteredNamePlate.curScaleList.normal_name_font, FilteredNamePlate.curScaleList.fontFlag)
-					frame.unitFrame.Name:SetFont(FilteredNamePlate.curScaleList.fontFace, FilteredNamePlate.curScaleList.normal_name_font, FilteredNamePlate.curScaleList.fontFlag)
+				frame.UnitFrame.name:SetWidth(FilteredNamePlate.curScaleList.name.SYSTEM)
+				if frame.UnitFrame.healthBar then
+					frame.UnitFrame.healthBar:SetHeight(FilteredNamePlate.curScaleList.bars.HEAL_SYS_HEIGHT)
 				end
+				frame.UnitFrame.castBar:SetHeight(FilteredNamePlate.curScaleList.bars.CAST_SYS_HEIGHT)
+			elseif isOnlyShowSpellCast == false then
+				frame.UnitFrame.name:SetWidth(FilteredNamePlate.curScaleList.name.normal)
+				if frame.UnitFrame.healthBar then
+					if isOnlyUnit then
+						frame.UnitFrame.healthBar:SetHeight(FilteredNamePlate.curScaleList.bars.heal_onlyHeight)
+					else
+						frame.UnitFrame.healthBar:SetHeight(FilteredNamePlate.curScaleList.bars.heal_normalHeight)
+					end
+				end
+				frame.UnitFrame.castBar:SetHeight(FilteredNamePlate.curScaleList.bars.CAST_SYS_HEIGHT)
 			else
-				frame.unitFrame.Level:SetFont(FilteredNamePlate.curScaleList.fontFace, FilteredNamePlate.curScaleList.mid_name_font, FilteredNamePlate.curScaleList.fontFlag)
-				frame.unitFrame.Name:SetFont(FilteredNamePlate.curScaleList.fontFace, FilteredNamePlate.curScaleList.mid_name_font, FilteredNamePlate.curScaleList.fontFlag)
+				frame.UnitFrame.name:SetWidth(FilteredNamePlate.curScaleList.name.middle)
+				frame.UnitFrame.castBar:SetHeight(FilteredNamePlate.curScaleList.bars.cast_midHeight)
+				--frame.UnitFrame.healthBar:Show()
 			end
 		end
 	end,
