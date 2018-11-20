@@ -48,8 +48,6 @@ function FilteredNamePlate:GenCurNpFlags()
 		typeFlag = 0
 	elseif Fnp_OtherNPFlag == 6 then
 		typeFlag = 2
-	elseif Fnp_OtherNPFlag == 7 then
-		typeFlag = 3
 	elseif Fnp_OtherNPFlag == 8 then
 		typeFlag = 4
 	elseif Fnp_OtherNPFlag == 9 then
@@ -135,7 +133,7 @@ end
 
 -- 返回值true代表已经获取了系统血条的真正大小，false表示UITYPE出错
 function FilteredNamePlate:initScaleValues(majorFlag, savedFlag, majorFrame)
-	--if IS_DEBUG then print("initScaleValues majorFlag "..majorFlag..",savedFlag "..savedFlag.." majorFr "..majorFrame) end
+	--if true then print("initScaleValues majorFlag "..majorFlag..",savedFlag "..savedFlag.." majorFr "..majorFrame) end
 
 	local isScaleInited = false
 
@@ -241,15 +239,19 @@ function FilteredNamePlate:initScaleValues(majorFlag, savedFlag, majorFrame)
 			else -- 1 纯条模型 最简单啦 直接调节整体frame scale
 				sys = 1
 				FilteredNamePlate.curScaleList = {
-					SYSTEM = 0.78,
+					SYSTEM = 1.0,
 					normal = 1.0,
 					small = 0.20,
 					middle = 0.5,
 					only = 1.45,
 				}
 				if frame[majorFrame] then
-					-- if IS_DEBUG then print("system inital") end
-					FilteredNamePlate.curScaleList.SYSTEM = frame[majorFrame]:GetEffectiveScale()
+					--if true then print("system inital   "..tostring(frame[majorFrame]:GetEffectiveScale())) end
+					if savedFlag == 5 then
+						FilteredNamePlate.curScaleList.SYSTEM = 1 -- frame[majorFrame]:GetEffectiveScale()
+					else
+						FilteredNamePlate.curScaleList.SYSTEM = frame[majorFrame]:GetEffectiveScale()
+					end
 				end
 			end
 		end
