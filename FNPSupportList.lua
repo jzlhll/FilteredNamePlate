@@ -173,8 +173,8 @@ function FilteredNamePlate:initScaleValues(majorFlag, savedFlag, majorFrame)
 			if majorFlag == 0 or majorFlag == 3 then --Orig模型 调节名字宽度，调节血条高度，施法条高度
 				FilteredNamePlate.curScaleList = {
 					name = {
-						SYSTEM = 130,
-						normal = 130,
+						SYSTEM = 180,
+						normal = 180,
 						small = 40,
 						middle = 40,
 					},
@@ -198,7 +198,7 @@ function FilteredNamePlate:initScaleValues(majorFlag, savedFlag, majorFrame)
 				end
 			elseif majorFlag == 2 then -- ek number 模型 调节名字宽度和高度，调节血量字体大小
 				FilteredNamePlate.curScaleList = {
-					SYSTEMW = 130,
+					SYSTEMW = 180,
 					SMALLW = 40,
 					SYSTEMH = 100,
 					SMALLH = 20,
@@ -222,7 +222,7 @@ function FilteredNamePlate:initScaleValues(majorFlag, savedFlag, majorFrame)
 				end
 			elseif majorFlag == 4 then -- CblUI
 				FilteredNamePlate.curScaleList = {
-					NAME_SYSTEMW = 140,
+					NAME_SYSTEMW = 180,
 					NAME_SMALLW = 40,
 
 					SYS_SCALE = 1.0,

@@ -7,9 +7,6 @@ function SlashCmdList.FilteredNamePlate(msg)
 	if msg == nil or msg == "" then
 		print(L.FNP_PRINT_HELP0)
 		print(L.FNP_PRINT_HELP1)
-		print(L.FNP_PRINT_HELP2)
-		print(L.FNP_PRINT_HELP3)
-		print(L.FNP_PRINT_M3_BOOM)
 		return
 	end
 
@@ -73,6 +70,9 @@ function FilteredNamePlate:FNP_EnableButtonChecked(checked, checkBtnName)
 	elseif checkBtnName == "GS_BTN" then
 		FnpEnableKeys["GsEnable"] = checked
 		FilteredNamePlate:GsIconsCheckedAfterChanged()
+	elseif checkBtnName == "SPELL_EQ_ONLYSHOW" then
+		FnpEnableKeys["castSpellEqualOnlyShow"] = checked
+		FilteredNamePlate:actionUnitStateAfterChanged()
 	end
 end
 
@@ -88,27 +88,12 @@ function FilteredNamePlate:FNP_ModeEditBoxWritenEsc()
 		end
 	end
 	FilteredNamePlate_Frame_OnlyShowModeEditBox:SetText(names);
-
-	names = ""
-	first = true
-	for key, var in ipairs(Fnp_FNameList) do
-		if first then
-			names = var
-			first = false
-		else
-			names = names..";"..var
-		end
-	end
-	FilteredNamePlate_Frame_FilteredModeEditBox:SetText(names);
 end
 
 function FilteredNamePlate:FNP_ModeEditBoxWriten(mode, inputStr)
 	if mode == "o" then
 		Fnp_ONameList = {}
 		string.gsub(inputStr, '[^;]+', function(w) table.insert(Fnp_ONameList, w) end )
-	else
-		Fnp_FNameList = {}
-		string.gsub(inputStr, '[^;]+', function(w) table.insert(Fnp_FNameList, w) end )
 	end
 end
 
@@ -122,7 +107,8 @@ function FilteredNamePlate:FNP_ChangeFrameVisibility(...)
 			local oldChange = FilteredNamePlate.isSettingChanged
 			FilteredNamePlate_Frame_EnableCheckButton:SetChecked(FnpEnableKeys["onlyShowEnable"]);
 			FilteredNamePlate_Frame_EnableGsCheckButton:SetChecked(FnpEnableKeys["GsEnable"]);
-
+			--FilteredNamePlate_Frame_EnableSpellCastCheckButton:SetChecked(FnpEnableKeys["castSpellEqualOnlyShow"]);
+			
 			FilteredNamePlate_Frame_OnlyShowScale:SetValue(Fnp_SavedScaleList.only * 100)
 			FilteredNamePlate_Frame_OnlyOtherShowScale:SetValue(Fnp_SavedScaleList.small * 100)
 			FilteredNamePlate_Frame_SystemScale:SetValue(Fnp_SavedScaleList.normal * 100)
@@ -132,7 +118,6 @@ function FilteredNamePlate:FNP_ChangeFrameVisibility(...)
 			FilteredNamePlate_Frame_Slider_GSTOP:SetValue(Fnp_SavedScaleList.gsIconLeft)
 
 			FilteredNamePlate_Frame_OnlyShowModeEditBox:SetText(table.concat(Fnp_ONameList, ";"));
-			FilteredNamePlate_Frame_FilteredModeEditBox:SetText(table.concat(Fnp_FNameList, ";"));
 			if FnpEnableKeys["constBoxTab"] then
 				FilteredNamePlate_Frame_ConstBox:SetText(table.concat(FnpEnableKeys["constBoxTab"], ";"));
 			end
@@ -154,14 +139,13 @@ function FilteredNamePlate:FNP_ChangeFrameVisibility(...)
 			FilteredNamePlate_Menu4:UnlockHighlight()
 			FilteredNamePlate_Frame_EnableCheckButton:Hide()
 			FilteredNamePlate_Frame_EnableGsCheckButton:Hide()
+			-- FilteredNamePlate_Frame_EnableSpellCastCheckButton:Hide()
 
 			FilteredNamePlate_Frame_uitype:Hide()
 			FilteredNamePlate_Frame_DropDownUIType:Hide()
 			
 			FilteredNamePlate_Frame_OnlyShowModeEditBox:Hide()
-			FilteredNamePlate_Frame_FilteredModeEditBox:Hide()
 			FilteredNamePlate_Frame_OnlyShows_Text:Hide()
-			FilteredNamePlate_Frame_Filters_Text:Hide()
 
 			FilteredNamePlate_Frame_ConstBuff_Text:Hide()
 			FilteredNamePlate_Frame_DynamicBuff_Text:Hide()
@@ -170,6 +154,7 @@ function FilteredNamePlate:FNP_ChangeFrameVisibility(...)
 
 			FilteredNamePlate_Frame_note:Hide()
 			FilteredNamePlate_Frame_GSAlertInPage:Hide()
+			FilteredNamePlate_Frame_GSAlertInPage2:Hide()
 
 			FilteredNamePlate_Frame_SystemScale:Hide()
 			FilteredNamePlate_Frame_OnlyShowScale:Hide()
@@ -192,6 +177,7 @@ function FilteredNamePlate:FNP_ChangeFrameVisibility(...)
 				FilteredNamePlate_Menu1:LockHighlight()
 				FilteredNamePlate_Frame_EnableCheckButton:Show()
 				FilteredNamePlate_Frame_EnableGsCheckButton:Show()
+				-- FilteredNamePlate_Frame_EnableSpellCastCheckButton:Show()
 				FilteredNamePlate_Frame_ShareIcon:Show()
 				if GetLocale() == "zhCN" then FilteredNamePlate_Frame_ShareAUIcon:Show() end
 				-- FilteredNamePlate_Frame_TankModCB:Hide() -- close tank ###
@@ -203,19 +189,19 @@ function FilteredNamePlate:FNP_ChangeFrameVisibility(...)
 			elseif info == "filter" then
 				FilteredNamePlate_Menu2:LockHighlight()
 				FilteredNamePlate_Frame_OnlyShowModeEditBox:Show()
-				FilteredNamePlate_Frame_FilteredModeEditBox:Show()
 				FilteredNamePlate_Frame_OnlyShows_Text:Show()
-				FilteredNamePlate_Frame_Filters_Text:Show()
 				FilteredNamePlate_Frame_note:Show()
-			elseif info == "percent" then
-				FilteredNamePlate_Menu3:LockHighlight()
+
 				FilteredNamePlate_Frame_SystemScale:Show()
 				FilteredNamePlate_Frame_OnlyShowScale:Show()
 				FilteredNamePlate_Frame_OnlyOtherShowScale:Show()
+			elseif info == "gs" then
+				FilteredNamePlate_Menu3:LockHighlight()
 				FilteredNamePlate_Frame_Slider_GSSize:Show()
 				FilteredNamePlate_Frame_Slider_GSTOP:Show()
 				FilteredNamePlate_Frame_Slider_GSLEFT:Show()
 				FilteredNamePlate_Frame_GSAlertInPage:Show()
+				FilteredNamePlate_Frame_GSAlertInPage2:Show()
 			elseif info == "icon" then
 				FilteredNamePlate_Menu4:LockHighlight()
 				FilteredNamePlate_Frame_ConstBuff_Text:Show()

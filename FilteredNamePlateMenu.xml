@@ -71,7 +71,7 @@
 			</Anchors>
 			<Scripts>
 				<OnClick>
-					FilteredNamePlate:FNP_ChangeFrameVisibility("percent")
+					FilteredNamePlate:FNP_ChangeFrameVisibility("gs")
 				</OnClick>
 			</Scripts>
 			<HighlightTexture file="Interface\Buttons\ButtonHilight-Square" alphaMode="ADD"/>

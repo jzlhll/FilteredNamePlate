@@ -43,15 +43,13 @@ FNP_LOCALE_TEXT.FNP_PRINT_ERROR_UITYPE = "\124cFF00CD00[ /fnp ]Ошибка！В
 FNP_LOCALE_TEXT.FNP_PRINT_UITYPE_CHANGED = "\124cFF00CD00UI тип ПИ изменем，пожалуйста перезагрузитеПИ !\124r";
 FNP_LOCALE_TEXT.FNP_PRINT_HELP0 = "\124cFF00CD00>>>FilteredNamePlates<<<\124r";
 FNP_LOCALE_TEXT.FNP_PRINT_HELP1 = "\124cFF00CD00/fnp options или /fnp opt \124r открытие меню настройки";
-FNP_LOCALE_TEXT.FNP_PRINT_HELP2 = "\124cFF00CD00/fnp change или /fnp ch \124r быстрое включение или отключение";
-FNP_LOCALE_TEXT.FNP_PRINT_HELP3 = "\124cFF00CD00/fnp refresh \124rбыстро скрывать применение юнитов";
 
 FNP_LOCALE_TEXT.FNP_TEXT_INFO0 = "\124cFF00CD00Если настройка не действует, или она все еще имеет некоторые недостатки, попробуйте перезагрузить. автоматически открыть клавишу ESC-> Интерфейс ->Всегда отображать индикаторы. Если вы не предпочитаете, то вручную выключите, далее FNP будет нормальный.\124r";
 FNP_LOCALE_TEXT.FNP_CHANGED_UITYPE = "Тип ПИ изменем, пожалуйста, ПерезагрузитеПИ";
 
 FNP_LOCALE_TEXT.FNP_MENU_GENERAL = "ГЛАВНОЕ";
 FNP_LOCALE_TEXT.FNP_MENU_FILTER = "ФИЛЬТР";
-FNP_LOCALE_TEXT.FNP_MENU_SIZE = "РАЗМЕР";
+FNP_LOCALE_TEXT.FNP_MENU_SIZE = "симбиония";
 FNP_LOCALE_TEXT.FNP_MENU_ICON = "значок";
 FNP_LOCALE_TEXT.FNP_MENU_ABOUT = "ОБ";
 FNP_LOCALE_TEXT.COPY_WEB = "Copy web";

@@ -33,7 +33,7 @@ FNP_LOCALE_TEXT.FNP_TXT_SMALL = "Small";
 
 FNP_LOCALE_TEXT.FNP_CONST_BUFF_TXT = "Const Buffs";
 FNP_LOCALE_TEXT.FNP_DYNAMIC_BUFF_TXT = "Dynamic Buffs";
-FNP_LOCALE_TEXT.FNP_ONLYSHOW_LIST_TXT = "OnlyShow List";
+FNP_LOCALE_TEXT.FNP_ONLYSHOW_LIST_TXT = "OnlyShow List Modify/add";
 FNP_LOCALE_TEXT.FNP_FILTER_LIST_TXT = "Filter List";
 FNP_LOCALE_TEXT.FNP_STRING_UI_TYPE = "UI Type(reload after changed)";
 FNP_LOCALE_TEXT.FNP_STRING_NOTE = "using ; to add a name";
@@ -44,15 +44,13 @@ FNP_LOCALE_TEXT.FNP_PRINT_ERROR_UITYPE = "\124cFF00CD00[ /fnp ]Error！Your UI t
 FNP_LOCALE_TEXT.FNP_PRINT_UITYPE_CHANGED = "\124cFF00CD00UI type is changed，please reloadUI !\124r";
 FNP_LOCALE_TEXT.FNP_PRINT_HELP0 = "\124cFF00CD00>>>FilteredNamePlates<<<\124r";
 FNP_LOCALE_TEXT.FNP_PRINT_HELP1 = "\124cFF00CD00/fnp options or /fnp opt \124r open the setting menu";
-FNP_LOCALE_TEXT.FNP_PRINT_HELP2 = "\124cFF00CD00/fnp change or /fnp ch \124r quickly to enable or disable";
-FNP_LOCALE_TEXT.FNP_PRINT_HELP3 = "\124cFF00CD00/fnp refresh \124rquickly to hide the casting units";
 
 FNP_LOCALE_TEXT.FNP_TEXT_INFO0 = "\124cFF00CD00If the setting does not take effect,or it still has some flaws, try to reload.Automatically open esc-> interface ->displays all the name plate. If you don't prefer, then manually shut down, while the FNP will be abnormal.\124r";
 FNP_LOCALE_TEXT.FNP_CHANGED_UITYPE = "UI type Changed! Please ReloadUI";
 
 FNP_LOCALE_TEXT.FNP_MENU_GENERAL = "GENERAL";
 FNP_LOCALE_TEXT.FNP_MENU_FILTER = "FILTER";
-FNP_LOCALE_TEXT.FNP_MENU_SIZE = "SIZE";
+FNP_LOCALE_TEXT.FNP_MENU_SIZE = "Symbiosis";
 FNP_LOCALE_TEXT.FNP_MENU_ICON = "Icon";
 FNP_LOCALE_TEXT.FNP_MENU_ABOUT = "ABOUT";
 FNP_LOCALE_TEXT.COPY_WEB = "Copy web";

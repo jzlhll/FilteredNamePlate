@@ -7,17 +7,32 @@ local string_find = string.find
 
 local IsGeneralRegistered, SetupFlag
 
-local isInOnlySt
+-- 第一个参数标记当前是否是仅显模式
+-- 第2,3个参数标记是否2个
+local isInOnlySt, isHasSpellOnlyShow, isHasNameOnlyShow
+local SpellCasterList = {}
 
 local majorNpFlag, majorFrName
+local tabinsert = table.insert
+local tabremove = table.remove
+local tabgetn   = table.getn
 
 --local IS_DEBUG = false
 
 local function setCVarValues()
+	SetCVar("nameplateShowAll", 1)
+	SetCVar("nameplateShowEnemyMinus", 1)
 	SetCVar("nameplateShowEnemies", 1)
 	SetCVar("nameplateShowEnemyMinions", 1)
-	SetCVar("nameplateShowEnemyMinus", 1)
-	SetCVar("nameplateShowAll", 1)
+end
+
+function is_include(value, tab)
+    for k,v in ipairs(tab) do
+      if v == value then
+          return true
+      end
+    end
+    return false
 end
 
 local function getTableCount(atab)
@@ -258,36 +273,23 @@ function FilteredNamePlate:actionUnitStateAfterChanged()
 		return
 	end
 
-	setCVarValues()
 	-- reset global vars{{
 	isInOnlySt = false
+	isHasNameOnlyShow = false
+	isHasSpellOnlyShow = false
 	FilteredNamePlate.isSettingChanged = false
 	FilteredNamePlate:reinitScaleValues(majorNpFlag)
 	-- reset global vars}}
 
 	local matched = false
-	local matched2 = false
 
 	if FnpEnableKeys["onlyShowEnable"] == true then
 		local isHide = false
 		local isNullOnlyList = false
-		local isNullFilterList = false
 		if getTableCount(Fnp_ONameList) == 0 then isNullOnlyList = true end
-		if getTableCount(Fnp_FNameList) == 0 then isNullFilterList = true end
 		for _, frame in pairs(GetNamePlates()) do
 			if isNullOnlyList == true then -- 如果没有仅显单位则过滤单位hide，其他show normal模式
-				matched2 = false
-				if isNullFilterList == false then
-					local foundUnit = (frame.namePlateUnitToken or (frame.UnitFrame and frame.UnitFrame.unit)) or (frame.unitFrame and frame.unitFrame.unit)
-					if foundUnit then 
-						matched2 = isMatchedNameList(Fnp_FNameList, GetUnitName(foundUnit))
-					end
-				end
-				if matched2 == true then
-					HideAFrame[majorNpFlag](frame)
-				else
-					ShowAFrame[majorNpFlag](frame, false, false, false) -- 全是普通情况
-				end
+				ShowAFrame[majorNpFlag](frame, false, false, false) -- 全是普通情况
 			else						 -- 如果有仅显单位则
 				local foundUnit = (frame.namePlateUnitToken or (frame.UnitFrame and frame.UnitFrame.unit)) or (frame.unitFrame and frame.unitFrame.unit)
 				matched = false
@@ -302,6 +304,7 @@ function FilteredNamePlate:actionUnitStateAfterChanged()
 		end
 		if isHide == true then -- onlyShow Mode
 			isInOnlySt = true
+			isHasNameOnlyShow = true
 			for _, frame in pairs(GetNamePlates()) do
 				local foundUnit = (frame.namePlateUnitToken or (frame.UnitFrame and frame.UnitFrame.unit)) or (frame.unitFrame and frame.unitFrame.unit)
 				matched = false
@@ -323,18 +326,66 @@ function FilteredNamePlate:actionUnitStateAfterChanged()
 	end
 end
 
+local function actionOnlyShowSpellStartToForce(unitid)-- 有读条肯定是算现在需要仅显了。
+	isHasSpellOnlyShow = true
+	if isInOnlySt == true then
+		-- 新增单位是需要仅显的,而此时已经有仅显的了,于是我们什么也不用干 -- 更新，怀疑在异步调用的时候莫名奇妙被hide了这里开出来确保
+		ShowAFrame[majorNpFlag](GetNamePlateForUnit(unitid), false, false, true)
+	elseif isInOnlySt == false then
+		--新增单位是需要仅显的,而此时不是仅显, 于是我们就将之前的都Hide,当前这个仅显
+		for _, frame in pairs(GetNamePlates()) do
+			local foundUnit = (frame.namePlateUnitToken or (frame.UnitFrame and frame.UnitFrame.unit)) or (frame.unitFrame and frame.unitFrame.unit)
+			if foundUnit then
+				if (unitid == foundUnit) then
+					-- 刚刚进入仅显模式！这个是仅显单位，那么将他变大一些
+					ShowAFrame[majorNpFlag](frame, false, false, true)
+				else
+					if UnitIsPlayer(foundUnit) == false then HideAFrame[majorNpFlag](frame) end
+				end
+			end
+		end
+		isInOnlySt = true
+	end
+end
+
+local function actionOnlyShowSpellStopToForce(unitid)
+	if tabgetn(SpellCasterList) == 0 then
+		isHasSpellOnlyShow = false
+	end
+	-- 移除单位是需要仅显的,而此时肯定已经仅显,
+	--于是我们判断剩余的是否还含有,如果还有就什么也不动.如果没有了,就恢复显示
+	local matched = false
+	for _, frame in pairs(GetNamePlates()) do
+		local foundUnit = (frame.namePlateUnitToken or (frame.UnitFrame and frame.UnitFrame.unit)) or (frame.unitFrame and frame.unitFrame.unit)
+		local name
+		if foundUnit then
+			name = GetUnitName(foundUnit)
+			if name ~= removedName or foundUnit ~= unitid then
+				matched = isMatchedNameList(Fnp_ONameList, GetUnitName(foundUnit))
+				if matched == true then
+					return --have & return
+				end
+			end
+		end
+	end
+	--没有找到,说明我们该退出了就显示
+	for _, frame in pairs(GetNamePlates()) do
+		local foundUnit = (frame.namePlateUnitToken or (frame.UnitFrame and frame.UnitFrame.unit)) or (frame.unitFrame and frame.unitFrame.unit)
+		if foundUnit then
+			matched = isMatchedNameList(Fnp_ONameList, GetUnitName(foundUnit))
+			if matched == false then
+				-- 退出仅显模式， 说明这些都是普通
+				if UnitIsPlayer(foundUnit) == false then ShowAFrame[majorNpFlag](frame, false, false, false) end
+			end
+		end
+	end
+	isInOnlySt = false
+end
+
 local function actionUnitAddedForce(unitid)
 	local addedname = UnitName(unitid)
 	--AllInfos[unitid].name = addedname  -- #ALLMYINFOS#
 
-	-- 0. 当前Add的单位名,是否match filter
-	local curFilterMatch = isMatchedNameList(Fnp_FNameList, addedname)
-	if curFilterMatch == true then
-		--AllInfos[unitid].matchType = 2  -- #ALLMYINFOS#
-		local frame = GetNamePlateForUnit(unitid)
-		HideAFrame[majorNpFlag](frame)
-		return
-	end
 	-- 1. 当前add的单位名,是否match
 	local curOnlyMatch = isMatchedNameList(Fnp_ONameList, addedname)
 	if curOnlyMatch == false and isInOnlySt == true then
@@ -353,6 +404,7 @@ local function actionUnitAddedForce(unitid)
 		-- 新增单位是需要仅显的,而此时已经有仅显的了,于是我们什么也不用干 -- 更新，怀疑在异步调用的时候莫名奇妙被hide了这里开出来确保
 		--AllInfos[unitid].matchType = 1  -- #ALLMYINFOS#
 		ShowAFrame[majorNpFlag](GetNamePlateForUnit(unitid), false, false, true)
+		isHasNameOnlyShow = true
 	elseif curOnlyMatch == true and isInOnlySt == false then
 		--新增单位是需要仅显的,而此时不是仅显, 于是我们就将之前的都Hide,当前这个仅显
 		--AllInfos[unitid].matchType = 1  -- #ALLMYINFOS#
@@ -369,18 +421,29 @@ local function actionUnitAddedForce(unitid)
 			end
 		end
 		isInOnlySt = true
+		isHasNameOnlyShow = true
 	end
 end
 
 local function actionUnitRemovedForce(unitid)
 	-- 1. 当前移除的单位名,是否match
-	-- if AllInfos and AllInfos[unitid] then
-	--	AllInfos[unitid].inSee = false -- #ALLMYINFOS#
-	-- end
+	if isInOnlySt == false then
+		-- 当前处于没有仅显模式,表明所有血条都开着的
+		return
+	end
+
 	local removedName = UnitName(unitid)
 	local curOnlyMatch = isMatchedNameList(Fnp_ONameList, removedName)
 
-	if curOnlyMatch == true then
+	--TODO SPELL
+	-- tabremove(SpellCasterList, unitid) -- 讲道理，这里应该放在后面。因为如果当前不是仅显，应该不会存在施法列表中.如果不行就放到上面去TODO
+	-- isHasSpellOnlyShow = tabgetn(SpellCasterList) > 0
+
+	if isHasSpellOnlyShow then -- 如果走了这个nameplate，还剩下有施法者。
+		return
+	end
+
+	if curOnlyMatch and (not isHasSpellOnlyShow) then
 		-- 移除单位是需要仅显的,而此时肯定已经仅显,
 		--于是我们判断剩余的是否还含有,如果还有就什么也不动.如果没有了,就恢复显示
 		local matched = false
@@ -391,13 +454,13 @@ local function actionUnitRemovedForce(unitid)
 				name = GetUnitName(foundUnit)
 				if name ~= removedName or foundUnit ~= unitid then
 					matched = isMatchedNameList(Fnp_ONameList, GetUnitName(foundUnit))
-					if matched == true then
+					if matched == true then -- 如果还有仅显怪。就跳出了
 						return --have & return
 					end
 				end
 			end
 		end
-		--没有找到,说明我们该退出了就显示
+		--没有找到,说明我们该退出仅显了
 		for _, frame in pairs(GetNamePlates()) do
 			local foundUnit = (frame.namePlateUnitToken or (frame.UnitFrame and frame.UnitFrame.unit)) or (frame.unitFrame and frame.unitFrame.unit)
 			if foundUnit then
@@ -439,10 +502,6 @@ local function actionUnitAdded(self, event, ...)
 end
 
 local function actionUnitRemoved(self, event, ...)
-	if isInOnlySt == false then
-		-- 当前处于没有仅显模式,表明所有血条都开着的
-		return
-	end
 	local unitid = ...
 	if UnitIsPlayer(unitid) then
 		return
@@ -451,41 +510,67 @@ local function actionUnitRemoved(self, event, ...)
 end
 
 local function actionUnitSpellCastStart(self, event, ...)
-	if isInOnlySt == false then
-		-- 当前处于没有仅显模式,表明所有血条都开着的
-		return
-	end
 	local unitid = ...
-	if UnitIsPlayer(unitid) then
+	if not UnitIsEnemy("player", unitid) then
 		return
 	end
-	local curName = UnitName(unitid)
-	if curName == nil then return end
-	local curMatch = isMatchedNameList(Fnp_ONameList, curName)
-	-- true的话，表明是我们要的，那么肯定是在显示了。就不管了
-	if curMatch == false then 
-		local frame = GetNamePlateForUnit(unitid)
-		--仅显模式，非仅显怪施法啦！我们放大到miiddle大小
-		ShowAFrame[majorNpFlag](frame, true, false, false)
+	if not string_find(tostring(unitid), "nameplate") then
+		return
+	end
+	if (not FnpEnableKeys["castSpellEqualOnlyShow"]) then
+		-- 默认行为 --
+		if isInOnlySt == false then
+			-- 当前处于没有仅显模式,表明所有血条都开着的
+			return
+		end
+		local curName = UnitName(unitid)
+		if curName == nil then return end
+		local curMatch = isMatchedNameList(Fnp_ONameList, curName)
+		-- true的话，表明是我们要的，那么肯定是在显示了。就不管了
+		if curMatch == false then
+			local frame = GetNamePlateForUnit(unitid)
+			--仅显模式，非仅显怪施法啦！我们放大到miiddle大小
+			ShowAFrame[majorNpFlag](frame, true, false, false)
+		end
+	else
+		-- 施法当做仅显行为 --
+		local curName = UnitName(unitid)
+		if curName == nil then return end
+		if not is_include(unitid, SpellCasterList) then tabinsert(SpellCasterList, unitid) end
+		actionOnlyShowSpellStartToForce(unitid)
 	end
 end
 
 local function actionUnitSpellCastStop(self, event, ...)
-	if isInOnlySt == false then
-		-- 当前处于没有仅显模式,表明所有血条都开着的
-		return
-	end
 	local unitid = ...
-	if UnitIsPlayer(unitid) then
+	if not UnitIsEnemy("player", unitid) then
 		return
 	end
-	local curName = UnitName(unitid)
-	if curName == nil then return end
-	local curMatch = isMatchedNameList(Fnp_ONameList, curName)
-	-- true的话，表明是我们要的，那么肯定是在显示了。
-	if curMatch == false then --false，而且是处于isCurrentOnlyShow
-		local frame = GetNamePlateForUnit(unitid)
-		HideAFrame[majorNpFlag](frame)
+	if not string_find(tostring(unitid), "nameplate") then
+		return
+	end
+
+	if (not FnpEnableKeys["castSpellEqualOnlyShow"]) then
+		if isInOnlySt == false then
+			-- 当前处于没有仅显模式,表明所有血条都开着的
+			return
+		end
+		local curName = UnitName(unitid)
+		if curName == nil then return end
+		local curMatch = isMatchedNameList(Fnp_ONameList, curName)
+		-- true的话，表明是我们要的，那么肯定是在显示了。
+		if curMatch == false then --false，而且是处于isCurrentOnlyShow
+			local frame = GetNamePlateForUnit(unitid)
+			HideAFrame[majorNpFlag](frame)
+		end
+	else
+		local curName = UnitName(unitid)
+		if curName == nil then return end
+		local curOnlyMatch = isMatchedNameList(Fnp_ONameList, curName) 
+		if (not curOnlyMatch) then --施法怪是仅显怪。则不用管他
+			tabremove(SpellCasterList, unitid)
+			actionOnlyShowSpellStopToForce(unitid)
+		end
 	end
 end
 
@@ -519,9 +604,6 @@ local function registerMyEvents(self, event, ...)
 			end
 		end
 
-		if Fnp_FNameList == nil then
-			Fnp_FNameList = {}
-		end
 		-- version 6.1.1 added & help to reset the error Struct of Fnnp_SavedScaleList
 		if Fnp_MyVersion == nil or Fnp_SavedScaleList == nil then
 			Fnp_SavedScaleList = nil
@@ -584,6 +666,8 @@ function FilteredNamePlate_OnEvent(self, event, ...)
 			FnpEnableKeys["onlyShowEnable"] = false
 		end
 		registerMyEvents(self, event, ...)
+		-- TODO 追加其他模块
+		FilteredNamePlate:CallBMChallenges()
 	end
 end
 
@@ -592,6 +676,8 @@ function FilteredNamePlate_OnLoad()
 	SetupFlag = 0
 	IsGeneralRegistered = false
 	isInOnlySt = false
+	isHasNameOnlyShow = false
+	isHasSpellOnlyShow = false
 	FilteredNamePlate.isSettingChanged = false
 	-- MYNAME = UnitName("player")
 	FilteredNamePlate_Frame:RegisterEvent("PLAYER_ENTERING_WORLD")
@@ -608,4 +694,6 @@ FilteredNamePlate.FilterNp_Event_General_List = {
 	["UNIT_SPELLCAST_CHANNEL_START"]  = actionUnitSpellCastStart,
 	["UNIT_SPELLCAST_STOP"]           = actionUnitSpellCastStop,
 	["UNIT_SPELLCAST_CHANNEL_STOP"]   = actionUnitSpellCastStop,
+	-- ["UNIT_SPELLCAST_SUCCEEDED"]      = actionUnitSpellCastStop,
+	-- ["UNIT_SPELLCAST_FAILED"]         = actionUnitSpellCastStop,
 }

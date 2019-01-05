@@ -1,14 +1,14 @@
-﻿## Interface: 80000
+﻿## Interface: 80100
 ## Title: FilteredNamePlate-FNP
 ## Title-zhTW: 过滤姓名板-FNP
 ## Title-zhCN: 过滤姓名板-FNP
 ## Author: Allan 一区-克尔苏加德-部落 峰巅的击进
-## Version: 6.7.0
+## Version: 6.8.0
 ## Notes: Help player to fight against Fel Explosives in Mythic+ more easiler. And help to adjust your namePlates' size more easiler. Using `/fnp opt` to open setting view.
 ## Notes-zhCN: 更轻松的应对大秘境中的爆炸物，共生怪。并且还可以追加其他名字！缩放姓名板的血条大小。/fnp opt 打开设置界面.
 ## DefaultState: Enabled
 ## LoadOnDemand: 0
-## SavedVariables: FnpEnableKeys, Fnp_FNameList, Fnp_ONameList, Fnp_OtherNPFlag, Fnp_SavedScaleList, Fnp_MyVersion
+## SavedVariables: FnpEnableKeys, Fnp_ONameList, Fnp_OtherNPFlag, Fnp_SavedScaleList, Fnp_MyVersion
 localization-zhCN.lua
 localization-zhTW.lua
 localization-ruRU.lua

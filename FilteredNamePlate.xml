@@ -3,9 +3,10 @@
 <Script file="FilteredNamePlate.lua"/>
 <Script file="FilteredNamePlateHelp.lua"/>
 <Script file="FnpGsIcons.lua"/>
+<Script file="FnpDirectlyMod.lua"/>
 <Frame name="FilteredNamePlate_Frame" hidden="true" parent="UIParent" toplevel="true" movable="true" frameStrata="HIGH" enableMouse="true" enableKeyboard="true">
 	<Size>
-		<AbsDimension x="280" y="500" />
+		<AbsDimension x="320" y="500" />
 	</Size>
 	<Anchors>
 		<Anchor point="CENTER" />
@@ -24,12 +25,12 @@
 	<Frames>
 		<CheckButton name="$parent_EnableCheckButton" inherits="OptionsCheckButtonTemplate">
 			<Size>
-				<AbsDimension x="40" y="40" />
+				<AbsDimension x="35" y="35" />
 			</Size>
 			<Anchors>
 				<Anchor point="TOPLEFT" relativeTo="$parent">
 				<Offset>
-					<AbsDimension x="40" y="-60" />
+					<AbsDimension x="20" y="-60" />
 				</Offset>
 				</Anchor>
 			</Anchors>
@@ -44,12 +45,12 @@
 		</CheckButton>
 		<CheckButton name="$parent_EnableGsCheckButton" inherits="OptionsCheckButtonTemplate">
 			<Size>
-				<AbsDimension x="40" y="40" />
+				<AbsDimension x="35" y="35" />
 			</Size>
 			<Anchors>
 				<Anchor point="TOPLEFT" relativeTo="$parent">
 				<Offset>
-					<AbsDimension x="40" y="-100" />
+					<AbsDimension x="20" y="-160" />
 				</Offset>
 				</Anchor>
 			</Anchors>
@@ -63,29 +64,29 @@
 			</Scripts>
 		</CheckButton>
 
-		<CheckButton name="$parent_EnableMagicCheckButton" inherits="OptionsCheckButtonTemplate" hidden="true">
+		<CheckButton name="$parent_EnableSpellCastCheckButton" inherits="OptionsCheckButtonTemplate" hidden="true">
 			<Size>
-				<AbsDimension x="40" y="40" />
+				<AbsDimension x="30" y="30" />
 			</Size>
 			<Anchors>
 				<Anchor point="TOPLEFT" relativeTo="$parent">
 				<Offset>
-					<AbsDimension x="40" y="-130" />
+					<AbsDimension x="80" y="-85" />
 				</Offset>
 				</Anchor>
 			</Anchors>
 			<Scripts>
 				<OnLoad>
-				_G[self:GetName().."Text"]:SetText("魔法监控");
+				_G[self:GetName().."Text"]:SetText(FNP_LOCALE_TEXT.FNP_SPELL_EQUUAL_ONLYSHOW);
 				</OnLoad>
 				<OnClick>
-					FilteredNamePlate:FNP_EnableButtonChecked(self:GetChecked(), "GS_BTN")
+					FilteredNamePlate:FNP_EnableButtonChecked(self:GetChecked(), "SPELL_EQ_ONLYSHOW")
 				</OnClick>
 			</Scripts>
 		</CheckButton>
-		<CheckButton name="$parent_EnableKNCheckButton" inherits="OptionsCheckButtonTemplate"  hidden="true">
+		<!-- CheckButton name="$parent_EnableKNCheckButton" inherits="OptionsCheckButtonTemplate"  hidden="true">
 			<Size>
-				<AbsDimension x="40" y="40" />
+				<AbsDimension x="35" y="35" />
 			</Size>
 			<Anchors>
 				<Anchor point="TOPLEFT" relativeTo="$parent">
@@ -102,13 +103,13 @@
 					FilteredNamePlate:FNP_EnableButtonChecked(self:GetChecked(), "GS_BTN")
 				</OnClick>
 			</Scripts>
-		</CheckButton>
+		</CheckButton -->
 		<!-- UIType start -->
 		<Frame name="$parent_DropDownUIType" inherits="UIDropDownMenuTemplate" id="1">
 			<Anchors>
 				<Anchor point="CENTER" relativeTo="$parent_EnableCheckButton" relativePoint="TOPLEFT">
 					<Offset>
-						<AbsDimension x="60" y="-240"/>
+						<AbsDimension x="90" y="-240"/>
 					</Offset>
 				</Anchor>
 			</Anchors>
@@ -137,7 +138,7 @@
                 <Anchors>
                     <Anchor point="TOPLEFT" relativeTo="$parent_EnableCheckButton" relativePoint="BOTTOMLEFT">
                         <Offset>
-                            <AbsDimension x="0" y="-50" />
+                            <AbsDimension x="30" y="-300" />
                         </Offset>
                     </Anchor>
                 </Anchors>
@@ -170,7 +171,7 @@
                 <Anchors>
                     <Anchor point="TOPLEFT" relativeTo="$parent_EnableCheckButton" relativePoint="BOTTOMLEFT">
                         <Offset>
-                            <AbsDimension x="0" y="-50" />
+                            <AbsDimension x="30" y="-50" />
                         </Offset>
                     </Anchor>
                 </Anchors>
@@ -178,39 +179,6 @@
                     <OnEnterPressed>
                         self:ClearFocus();
 						FilteredNamePlate:FNP_ModeEditBoxWriten("cb", self:GetText())
-                    </OnEnterPressed>
-                    <OnEscapePressed>
-                        self:ClearFocus();
-						FilteredNamePlate:FNP_ModeEditBoxWritenEsc()
-                    </OnEscapePressed>
-                </Scripts>
-                <FontString inherits="ChatFontNormal" />
-        </EditBox>
-
-		<EditBox name="$parent_FilteredModeEditBox" letters="300" autoFocus="false" multiLine="true" hidden="true">
-                <Layers>
-                    <Layer level="BACKGROUND">
-                        <Texture>
-                            <Color r=".2" g=".2" b=".2" a="1"/>
-                        </Texture>
-                    </Layer>
-                </Layers>
-                <Size>
-                    <AbsDimension x="150" y="80" />
-                </Size>
-                <Anchors>
-                    <Anchor point="TOPLEFT" relativeTo="$parent_OnlyShowModeEditBox" relativePoint="BOTTOMLEFT">
-                        <Offset>
-                            <AbsDimension x="0" y="-80" />
-                        </Offset>
-                    </Anchor>
-                </Anchors>
-                <Scripts>
-                    <OnEnterPressed>
-                        self:ClearFocus();
-						FilteredNamePlate:FNP_ModeEditBoxWriten("f", self:GetText())
-						FilteredNamePlate.isSettingChanged = true
-					    FilteredNamePlate_Frame_takeEffectBtn:Show()
                     </OnEnterPressed>
                     <OnEscapePressed>
                         self:ClearFocus();
@@ -312,7 +280,7 @@
 			<Anchors>
 				<Anchor point="LEFT">
 				  <Offset>
-					 <AbsDimension x="40" y="180" />
+					 <AbsDimension x="70" y="180" />
 				  </Offset>
 			   </Anchor>
             </Anchors>
@@ -345,7 +313,7 @@
 		   <Anchors>
 			   <Anchor point="LEFT">
 				  <Offset>
-					 <AbsDimension x="40" y="100" />
+					 <AbsDimension x="70" y="100" />
 				  </Offset>
 			   </Anchor>
 		   </Anchors>
@@ -378,7 +346,7 @@
 		   <Anchors>
 			   <Anchor point="LEFT">
 				  <Offset>
-					 <AbsDimension x="40" y="20" />
+					 <AbsDimension x="70" y="20" />
 				  </Offset>
 			   </Anchor>
 		   </Anchors>
@@ -413,7 +381,7 @@
 			<Anchors>
 				<Anchor point="LEFT">
 				  <Offset>
-					 <AbsDimension x="40" y="-70" />
+					 <AbsDimension x="70" y="80" />
 				  </Offset>
 			   </Anchor>
             </Anchors>
@@ -435,7 +403,7 @@
 			<Anchors>
 				<Anchor point="LEFT">
 				  <Offset>
-					 <AbsDimension x="40" y="-140" />
+					 <AbsDimension x="70" y="-10" />
 				  </Offset>
 			   </Anchor>
             </Anchors>
@@ -458,7 +426,7 @@
 			<Anchors>
 				<Anchor point="LEFT">
 				  <Offset>
-					 <AbsDimension x="40" y="-210" />
+					 <AbsDimension x="70" y="-100" />
 				  </Offset>
 			   </Anchor>
             </Anchors>
@@ -517,7 +485,7 @@
 			<Anchors>
 				<Anchor point="BOTTOMLEFT" relativeTo="$parent">
 				<Offset>
-					<AbsDimension x="10" y="120" />
+					<AbsDimension x="10" y="10" />
 				</Offset>
 				</Anchor>
 			</Anchors>
@@ -567,7 +535,7 @@
 					</Anchor>
 				</Anchors>
 			</Texture>
-			<FontString name="$parent_Header_Text" inherits="GameFontNormal" text="FNP v6.7.0">
+			<FontString name="$parent_Header_Text" inherits="GameFontNormal" text="FNP v6.8.0">
 				<Anchors>
 					<Anchor point="TOP" relativeTo="$parent_Header">
 						<Offset>
@@ -580,21 +548,11 @@
 				<Anchors>
 					<Anchor point="TOPLEFT" relativeTo="$parent_OnlyShowModeEditBox" relativePoint="TOPLEFT">
 					<Offset>
-						<AbsDimension x="5" y="25" />
+						<AbsDimension x="-30" y="25" />
 					</Offset>
 					</Anchor>
 				</Anchors>
 			</FontString>
-			<FontString name="$parent_Filters_Text" inherits="GameFontNormal" hidden="true" text="">
-				<Anchors>
-					<Anchor point="TOPLEFT" relativeTo="$parent_FilteredModeEditBox" relativePoint="TOPLEFT">
-					<Offset>
-						<AbsDimension x="5" y="25" />
-					</Offset>
-					</Anchor>
-				</Anchors>
-			</FontString>
-
 			<FontString name="$parent_ConstBuff_Text" inherits="GameFontNormal" text="" hidden="true">
 				<Anchors>
 					<Anchor point="TOPLEFT" relativeTo="$parent_OnlyShowModeEditBox" relativePoint="TOPLEFT">
@@ -606,7 +564,7 @@
 			</FontString>
 			<FontString name="$parent_DynamicBuff_Text" inherits="GameFontNormal" hidden="true" text="">
 				<Anchors>
-					<Anchor point="TOPLEFT" relativeTo="$parent_FilteredModeEditBox" relativePoint="TOPLEFT">
+					<Anchor point="TOPLEFT" relativeTo="$parent_OnlyShowModeEditBox" relativePoint="TOPLEFT">
 					<Offset>
 						<AbsDimension x="5" y="25" />
 					</Offset>
@@ -627,7 +585,7 @@
 				<Anchors>
 					<Anchor point="BOTTOMLEFT" relativeTo="$parent">
 						<Offset>
-							<AbsDimension x="10" y="63" />
+							<AbsDimension x="20" y="140" />
 						</Offset>
 					</Anchor>
 				</Anchors>
@@ -663,7 +621,19 @@
 				<Anchors>
 					<Anchor point="BOTTOMLEFT" relativeTo="$parent" relativePoint="BOTTOMLEFT">
 						<Offset>
-							<AbsDimension x="10" y="195" />
+							<AbsDimension x="10" y="10" />
+						</Offset>
+					</Anchor>
+				</Anchors>
+			</FontString>
+			<FontString name="$parent_GSAlertInPage2" inherits="GameFontNormalSmall" text="" multiLine="true" hidden="true">
+				<Size>
+					<AbsDimension x="0" y="50" />
+				</Size>
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parent">
+						<Offset>
+							<AbsDimension x="30" y="-80" />
 						</Offset>
 					</Anchor>
 				</Anchors>
@@ -678,12 +648,12 @@
 			FilteredNamePlate_Frame_AuthorText:SetFont (GameFontNormal:GetFont(), 12)
 			FilteredNamePlate_Frame_webText:SetFont(GameFontNormal:GetFont(), 12)
 			FilteredNamePlate_Frame_OnlyShows_Text:SetText(FNP_LOCALE_TEXT.FNP_ONLYSHOW_LIST_TXT);
-			FilteredNamePlate_Frame_Filters_Text:SetText(FNP_LOCALE_TEXT.FNP_FILTER_LIST_TXT);
 			FilteredNamePlate_Frame_ConstBuff_Text:SetText(FNP_LOCALE_TEXT.FNP_CONST_BUFF_TXT);
 			FilteredNamePlate_Frame_DynamicBuff_Text:SetText(FNP_LOCALE_TEXT.FNP_DYNAMIC_BUFF_TXT);
 			FilteredNamePlate_Frame_uitype:SetText(FNP_LOCALE_TEXT.FNP_STRING_UI_TYPE);
 			FilteredNamePlate_Frame_note:SetText(FNP_LOCALE_TEXT.FNP_STRING_NOTE);
 			FilteredNamePlate_Frame_GSAlertInPage:SetText(FNP_LOCALE_TEXT.FNP_GS_ALERT_WORDS);
+			FilteredNamePlate_Frame_GSAlertInPage2:SetText(FNP_LOCALE_TEXT.FNP_GS_ALERT_WORDS2);
 		</OnLoad>
 		<OnEvent>
 			FilteredNamePlate_OnEvent(self,event,...);
