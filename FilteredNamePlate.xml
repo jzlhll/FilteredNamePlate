@@ -84,26 +84,27 @@
 				</OnClick>
 			</Scripts>
 		</CheckButton>
-		<!-- CheckButton name="$parent_EnableKNCheckButton" inherits="OptionsCheckButtonTemplate"  hidden="true">
+		<Button name="$parent_EnableAchievShowButton" inherits="OptionsButtonTemplate" text="" hidden="true">
 			<Size>
-				<AbsDimension x="35" y="35" />
+				<AbsDimension x="100" y="35" />
 			</Size>
 			<Anchors>
 				<Anchor point="TOPLEFT" relativeTo="$parent">
 				<Offset>
-					<AbsDimension x="40" y="-160" />
+					<AbsDimension x="80" y="-160" />
 				</Offset>
 				</Anchor>
 			</Anchors>
 			<Scripts>
 				<OnLoad>
-				_G[self:GetName().."Text"]:SetText("狂怒监控");
+				_G[self:GetName().."Text"]:SetText(FNP_LOCALE_TEXT.FNP_BM_ACHIEVMENT);
 				</OnLoad>
 				<OnClick>
-					FilteredNamePlate:FNP_EnableButtonChecked(self:GetChecked(), "GS_BTN")
+					FilteredNamePlate:CallBMChallengesShow()
 				</OnClick>
 			</Scripts>
-		</CheckButton -->
+		</Button>
+
 		<!-- UIType start -->
 		<Frame name="$parent_DropDownUIType" inherits="UIDropDownMenuTemplate" id="1">
 			<Anchors>

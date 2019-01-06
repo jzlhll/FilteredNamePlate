@@ -140,6 +140,7 @@ function FilteredNamePlate:FNP_ChangeFrameVisibility(...)
 			FilteredNamePlate_Frame_EnableCheckButton:Hide()
 			FilteredNamePlate_Frame_EnableGsCheckButton:Hide()
 			-- FilteredNamePlate_Frame_EnableSpellCastCheckButton:Hide()
+			FilteredNamePlate_Frame_EnableAchievShowButton:Hide()
 
 			FilteredNamePlate_Frame_uitype:Hide()
 			FilteredNamePlate_Frame_DropDownUIType:Hide()
@@ -202,12 +203,9 @@ function FilteredNamePlate:FNP_ChangeFrameVisibility(...)
 				FilteredNamePlate_Frame_Slider_GSLEFT:Show()
 				FilteredNamePlate_Frame_GSAlertInPage:Show()
 				FilteredNamePlate_Frame_GSAlertInPage2:Show()
-			elseif info == "icon" then
+			elseif info == "other" then
 				FilteredNamePlate_Menu4:LockHighlight()
-				FilteredNamePlate_Frame_ConstBuff_Text:Show()
-				FilteredNamePlate_Frame_DynamicBuff_Text:Show()
-				FilteredNamePlate_Frame_ConstBuffBox:Show()
-				FilteredNamePlate_Frame_DynamicBuffBox:Show()
+				FilteredNamePlate_Frame_EnableAchievShowButton:Show()
 			end
 		end
 		ClickOnMenu(info)

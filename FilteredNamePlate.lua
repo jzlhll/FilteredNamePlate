@@ -666,8 +666,7 @@ function FilteredNamePlate_OnEvent(self, event, ...)
 			FnpEnableKeys["onlyShowEnable"] = false
 		end
 		registerMyEvents(self, event, ...)
-		-- TODO 追加其他模块
-		FilteredNamePlate:CallBMChallenges()
+		-- TODO 追加其他直接模块
 	end
 end
 
