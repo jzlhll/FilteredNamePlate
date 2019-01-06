@@ -10,6 +10,7 @@ FNP_LOCALE_TEXT.FNP_GS_ALERT_WORDS = "调整后，来回关闭和显示血条才
 FNP_LOCALE_TEXT.FNP_GS_ALERT_WORDS2 = "配置共生图标显示";
 FNP_LOCALE_TEXT.FNP_SPELL_EQUUAL_ONLYSHOW = "施法怪当做仅显";
 FNP_LOCALE_TEXT.FNP_BM_ACHIEVMENT = "查看大米10/15成就";
+FNP_LOCALE_TEXT.CheckDungeonDifficultyStr = "检查地下城难度"
 
 if GetLocale() == "zhCN" then
 FNP_LOCALE_TEXT.FNP_ENABLE_TXT = "仅显启用";

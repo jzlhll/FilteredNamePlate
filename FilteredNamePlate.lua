@@ -666,7 +666,7 @@ function FilteredNamePlate_OnEvent(self, event, ...)
 			FnpEnableKeys["onlyShowEnable"] = false
 		end
 		registerMyEvents(self, event, ...)
-		-- TODO 追加其他直接模块
+		-- TODO 追加其他模块
 	end
 end
 
@@ -680,7 +680,7 @@ function FilteredNamePlate_OnLoad()
 	FilteredNamePlate.isSettingChanged = false
 	-- MYNAME = UnitName("player")
 	FilteredNamePlate_Frame:RegisterEvent("PLAYER_ENTERING_WORLD")
-	-- TODO 追加其他模块
+
 	FilteredNamePlate:GsIconsRegistEvent()
 end
 

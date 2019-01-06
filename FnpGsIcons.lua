@@ -3,10 +3,7 @@ local rgev = rgev
 local gnp = C_NamePlate.GetNamePlateForUnit
 local ua = UnitAura
 local gun = GetUnitName
-local BASE = CreateFrame("Frame", nil, UIParent)
-
-BASE:SetIgnoreParentScale(true)
-
+local BASE
 local icontab = {}
 
 local isreg = false
@@ -65,6 +62,8 @@ end
 function FilteredNamePlate:GsIconsRegistEvent()
 	if not isreg then
 		isreg = true
+		BASE = CreateFrame("Frame", nil, UIParent)
+		BASE:SetIgnoreParentScale(true)
 		rgev(true)
 		BASE:SetScript("OnEvent", GsIconsOnEvent)
 	end

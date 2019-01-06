@@ -105,6 +105,27 @@
 			</Scripts>
 		</Button>
 
+		<CheckButton name="$parent_CheckDungeonDiffCheckBtn" inherits="OptionsCheckButtonTemplate" hidden="true">
+			<Size>
+				<AbsDimension x="30" y="30" />
+			</Size>
+			<Anchors>
+				<Anchor point="TOPLEFT" relativeTo="$parent">
+				<Offset>
+					<AbsDimension x="80" y="-85" />
+				</Offset>
+				</Anchor>
+			</Anchors>
+			<Scripts>
+				<OnLoad>
+				_G[self:GetName().."Text"]:SetText(FNP_LOCALE_TEXT.CheckDungeonDifficultyStr);
+				</OnLoad>
+				<OnClick>
+					FilteredNamePlate:FNP_EnableButtonChecked(self:GetChecked(), "checkDungDiff")
+				</OnClick>
+			</Scripts>
+		</CheckButton>
+
 		<!-- UIType start -->
 		<Frame name="$parent_DropDownUIType" inherits="UIDropDownMenuTemplate" id="1">
 			<Anchors>
