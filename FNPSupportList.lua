@@ -1,10 +1,7 @@
 local _
-local GetNamePlateForUnit , GetNamePlates = C_NamePlate.GetNamePlateForUnit, C_NamePlate.GetNamePlates
-local UnitName, GetUnitName = UnitName, GetUnitName
+local FilteredNamePlate = _G.FilteredNamePlate
+local GetNamePlates = C_NamePlate.GetNamePlates
 --local IS_DEBUG = true
-
-FilteredNamePlate = {}
-
 FilteredNamePlate.UITypeCheckList = {
 	[0] = false,
 	[1] = false,

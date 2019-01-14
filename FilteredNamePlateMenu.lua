@@ -1,20 +1,6 @@
-SLASH_FilteredNamePlate1 = "/fnp"
-
 local isInitedDrop
-local L = FNP_LOCALE_TEXT
-
-function SlashCmdList.FilteredNamePlate(msg)
-	if msg == nil or msg == "" then
-		print(L.FNP_PRINT_HELP0)
-		print(L.FNP_PRINT_HELP1)
-		return
-	end
-
-	msg = string.lower(msg)
-	if msg == "options" or msg == "opt" then
-		FilteredNamePlate:FNP_ChangeFrameVisibility()
-	end
-end
+local L = _G.FNP_LOCALE_TEXT
+local FilteredNamePlate = _G.FilteredNamePlate
 
 function FilteredNamePlate:CreateACopyFrame(str)
 	FilteredNamePlate:ExportATab(str)
@@ -210,4 +196,6 @@ function FilteredNamePlate:FNP_ChangeFrameVisibility(...)
 		end
 		ClickOnMenu(info)
 	end
+
+	return nil
 end

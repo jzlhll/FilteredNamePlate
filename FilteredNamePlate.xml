@@ -1,9 +1,10 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/..\FrameXML\UI.xsd">
+<Script file="FNPSupportList.lua"/>
 <Script file="FilteredNamePlateMenu.lua"/>
 <Script file="FilteredNamePlate.lua"/>
 <Script file="FilteredNamePlateHelp.lua"/>
-<Script file="FnpGsIcons.lua"/>
-<Script file="FnpDirectlyMod.lua"/>
+<Script file="mod\FnpGsIcons.lua"/>
+<Script file="mod\FnpDirectlyMod.lua"/>
 <Frame name="FilteredNamePlate_Frame" hidden="true" parent="UIParent" toplevel="true" movable="true" frameStrata="HIGH" enableMouse="true" enableKeyboard="true">
 	<Size>
 		<AbsDimension x="320" y="500" />
@@ -678,7 +679,7 @@
 			FilteredNamePlate_Frame_GSAlertInPage2:SetText(FNP_LOCALE_TEXT.FNP_GS_ALERT_WORDS2);
 		</OnLoad>
 		<OnEvent>
-			FilteredNamePlate_OnEvent(self,event,...);
+			FilteredNamePlate:FilteredNamePlate_OnEvent(self,event,...);
 		</OnEvent>
 		<OnMouseDown>
 			if button == "LeftButton" then

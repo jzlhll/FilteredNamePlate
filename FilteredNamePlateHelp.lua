@@ -1,3 +1,5 @@
+local FilteredNamePlate = _G.FilteredNamePlate
+
 function FilteredNamePlate.printTable(table , level, key)
   level = level or 1
   local indent = ""

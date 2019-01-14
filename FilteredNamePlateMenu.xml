@@ -97,7 +97,7 @@
 	</Frames>
 	<Scripts>
 		<OnLoad>
-			FilteredNamePlate_OnLoad();
+			FilteredNamePlate:FilteredNamePlate_OnLoad();
 			FilteredNamePlate_Menu1:LockHighlight()
 			FilteredNamePlate_Menu1:SetText(FNP_LOCALE_TEXT.FNP_MENU_GENERAL)
 			FilteredNamePlate_Menu2:SetText(FNP_LOCALE_TEXT.FNP_MENU_FILTER)

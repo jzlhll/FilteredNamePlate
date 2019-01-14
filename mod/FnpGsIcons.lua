@@ -9,6 +9,8 @@ local icontab = {}
 local isreg = false
 local isNeedWork = false
 
+local FilteredNamePlate = _G.FilteredNamePlate
+
 local function isGsChild(unit)
 	local n = gun(unit)
 	return n and (n == "戈霍恩之嗣")

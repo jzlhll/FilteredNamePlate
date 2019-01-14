@@ -1,5 +1,6 @@
 local rgev = rgev
 local BASE = nil
+local FilteredNamePlate = _G.FilteredNamePlate
 
 local DifficultyList = {
 	[1] = "普通地下城",

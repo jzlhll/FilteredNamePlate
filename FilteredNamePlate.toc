@@ -9,11 +9,12 @@
 ## DefaultState: Enabled
 ## LoadOnDemand: 0
 ## SavedVariables: FnpEnableKeys, Fnp_ONameList, Fnp_OtherNPFlag, Fnp_SavedScaleList, Fnp_MyVersion
-localization-zhCN.lua
-localization-zhTW.lua
-localization-ruRU.lua
-localization-enUS.lua
-FNPSupportList.lua
+Core.lua
+local/localization-zhCN.lua
+local/localization-zhTW.lua
+
+## 英文放在最后
+local/localization-enUS.lua
 
 FilteredNamePlate.xml
 FilteredNamePlateMenu.xml

@@ -1,7 +1,11 @@
-﻿-- Prevent tainting global _.
+﻿local FNP_LOCALE_TEXT = _G.FNP_LOCALE_TEXT
 
-FNP_LOCALE_TEXT = {}
-FNP_LOCALE_TEXT.FNP_VERSION = 670
+if GetLocale() == "zhCN" then
+FNP_LOCALE_TEXT.NOTE_TOC = "缩放姓名板的血条大小(可追加), 支持共生怪图标";
+
+FNP_LOCALE_TEXT.ACHIEVER_15_OK = "15层限时！";
+FNP_LOCALE_TEXT.ACHIEVER_10_OK = "10层限时！";
+FNP_LOCALE_TEXT.ACHIEVER_10_NOT_OK = "10层未限时！";
 
 FNP_LOCALE_TEXT.FNP_GS_SLIDE_TXT = "共生图标大小";
 FNP_LOCALE_TEXT.FNP_GS_SIDE_TOP = "共生高度偏移";
@@ -12,7 +16,6 @@ FNP_LOCALE_TEXT.FNP_SPELL_EQUUAL_ONLYSHOW = "施法怪当做仅显";
 FNP_LOCALE_TEXT.FNP_BM_ACHIEVMENT = "查看大米10/15成就";
 FNP_LOCALE_TEXT.CheckDungeonDifficultyStr = "检查地下城难度"
 
-if GetLocale() == "zhCN" then
 FNP_LOCALE_TEXT.FNP_ENABLE_TXT = "仅显启用";
 FNP_LOCALE_TEXT.FNP_GS_ENABLE_TXT = "共生图标启用";
 -- FNP_LOCALE_TEXT.FNP_ENABLE_TANK_TXT = "MT专用";

@@ -1,5 +1,6 @@
 local _
-local L = FNP_LOCALE_TEXT
+local L = _G.FNP_LOCALE_TEXT
+local FilteredNamePlate = _G.FilteredNamePlate
 local GetNamePlateForUnit , GetNamePlates, UnitThreatSituation = C_NamePlate.GetNamePlateForUnit, C_NamePlate.GetNamePlates, UnitThreatSituation
 local UnitName, GetUnitName = UnitName, GetUnitName
 local UnitBuff = UnitBuff
@@ -656,7 +657,7 @@ local function registerMyEvents(self, event, ...)
 	end
 end
 
-function FilteredNamePlate_OnEvent(self, event, ...)
+function FilteredNamePlate:FilteredNamePlate_OnEvent(self, event, ...)
 	local handler = FilteredNamePlate.FilterNp_Event_General_List[event]
 	if handler then
 	    handler(self, event, ...)
@@ -670,7 +671,7 @@ function FilteredNamePlate_OnEvent(self, event, ...)
 	end
 end
 
-function FilteredNamePlate_OnLoad()
+function FilteredNamePlate:FilteredNamePlate_OnLoad()
 	--** global vars reset
 	SetupFlag = 0
 	IsGeneralRegistered = false
@@ -682,6 +683,8 @@ function FilteredNamePlate_OnLoad()
 	FilteredNamePlate_Frame:RegisterEvent("PLAYER_ENTERING_WORLD")
 
 	FilteredNamePlate:GsIconsRegistEvent()
+
+	FilteredNamePlate:InitAddonPanel()
 end
 
 -- 必须放在最下面
