@@ -71,24 +71,6 @@
 			</Anchors>
 			<Scripts>
 				<OnClick>
-					FilteredNamePlate:FNP_ChangeFrameVisibility("gs")
-				</OnClick>
-			</Scripts>
-			<HighlightTexture file="Interface\Buttons\ButtonHilight-Square" alphaMode="ADD"/>
-		</Button>
-		<Button name="$parent4" inherits="OptionsButtonTemplate">
-			<Size>
-				<AbsDimension x="60" y="40" />
-			</Size>
-			<Anchors>
-				<Anchor point="LEFT" relativeTo="$parent" relativePoint="TOPLEFT">
-				<Offset>
-					<AbsDimension x="10" y="-150" />
-				</Offset>
-				</Anchor>
-			</Anchors>
-			<Scripts>
-				<OnClick>
 					FilteredNamePlate:FNP_ChangeFrameVisibility("other")
 				</OnClick>
 			</Scripts>
@@ -101,8 +83,7 @@
 			FilteredNamePlate_Menu1:LockHighlight()
 			FilteredNamePlate_Menu1:SetText(FNP_LOCALE_TEXT.FNP_MENU_GENERAL)
 			FilteredNamePlate_Menu2:SetText(FNP_LOCALE_TEXT.FNP_MENU_FILTER)
-			FilteredNamePlate_Menu3:SetText(FNP_LOCALE_TEXT.FNP_MENU_GSSTR)
-			FilteredNamePlate_Menu4:SetText(FNP_LOCALE_TEXT.FNP_MENU_OTHER)
+			FilteredNamePlate_Menu3:SetText(FNP_LOCALE_TEXT.FNP_MENU_OTHER)
 		</OnLoad>
 	</Scripts>
 </Frame>

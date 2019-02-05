@@ -7,17 +7,11 @@ FNP_LOCALE_TEXT.ACHIEVER_15_OK = "15 Lvl Limit Success!";
 FNP_LOCALE_TEXT.ACHIEVER_10_OK = "10 Lvl Limit Success!";
 FNP_LOCALE_TEXT.ACHIEVER_10_NOT_OK = "10 Lvl Limit Fail!";
 
-FNP_LOCALE_TEXT.FNP_GS_SLIDE_TXT = "Symbiosis icon size";
-FNP_LOCALE_TEXT.FNP_GS_SIDE_TOP = "Symbiosis position top";
-FNP_LOCALE_TEXT.FNP_GS_SIDE_LEFT = "Symbiosis position left";
-FNP_LOCALE_TEXT.FNP_GS_ALERT_WORDS = "After change, pls hide and show nameplates！";
-FNP_LOCALE_TEXT.FNP_GS_ALERT_WORDS2 = "Config symbiosis icon";
 FNP_LOCALE_TEXT.FNP_SPELL_EQUUAL_ONLYSHOW = "SpellCast equals onlyShow";
 FNP_LOCALE_TEXT.FNP_BM_ACHIEVMENT = "Check 10/15 diff achievement";
 FNP_LOCALE_TEXT.CheckDungeonDifficultyStr = "Check Dungeons Difficulty"
 
 FNP_LOCALE_TEXT.FNP_ENABLE_TXT = "OnlyShow Enable";
-FNP_LOCALE_TEXT.FNP_GS_ENABLE_TXT = "Icon Enable";
 -- FNP_LOCALE_TEXT.FNP_ENABLE_TANK_TXT = "Tank Enable";
 -- FNP_LOCALE_TEXT.FNP_ENABLE_TANK_TXT_TOOLTIP = "You Tank: Which enemy is target is not yourself, will be treated as OnlyShow Unit.";
 FNP_LOCALE_TEXT.FNP_ENABLE_KILLINE_TXT = "Execution Enable";

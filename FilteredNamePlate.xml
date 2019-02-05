@@ -3,7 +3,6 @@
 <Script file="FilteredNamePlateMenu.lua"/>
 <Script file="FilteredNamePlate.lua"/>
 <Script file="FilteredNamePlateHelp.lua"/>
-<Script file="mod\FnpGsIcons.lua"/>
 <Script file="mod\FnpDirectlyMod.lua"/>
 <Frame name="FilteredNamePlate_Frame" hidden="true" parent="UIParent" toplevel="true" movable="true" frameStrata="HIGH" enableMouse="true" enableKeyboard="true">
 	<Size>
@@ -44,27 +43,6 @@
 				</OnClick>
 			</Scripts>
 		</CheckButton>
-		<CheckButton name="$parent_EnableGsCheckButton" inherits="OptionsCheckButtonTemplate">
-			<Size>
-				<AbsDimension x="35" y="35" />
-			</Size>
-			<Anchors>
-				<Anchor point="TOPLEFT" relativeTo="$parent">
-				<Offset>
-					<AbsDimension x="20" y="-160" />
-				</Offset>
-				</Anchor>
-			</Anchors>
-			<Scripts>
-				<OnLoad>
-				_G[self:GetName().."Text"]:SetText(FNP_LOCALE_TEXT.FNP_GS_ENABLE_TXT);
-				</OnLoad>
-				<OnClick>
-					FilteredNamePlate:FNP_EnableButtonChecked(self:GetChecked(), "GS_BTN")
-				</OnClick>
-			</Scripts>
-		</CheckButton>
-
 		<CheckButton name="$parent_EnableSpellCastCheckButton" inherits="OptionsCheckButtonTemplate" hidden="true">
 			<Size>
 				<AbsDimension x="30" y="30" />
@@ -87,7 +65,7 @@
 		</CheckButton>
 		<Button name="$parent_EnableAchievShowButton" inherits="OptionsButtonTemplate" text="" hidden="true">
 			<Size>
-				<AbsDimension x="100" y="35" />
+				<AbsDimension x="140" y="35" />
 			</Size>
 			<Anchors>
 				<Anchor point="TOPLEFT" relativeTo="$parent">
@@ -147,7 +125,7 @@
 			</Scripts>
 		</Frame>
 	<!-- UIType end-->
-        <EditBox name="$parent_OnlyShowModeEditBox" letters="300" autoFocus="false" multiLine="true" hidden="true">
+        <EditBox name="$parent_OnlyShowModeEditBox" letters="500" autoFocus="false" multiLine="true" hidden="true">
                 <Layers>
                     <Layer level="BACKGROUND">
                         <Texture>
@@ -400,73 +378,6 @@
 			   </OnLeave>
 		   </Scripts>
         </Slider>
-		<Slider name="$parent_Slider_GSSize" inherits="OptionsSliderTemplate" hidden="true">
-			<Anchors>
-				<Anchor point="LEFT">
-				  <Offset>
-					 <AbsDimension x="70" y="80" />
-				  </Offset>
-			   </Anchor>
-            </Anchors>
-            <Scripts>
-			   <OnLoad>
-				  _G[self:GetName().."Text"]:SetText(FNP_LOCALE_TEXT.FNP_GS_SLIDE_TXT);
-				  _G[self:GetName().."High"]:SetText(FNP_LOCALE_TEXT.FNP_TXT_BIG.."35");
-				  _G[self:GetName().."Low"]:SetText(FNP_LOCALE_TEXT.FNP_TXT_SMALL.."20");
-				  self:SetMinMaxValues(20, 35);
-				  self:SetValueStep(1);
-			   </OnLoad>
-			   <OnValueChanged>
-			   		_G[self:GetName().."Text"]:SetText(FNP_LOCALE_TEXT.FNP_GS_SLIDE_TXT..string.format("%.0f", self:GetValue()));
-					Fnp_SavedScaleList.gsScaleSize = tonumber(string.format("%.0f", self:GetValue()))
-			   </OnValueChanged>
-            </Scripts>
-        </Slider>
-		<Slider name="$parent_Slider_GSTOP" inherits="OptionsSliderTemplate" hidden="true">
-			<Anchors>
-				<Anchor point="LEFT">
-				  <Offset>
-					 <AbsDimension x="70" y="-10" />
-				  </Offset>
-			   </Anchor>
-            </Anchors>
-            <Scripts>
-			   <OnLoad>
-				  _G[self:GetName().."Text"]:SetText(FNP_LOCALE_TEXT.FNP_GS_SIDE_TOP);
-				  _G[self:GetName().."High"]:SetText(FNP_LOCALE_TEXT.FNP_TXT_BIG.."60");
-				  _G[self:GetName().."Low"]:SetText(FNP_LOCALE_TEXT.FNP_TXT_SMALL.."-20");
-				  self:SetMinMaxValues(-20, 60);
-				  self:SetValueStep(1);
-			   </OnLoad>
-			   <OnValueChanged>
-			   		_G[self:GetName().."Text"]:SetText(FNP_LOCALE_TEXT.FNP_GS_SIDE_TOP..string.format("%.0f", self:GetValue()));
-					Fnp_SavedScaleList.gsIconTop = tonumber(string.format("%.0f", self:GetValue()))
-			   </OnValueChanged>
-            </Scripts>
-        </Slider>
-
-		<Slider name="$parent_Slider_GSLEFT" inherits="OptionsSliderTemplate" hidden="true">
-			<Anchors>
-				<Anchor point="LEFT">
-				  <Offset>
-					 <AbsDimension x="70" y="-100" />
-				  </Offset>
-			   </Anchor>
-            </Anchors>
-            <Scripts>
-			   <OnLoad>
-				  _G[self:GetName().."Text"]:SetText(FNP_LOCALE_TEXT.FNP_GS_SIDE_LEFT);
-				  _G[self:GetName().."High"]:SetText(FNP_LOCALE_TEXT.FNP_TXT_BIG.."70");
-				  _G[self:GetName().."Low"]:SetText(FNP_LOCALE_TEXT.FNP_TXT_SMALL.."-70");
-				  self:SetMinMaxValues(-70, 70);
-				  self:SetValueStep(1);
-			   </OnLoad>
-			   <OnValueChanged>
-			   		_G[self:GetName().."Text"]:SetText(FNP_LOCALE_TEXT.FNP_GS_SIDE_LEFT..string.format("%.0f", self:GetValue()));
-					Fnp_SavedScaleList.gsIconLeft = tonumber(string.format("%.0f", self:GetValue()))
-			   </OnValueChanged>
-            </Scripts>
-        </Slider>
 
 		<!-- Slider name="$parent_Slider_KL2" inherits="OptionsSliderTemplate">
 		   <Anchors>
@@ -558,7 +469,7 @@
 					</Anchor>
 				</Anchors>
 			</Texture>
-			<FontString name="$parent_Header_Text" inherits="GameFontNormal" text="FNP v6.8.0">
+			<FontString name="$parent_Header_Text" inherits="GameFontNormal" text="FNP v7.0">
 				<Anchors>
 					<Anchor point="TOP" relativeTo="$parent_Header">
 						<Offset>
@@ -637,30 +548,6 @@
 					</Anchor>
 				</Anchors>
 			</FontString>
-			<FontString name="$parent_GSAlertInPage" inherits="GameFontNormalSmall" text="" multiLine="true" hidden="true">
-				<Size>
-					<AbsDimension x="0" y="50" />
-				</Size>
-				<Anchors>
-					<Anchor point="BOTTOMLEFT" relativeTo="$parent" relativePoint="BOTTOMLEFT">
-						<Offset>
-							<AbsDimension x="10" y="10" />
-						</Offset>
-					</Anchor>
-				</Anchors>
-			</FontString>
-			<FontString name="$parent_GSAlertInPage2" inherits="GameFontNormalSmall" text="" multiLine="true" hidden="true">
-				<Size>
-					<AbsDimension x="0" y="50" />
-				</Size>
-				<Anchors>
-					<Anchor point="TOPLEFT" relativeTo="$parent">
-						<Offset>
-							<AbsDimension x="30" y="-80" />
-						</Offset>
-					</Anchor>
-				</Anchors>
-			</FontString>
 		</Layer>
 	</Layers>
 	<Scripts>
@@ -675,8 +562,6 @@
 			FilteredNamePlate_Frame_DynamicBuff_Text:SetText(FNP_LOCALE_TEXT.FNP_DYNAMIC_BUFF_TXT);
 			FilteredNamePlate_Frame_uitype:SetText(FNP_LOCALE_TEXT.FNP_STRING_UI_TYPE);
 			FilteredNamePlate_Frame_note:SetText(FNP_LOCALE_TEXT.FNP_STRING_NOTE);
-			FilteredNamePlate_Frame_GSAlertInPage:SetText(FNP_LOCALE_TEXT.FNP_GS_ALERT_WORDS);
-			FilteredNamePlate_Frame_GSAlertInPage2:SetText(FNP_LOCALE_TEXT.FNP_GS_ALERT_WORDS2);
 		</OnLoad>
 		<OnEvent>
 			FilteredNamePlate:FilteredNamePlate_OnEvent(self,event,...);

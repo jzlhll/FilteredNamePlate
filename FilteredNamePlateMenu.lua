@@ -53,9 +53,6 @@ function FilteredNamePlate:FNP_EnableButtonChecked(checked, checkBtnName)
 	if checkBtnName == "MASTER_BTN" then
 		FnpEnableKeys["onlyShowEnable"] = checked
 		FilteredNamePlate:actionUnitStateAfterChanged()
-	elseif checkBtnName == "GS_BTN" then
-		FnpEnableKeys["GsEnable"] = checked
-		FilteredNamePlate:GsIconsCheckedAfterChanged()
 	elseif checkBtnName == "SPELL_EQ_ONLYSHOW" then
 		FnpEnableKeys["castSpellEqualOnlyShow"] = checked
 		FilteredNamePlate:actionUnitStateAfterChanged()
@@ -92,16 +89,11 @@ function FilteredNamePlate:FNP_ChangeFrameVisibility(...)
 		else
 			local oldChange = FilteredNamePlate.isSettingChanged
 			FilteredNamePlate_Frame_EnableCheckButton:SetChecked(FnpEnableKeys["onlyShowEnable"]);
-			FilteredNamePlate_Frame_EnableGsCheckButton:SetChecked(FnpEnableKeys["GsEnable"]);
 			--FilteredNamePlate_Frame_EnableSpellCastCheckButton:SetChecked(FnpEnableKeys["castSpellEqualOnlyShow"]);
 			
 			FilteredNamePlate_Frame_OnlyShowScale:SetValue(Fnp_SavedScaleList.only * 100)
 			FilteredNamePlate_Frame_OnlyOtherShowScale:SetValue(Fnp_SavedScaleList.small * 100)
 			FilteredNamePlate_Frame_SystemScale:SetValue(Fnp_SavedScaleList.normal * 100)
-
-			FilteredNamePlate_Frame_Slider_GSSize:SetValue(Fnp_SavedScaleList.gsScaleSize)
-			FilteredNamePlate_Frame_Slider_GSLEFT:SetValue(Fnp_SavedScaleList.gsIconTop)
-			FilteredNamePlate_Frame_Slider_GSTOP:SetValue(Fnp_SavedScaleList.gsIconLeft)
 
 			FilteredNamePlate_Frame_OnlyShowModeEditBox:SetText(table.concat(Fnp_ONameList, ";"));
 			if FnpEnableKeys["constBoxTab"] then
@@ -122,9 +114,7 @@ function FilteredNamePlate:FNP_ChangeFrameVisibility(...)
 			FilteredNamePlate_Menu1:UnlockHighlight()
 			FilteredNamePlate_Menu2:UnlockHighlight()
 			FilteredNamePlate_Menu3:UnlockHighlight()
-			FilteredNamePlate_Menu4:UnlockHighlight()
 			FilteredNamePlate_Frame_EnableCheckButton:Hide()
-			FilteredNamePlate_Frame_EnableGsCheckButton:Hide()
 			-- FilteredNamePlate_Frame_EnableSpellCastCheckButton:Hide()
 			FilteredNamePlate_Frame_EnableAchievShowButton:Hide()
 
@@ -140,15 +130,10 @@ function FilteredNamePlate:FNP_ChangeFrameVisibility(...)
 			FilteredNamePlate_Frame_DynamicBuffBox:Hide()
 
 			FilteredNamePlate_Frame_note:Hide()
-			FilteredNamePlate_Frame_GSAlertInPage:Hide()
-			FilteredNamePlate_Frame_GSAlertInPage2:Hide()
 
 			FilteredNamePlate_Frame_SystemScale:Hide()
 			FilteredNamePlate_Frame_OnlyShowScale:Hide()
 			FilteredNamePlate_Frame_OnlyOtherShowScale:Hide()
-			FilteredNamePlate_Frame_Slider_GSSize:Hide()
-			FilteredNamePlate_Frame_Slider_GSTOP:Hide()
-			FilteredNamePlate_Frame_Slider_GSLEFT:Hide()
 
 			FilteredNamePlate_Frame_ShareIcon:Hide()
 			FilteredNamePlate_Frame_ShareAUIcon:Hide()
@@ -163,7 +148,6 @@ function FilteredNamePlate:FNP_ChangeFrameVisibility(...)
 			if info == "general" then
 				FilteredNamePlate_Menu1:LockHighlight()
 				FilteredNamePlate_Frame_EnableCheckButton:Show()
-				FilteredNamePlate_Frame_EnableGsCheckButton:Show()
 				-- FilteredNamePlate_Frame_EnableSpellCastCheckButton:Show()
 				FilteredNamePlate_Frame_ShareIcon:Show()
 				if GetLocale() == "zhCN" then FilteredNamePlate_Frame_ShareAUIcon:Show() end
@@ -182,15 +166,8 @@ function FilteredNamePlate:FNP_ChangeFrameVisibility(...)
 				FilteredNamePlate_Frame_SystemScale:Show()
 				FilteredNamePlate_Frame_OnlyShowScale:Show()
 				FilteredNamePlate_Frame_OnlyOtherShowScale:Show()
-			elseif info == "gs" then
-				FilteredNamePlate_Menu3:LockHighlight()
-				FilteredNamePlate_Frame_Slider_GSSize:Show()
-				FilteredNamePlate_Frame_Slider_GSTOP:Show()
-				FilteredNamePlate_Frame_Slider_GSLEFT:Show()
-				FilteredNamePlate_Frame_GSAlertInPage:Show()
-				FilteredNamePlate_Frame_GSAlertInPage2:Show()
 			elseif info == "other" then
-				FilteredNamePlate_Menu4:LockHighlight()
+				FilteredNamePlate_Menu3:LockHighlight()
 				FilteredNamePlate_Frame_EnableAchievShowButton:Show()
 			end
 		end

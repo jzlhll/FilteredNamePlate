@@ -65,7 +65,7 @@ local function GetUnitBuffDispel(unit)
 end
 
 local function actionUnitAura(msg, event, ...)
-	if (FnpEnableKeys["onlyShowEnable"] == false and FnpEnableKeys["GsEnable"] == false) or SetupFlag == 10 then return end
+	if (FnpEnableKeys["onlyShowEnable"] == false) or SetupFlag == 10 then return end
 	local unitid = ...
 	if UnitIsPlayer(unitid) then
 		return

@@ -25,7 +25,7 @@ end
 
 function FilteredNamePlate:InitAddonPanel()
     local panel = CreateFrame("Frame", "FilteredNamePlateBlizzOptions")
-    panel.name = "FNP"
+    panel.name = "FNP姓名板过滤(缩放)"
     InterfaceOptions_AddCategory(panel)
 
     local fs = panel:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")

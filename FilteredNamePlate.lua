@@ -619,18 +619,6 @@ local function registerMyEvents(self, event, ...)
 			FilteredNamePlate:ChangedSavedScaleList(Fnp_OtherNPFlag)
 		end
 
-		if Fnp_SavedScaleList.gsScaleSize == nil then
-			Fnp_SavedScaleList.gsScaleSize = 25
-		end
-
-		if Fnp_SavedScaleList.gsIconTop == nil then
-			Fnp_SavedScaleList.gsIconTop = -5
-		end
-
-		if Fnp_SavedScaleList.gsIconLeft == nil then
-			Fnp_SavedScaleList.gsIconLeft = 0
-		end
-
 		if Fnp_MyVersion == nil then
 			Fnp_MyVersion = FNP_LOCALE_TEXT.FNP_VERSION
 		end
@@ -681,8 +669,6 @@ function FilteredNamePlate:FilteredNamePlate_OnLoad()
 	FilteredNamePlate.isSettingChanged = false
 	-- MYNAME = UnitName("player")
 	FilteredNamePlate_Frame:RegisterEvent("PLAYER_ENTERING_WORLD")
-
-	FilteredNamePlate:GsIconsRegistEvent()
 
 	FilteredNamePlate:InitAddonPanel()
 end
