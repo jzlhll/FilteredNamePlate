@@ -14,7 +14,6 @@ FilteredNamePlate.UITypeCheckList = {
 	[8] = false,
 	[9] = false,
 	[10] = false,
-	[11] = false,
 }
 
 FilteredNamePlate.UITypeList = {
@@ -28,8 +27,7 @@ FilteredNamePlate.UITypeList = {
 	[7] = "ShestackUI",
 	[8] = "CblUI",
 	[9] = "Plater",
-	[10] = "Plater另一模式",
-	[11] = "第一第二选项另一模式",
+	[10] = "第一第二选项另一模式",
 }
 
 FilteredNamePlate.curScaleList = {}
@@ -43,6 +41,7 @@ FilteredNamePlate.curScaleList = {}
 -- EKNum         6	  2	      UnitFrame
 -- she         7	  3	      UnitFrame
 -- CBL          8	  4	      UnitFrame
+-- plater      9/10	  5     unitFrame
 function FilteredNamePlate:GenCurNpFlags()
 	local typeFlag = 0 -- 上述UIType的下标
 	if Fnp_OtherNPFlag == 0 or Fnp_OtherNPFlag == 1 then
@@ -53,7 +52,7 @@ function FilteredNamePlate:GenCurNpFlags()
 		typeFlag = 4
 	elseif Fnp_OtherNPFlag == 9 then
 		typeFlag = 5
-	elseif Fnp_OtherNPFlag == 11 then
+	elseif Fnp_OtherNPFlag == 10 then -- 原生另外一种模式
 		typeFlag = 3
 	else -- 最简模型
 		typeFlag = 1
@@ -64,7 +63,7 @@ function FilteredNamePlate:GenCurNpFlags()
 		typeName = "carrier"
 	elseif Fnp_OtherNPFlag == 3 then
 		typeName = "kui"
-	elseif Fnp_OtherNPFlag == 5 then
+	elseif Fnp_OtherNPFlag == 5 or Fnp_OtherNPFlag == 9 or Fnp_OtherNPFlag == 10 then
 		typeName = "unitFrame"
 	end
 
@@ -75,10 +74,7 @@ function FilteredNamePlate:ChangedSavedScaleList(flag)
      Fnp_SavedScaleList.only = 1.4
      Fnp_SavedScaleList.small = 0.25
 	 --配置不同UI下 small的默认比例
-	if flag == 11 then
-		Fnp_SavedScaleList.small = 0.8
-		Fnp_SavedScaleList.only = 1.5
-	elseif flag == 10 then
+	if flag == 10 then
 		Fnp_SavedScaleList.small = 0.8
 		Fnp_SavedScaleList.only = 1.5
 	elseif flag == 9 then
@@ -158,16 +154,17 @@ function FilteredNamePlate:initScaleValues(majorFlag, savedFlag, majorFrame)
 			foundUnit = frame and frame.unitFrame
 		elseif savedFlag == 5 then
 			foundUnit = (frame.unitFrame and frame.unitFrame.unit)
-		elseif savedFlag == 9 then
-			foundUnit = frame and frame.UnitFrame
+		elseif savedFlag == 9 or savedFlag == 10 then
+			foundUnit = frame and frame.unitFramePlater
 		end
---		if IS_DEBUG then print("----");FilteredNamePlate.printTable(frame.TP_Carrier) end
-
+		--print("----");FilteredNamePlate.printTable(frame.unitFrame)
 		local sys = 0
 
 		if foundUnit then
-			-- if IS_DEBUG then print("found it!!") end
-			if majorFlag == 0 or majorFlag == 3 then --Orig模型 调节名字宽度，调节血条高度，施法条高度
+			--if true then print("found it!!") end
+			if majorFlag == 5 then -- 对于某种直接操作血条显示的情况，就不做任何scale处理了。
+				sys = 1
+			elseif majorFlag == 0 or majorFlag == 3 then --Orig模型 调节名字宽度，调节血条高度，施法条高度
 				FilteredNamePlate.curScaleList = {
 					name = {
 						SYSTEM = 180,

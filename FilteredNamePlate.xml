@@ -65,12 +65,12 @@
 		</CheckButton>
 		<Button name="$parent_EnableAchievShowButton" inherits="OptionsButtonTemplate" text="" hidden="true">
 			<Size>
-				<AbsDimension x="140" y="35" />
+				<AbsDimension x="200" y="35" />
 			</Size>
 			<Anchors>
 				<Anchor point="TOPLEFT" relativeTo="$parent">
 				<Offset>
-					<AbsDimension x="80" y="-160" />
+					<AbsDimension x="50" y="-160" />
 				</Offset>
 				</Anchor>
 			</Anchors>
@@ -469,7 +469,7 @@
 					</Anchor>
 				</Anchors>
 			</Texture>
-			<FontString name="$parent_Header_Text" inherits="GameFontNormal" text="FNP v7.0">
+			<FontString name="$parent_Header_Text" inherits="GameFontNormal" text="FNP v7.1">
 				<Anchors>
 					<Anchor point="TOP" relativeTo="$parent_Header">
 						<Offset>
