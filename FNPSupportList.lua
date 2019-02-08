@@ -52,8 +52,10 @@ function FilteredNamePlate:GenCurNpFlags()
 		typeFlag = 4
 	elseif Fnp_OtherNPFlag == 9 then
 		typeFlag = 5
-	elseif Fnp_OtherNPFlag == 10 then -- 原生另外一种模式
+	elseif Fnp_OtherNPFlag == 7 then -- SHE
 		typeFlag = 3
+	elseif Fnp_OtherNPFlag == 10 then -- 原生另外一种模式
+		typeFlag = 6
 	else -- 最简模型
 		typeFlag = 1
 	end
@@ -63,7 +65,7 @@ function FilteredNamePlate:GenCurNpFlags()
 		typeName = "carrier"
 	elseif Fnp_OtherNPFlag == 3 then
 		typeName = "kui"
-	elseif Fnp_OtherNPFlag == 5 or Fnp_OtherNPFlag == 9 or Fnp_OtherNPFlag == 10 then
+	elseif Fnp_OtherNPFlag == 5 or Fnp_OtherNPFlag == 9 then
 		typeName = "unitFrame"
 	end
 
@@ -143,19 +145,19 @@ function FilteredNamePlate:reinitScaleValues(majorFlag)
 end
 
 -- 返回值true代表已经获取了系统血条的真正大小，false表示UITYPE出错
-function FilteredNamePlate:initScaleValues(majorFlag, savedFlag, majorFrame)
-	--if true then print("initScaleValues majorFlag "..majorFlag..",savedFlag "..savedFlag.." majorFr "..majorFrame) end
+function FilteredNamePlate:initScaleValues(majorFlag, otherFlag, majorFrame)
+	--if true then print("initScaleValues majorFlag "..majorFlag..",otherFlag "..otherFlag.." majorFr "..majorFrame) end
 
 	local isScaleInited = false
 
 	for _, frame in pairs(GetNamePlates()) do
 		local foundUnit = (frame.namePlateUnitToken or (frame.UnitFrame and frame.UnitFrame.unit))
-		if savedFlag == 7 then
-			foundUnit = frame and frame.unitFrame
-		elseif savedFlag == 5 then
+		if otherFlag == 5 then
 			foundUnit = (frame.unitFrame and frame.unitFrame.unit)
-		elseif savedFlag == 9 or savedFlag == 10 then
+		elseif otherFlag == 9 then
 			foundUnit = frame and frame.unitFramePlater
+		elseif otherFlag == 7 then
+			foundUnit = frame and frame.unitFrame
 		end
 		--print("----");FilteredNamePlate.printTable(frame.unitFrame)
 		local sys = 0
@@ -243,7 +245,7 @@ function FilteredNamePlate:initScaleValues(majorFlag, savedFlag, majorFrame)
 				}
 				if frame[majorFrame] then
 					--if true then print("system inital   "..tostring(frame[majorFrame]:GetEffectiveScale())) end
-					if savedFlag == 5 then
+					if otherFlag == 5 then
 						FilteredNamePlate.curScaleList.SYSTEM = 1 -- frame[majorFrame]:GetEffectiveScale()
 					else
 						FilteredNamePlate.curScaleList.SYSTEM = frame[majorFrame]:GetEffectiveScale()
