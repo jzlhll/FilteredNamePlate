@@ -39,7 +39,7 @@ FilteredNamePlate.curScaleList = {}
 --  RayUI      简单4  1	      UnitFrame
 -- NDUI/EUI	   简单5  1       unitFrame
 -- EKNum         6	  2	      UnitFrame
--- she         7	  3	      UnitFrame
+-- she         7	  1	      UnitFrame
 -- CBL          8	  4	      UnitFrame
 -- plater      9/10	  5     unitFrame
 function FilteredNamePlate:GenCurNpFlags()
@@ -52,11 +52,9 @@ function FilteredNamePlate:GenCurNpFlags()
 		typeFlag = 4
 	elseif Fnp_OtherNPFlag == 9 then
 		typeFlag = 5
-	elseif Fnp_OtherNPFlag == 7 then -- SHE
-		typeFlag = 3
 	elseif Fnp_OtherNPFlag == 10 then -- 原生另外一种模式
 		typeFlag = 6
-	else -- 最简模型
+	else -- 最简模型 /SHE
 		typeFlag = 1
 	end
 
@@ -65,7 +63,7 @@ function FilteredNamePlate:GenCurNpFlags()
 		typeName = "carrier"
 	elseif Fnp_OtherNPFlag == 3 then
 		typeName = "kui"
-	elseif Fnp_OtherNPFlag == 5 or Fnp_OtherNPFlag == 9 then
+	elseif Fnp_OtherNPFlag == 5 or Fnp_OtherNPFlag == 9 or Fnp_OtherNPFlag == 7 then
 		typeName = "unitFrame"
 	end
 
