@@ -90,7 +90,7 @@ local HideAFrame = {
 			end
 		end
 	end,
-	[3] = function(frame) --sheStack
+	[3] = function(frame) --org另一种
 		if frame == nil then return end
 		if frame.UnitFrame then
 			frame.UnitFrame.name:SetWidth(FilteredNamePlate.curScaleList.name.small)
@@ -119,7 +119,7 @@ local ShowAFrame = {
 				end
 				frame.UnitFrame.castBar:SetHeight(FilteredNamePlate.curScaleList.bars.CAST_SYS_HEIGHT)
 			elseif isOnlyShowSpellCast == false then
-				frame.UnitFrame.name:SetWidth(FilteredNamePlate.curScaleList.name.normal)
+				frame.UnitFrame.name:SetWidth(FilteredNamePlate.curScaleList.name.only)
 				if frame.UnitFrame.healthBar then
 					frame.UnitFrame.healthBar:Show()
 					if isOnlyUnit then
@@ -181,7 +181,7 @@ local ShowAFrame = {
 			end
 		end
 	end,
-	[3] = function(frame, isOnlyShowSpellCast, restore, isOnlyUnit)
+	[3] = function(frame, isOnlyShowSpellCast, restore, isOnlyUnit) --org另一种
 		if frame and frame.UnitFrame then
 			if restore == true then
 				frame.UnitFrame.name:SetWidth(FilteredNamePlate.curScaleList.name.SYSTEM)
@@ -190,7 +190,7 @@ local ShowAFrame = {
 				end
 				frame.UnitFrame.castBar:SetHeight(FilteredNamePlate.curScaleList.bars.CAST_SYS_HEIGHT)
 			elseif isOnlyShowSpellCast == false then
-				frame.UnitFrame.name:SetWidth(FilteredNamePlate.curScaleList.name.normal)
+				frame.UnitFrame.name:SetWidth(FilteredNamePlate.curScaleList.name.only)
 				if frame.UnitFrame.healthBar then
 					if isOnlyUnit then
 						frame.UnitFrame.healthBar:SetHeight(FilteredNamePlate.curScaleList.bars.heal_onlyHeight)

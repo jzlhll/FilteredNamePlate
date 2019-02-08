@@ -53,7 +53,7 @@ function FilteredNamePlate:GenCurNpFlags()
 	elseif Fnp_OtherNPFlag == 9 then
 		typeFlag = 5
 	elseif Fnp_OtherNPFlag == 10 then -- 原生另外一种模式
-		typeFlag = 6
+		typeFlag = 3
 	else -- 最简模型 /SHE
 		typeFlag = 1
 	end
@@ -75,8 +75,8 @@ function FilteredNamePlate:ChangedSavedScaleList(flag)
      Fnp_SavedScaleList.small = 0.25
 	 --配置不同UI下 small的默认比例
 	if flag == 10 then
-		Fnp_SavedScaleList.small = 0.8
-		Fnp_SavedScaleList.only = 1.5
+		Fnp_SavedScaleList.small = 0.5
+		Fnp_SavedScaleList.only = 1.3
 	elseif flag == 9 then
 		Fnp_SavedScaleList.small = 0.5
 		Fnp_SavedScaleList.only = 1.3
@@ -86,7 +86,7 @@ function FilteredNamePlate:ChangedSavedScaleList(flag)
 	elseif flag == 8 then
 		Fnp_SavedScaleList.small = 0.15
 		Fnp_SavedScaleList.only = 1.2
-	elseif flag == 0 then
+	elseif flag == 0 or flag == 1 then
 		Fnp_SavedScaleList.small = 0.2
 		Fnp_SavedScaleList.only = 1.3
 	elseif flag == 6 then
@@ -107,20 +107,9 @@ function FilteredNamePlate:reinitScaleValues(majorFlag)
 		FilteredNamePlate.curScaleList.small = FilteredNamePlate.curScaleList.normal * Fnp_SavedScaleList.small
 		FilteredNamePlate.curScaleList.middle = FilteredNamePlate.curScaleList.normal * SPELL_SCALE
 		FilteredNamePlate.curScaleList.only = FilteredNamePlate.curScaleList.SYSTEM * Fnp_SavedScaleList.only
-	elseif majorFlag == 0 then
-		FilteredNamePlate.curScaleList.name.normal = FilteredNamePlate.curScaleList.name.SYSTEM
-		FilteredNamePlate.curScaleList.name.small = FilteredNamePlate.curScaleList.name.normal * Fnp_SavedScaleList.small
-		FilteredNamePlate.curScaleList.name.middle = FilteredNamePlate.curScaleList.name.small
-		if FilteredNamePlate.curScaleList.name.small < 25 then
-			FilteredNamePlate.curScaleList.name.small = 25
-			FilteredNamePlate.curScaleList.name.middle = 25
-		end
-		FilteredNamePlate.curScaleList.bars.heal_normalHeight = FilteredNamePlate.curScaleList.bars.HEAL_SYS_HEIGHT * Fnp_SavedScaleList.normal;
-		FilteredNamePlate.curScaleList.bars.heal_onlyHeight = FilteredNamePlate.curScaleList.bars.HEAL_SYS_HEIGHT * Fnp_SavedScaleList.only;
-		FilteredNamePlate.curScaleList.bars.cast_midHeight = FilteredNamePlate.curScaleList.bars.CAST_SYS_HEIGHT * SPELL_SCALE;
-	elseif majorFlag == 3 then
-		FilteredNamePlate.curScaleList.name.normal = FilteredNamePlate.curScaleList.name.SYSTEM
-		FilteredNamePlate.curScaleList.name.small = FilteredNamePlate.curScaleList.name.normal * 0.5
+	elseif majorFlag == 0 or majorFlag == 3 then
+		FilteredNamePlate.curScaleList.name.only = FilteredNamePlate.curScaleList.name.SYSTEM * Fnp_SavedScaleList.only
+		FilteredNamePlate.curScaleList.name.small = FilteredNamePlate.curScaleList.name.SYSTEM * Fnp_SavedScaleList.small
 		FilteredNamePlate.curScaleList.name.middle = FilteredNamePlate.curScaleList.name.small
 		if FilteredNamePlate.curScaleList.name.small < 25 then
 			FilteredNamePlate.curScaleList.name.small = 25
@@ -168,7 +157,7 @@ function FilteredNamePlate:initScaleValues(majorFlag, otherFlag, majorFrame)
 				FilteredNamePlate.curScaleList = {
 					name = {
 						SYSTEM = 180,
-						normal = 180,
+						only = 220,
 						small = 40,
 						middle = 40,
 					},
